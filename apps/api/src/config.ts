@@ -16,8 +16,8 @@ export const config = {
     expiresIn: '7d',
   },
 
-  anthropic: {
-    apiKey: process.env.ANTHROPIC_API_KEY!,
+  gemini: {
+    apiKey: process.env.GEMINI_API_KEY!,
   },
 
   frontend: {
@@ -31,7 +31,7 @@ const required = [
   'SUPABASE_URL',
   'SUPABASE_SERVICE_ROLE_KEY',
   'JWT_SECRET',
-  'ANTHROPIC_API_KEY',
+  'GEMINI_API_KEY',
 ];
 
 for (const key of required) {

@@ -18,7 +18,7 @@
     "@elysiajs/cors": "^1.2.0",
     "@elysiajs/jwt": "^1.2.0",
     "@elysiajs/cookie": "^0.8.0",
-    "@anthropic-ai/sdk": "^0.32.0"
+    "@google/generative-ai": "^0.21.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
