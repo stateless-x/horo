@@ -1,20 +1,51 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@200;300;400&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind v4 CSS-based theme configuration */
+@theme {
+  /* Custom Colors - Fortune App Dark Theme */
+  --color-voidBlack: #0A0A0F;
+  --color-deepNight: #0F0A1A;
+  --color-darkPurple: #1A0A2E;
+  --color-royalPurple: #6B21A8;
+  --color-amethyst: #A855F7;
+  --color-lavenderGlow: #C084FC;
+  --color-paleOrchid: #E9D5FF;
+  --color-ghostWhite: #F5F5F5;
+  --color-ashGray: #A1A1AA;
+  --color-charcoal: #18181B;
+
+  /* Custom Font Families */
+  --font-family-thai: 'Noto Sans Thai', sans-serif;
+  --font-family-heading: 'Prompt', sans-serif;
+  --font-family-english: 'Space Grotesk', sans-serif;
+  --font-family-oracle: 'Sarabun', sans-serif;
+  --font-family-mono: 'JetBrains Mono', monospace;
+
+  /* Custom Animations */
+  --animate-glow: glow 1.5s ease-in-out infinite;
+
+  @keyframes glow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+}
 
 @layer base {
   * {
-    @apply border-darkPurple/50;
+    border-color: rgb(26 10 46 / 0.5); /* darkPurple/50 */
   }
 
   body {
-    @apply bg-voidBlack text-ghostWhite font-thai antialiased;
+    background-color: var(--color-voidBlack);
+    color: var(--color-ghostWhite);
+    font-family: var(--font-family-thai);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+    font-family: var(--font-family-heading);
   }
 }
 

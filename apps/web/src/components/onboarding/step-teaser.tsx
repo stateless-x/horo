@@ -33,7 +33,13 @@ export function StepTeaser() {
         setIsLoading(true);
 
         // Call API to generate teaser
-        const data = await api.post('/fortune/teaser', profile);
+        const data = await api.post<{
+          elementType: string;
+          personality: string;
+          todaySnippet: string;
+          luckyColor?: string;
+          luckyNumber?: number;
+        }>('/fortune/teaser', profile);
 
         setResult(data);
         setTeaserResult(data);
