@@ -7,15 +7,15 @@ A mobile-first fortune-telling application combining Chinese Astrology (Bazi) an
 - **Monorepo**: Turborepo
 - **Runtime**: Bun
 - **Frontend**: Next.js 16 (App Router, React Server Components)
-- **Backend**: Elysia
+- **Backend**: Elysia (Bun-native)
 - **Database**: PostgreSQL + Drizzle ORM
-- **Auth**: Supabase (server-side only)
+- **Auth**: Better Auth (OAuth 2.0 with Google & Twitter)
 - **State Management**: Zustand
 - **Data Fetching**: TanStack Query
 - **Styling**: Tailwind CSS 4
 - **UI Components**: shadcn/ui (customized)
 - **Animations**: Framer Motion
-- **AI**: Claude API (Anthropic)
+- **AI**: Google Gemini 2.5 Flash
 
 ## Project Structure
 
@@ -37,8 +37,9 @@ horo/
 
 - Bun >= 1.1.38
 - PostgreSQL database
-- Supabase project
-- Anthropic API key
+- Google OAuth 2.0 credentials
+- Twitter OAuth 2.0 credentials
+- Google Gemini API key
 
 ## Getting Started
 
@@ -56,12 +57,14 @@ bun install
 cd apps/api
 cp .env.example .env
 # Edit .env with your credentials:
-# - DATABASE_URL
-# - SUPABASE_URL
-# - SUPABASE_SERVICE_ROLE_KEY
-# - JWT_SECRET
-# - ANTHROPIC_API_KEY
-# - FRONTEND_URL
+# - DATABASE_URL=postgresql://user:password@localhost:5432/horo
+# - OAUTH_BASE_URL=http://localhost:3001
+# - GOOGLE_CLIENT_ID=your-google-client-id
+# - GOOGLE_CLIENT_SECRET=your-google-client-secret
+# - TWITTER_CLIENT_ID=your-twitter-client-id
+# - TWITTER_CLIENT_SECRET=your-twitter-client-secret
+# - GEMINI_API_KEY=your-gemini-api-key
+# - FRONTEND_URL=http://localhost:3000
 ```
 
 #### Frontend (`apps/web/.env`):
@@ -72,6 +75,8 @@ cp .env.example .env
 # Edit .env:
 # - NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
+
+**See `BETTER_AUTH_SETUP.md` for detailed OAuth setup instructions.**
 
 ### 3. Setup Database
 
@@ -122,22 +127,35 @@ bun --filter @horo/api dev    # Backend on port 3001
 
 ## Authentication Architecture
 
-**CRITICAL SECURITY**: All auth is server-side only via Elysia
+**Better Auth** with OAuth 2.0 (Google & Twitter)
 
-- Supabase `service_role` key NEVER exposed to client
-- OAuth flows handled entirely by backend
-- Session stored in httpOnly cookie
-- Access tokens never in localStorage or client JavaScript
+- Server-side authentication via Better Auth
+- Direct integration with Drizzle ORM
+- Automatic session management
+- OAuth flows handled by Better Auth middleware
+- Session stored in httpOnly cookies
+- No manual JWT management needed
 
 ### Flow:
 
-1. Client calls `GET /auth/login?provider=google`
-2. Elysia generates OAuth URL with Supabase
-3. User authenticates with provider
-4. Provider redirects to `/auth/callback?code=xxx`
-5. Elysia exchanges code for session
-6. Session stored in httpOnly cookie
-7. Redirect to dashboard
+1. User clicks "Sign in with Google/X" on frontend
+2. Frontend calls `signIn.social({ provider: 'google', callbackURL: '/dashboard' })`
+3. Better Auth redirects to OAuth provider
+4. User authenticates with provider
+5. Provider redirects to `/api/auth/callback/google`
+6. Better Auth creates session and user in database
+7. Session stored in httpOnly cookie
+8. Redirects to dashboard
+
+### Key Features:
+
+- ✅ Automatic database table creation (user, session, account, verification)
+- ✅ Built-in session refresh
+- ✅ Type-safe React hooks (`useSession`, `signIn`, `signOut`)
+- ✅ No external auth service needed
+- ✅ Fully customizable
+
+See `BETTER_AUTH_SETUP.md` for detailed setup instructions.
 
 ## Design System
 
@@ -196,16 +214,24 @@ The packages in `packages/astrology/` are currently placeholder implementations 
 
 ## API Endpoints
 
-### Auth
-- `GET /auth/login?provider={google|x}` - Initiate OAuth
-- `GET /auth/callback?code={code}` - OAuth callback
-- `POST /auth/logout` - Clear session
-- `GET /auth/me` - Get current user
+### Auth (Better Auth - Auto-generated)
+- `POST /api/auth/sign-in/social` - Initiate OAuth flow
+- `GET /api/auth/callback/google` - Google OAuth callback
+- `GET /api/auth/callback/twitter` - Twitter OAuth callback
+- `POST /api/auth/sign-out` - Sign out
+- `GET /api/auth/session` - Get current session
 
 ### Fortune
 - `POST /fortune/teaser` - Generate teaser result (pre-auth)
 - `POST /fortune/profile` - Save birth profile
 - `GET /fortune/daily` - Get daily reading
+- `GET /fortune/chart` - Get full Bazi chart
+- `POST /fortune/compatibility` - Calculate compatibility
+
+### Invites (Viral Feature)
+- `POST /invite/create` - Create compatibility invite link
+- `GET /invite/:token` - Get invite details
+- `POST /invite/:token/use` - Accept invite and calculate compatibility
 
 ## Development Notes
 
@@ -226,33 +252,69 @@ Astrology calculation engines must have unit tests once implemented.
 
 ## Deployment
 
-### Frontend (Next.js)
+### Recommended: Railway (All Services)
 
-Deploy to Vercel or any Node.js hosting:
+Deploy frontend, backend, and database to Railway for a unified platform.
 
+**Quick Start:**
+1. See `RAILWAY_DEPLOYMENT.md` - Comprehensive deployment guide
+2. See `RAILWAY_CHECKLIST.md` - Step-by-step checklist
+3. See `RAILWAY_AUTO_MIGRATE.md` - Auto-migration details
+
+**Features:**
+- ✅ Auto-migrations on every deploy
+- ✅ Private networking between services
+- ✅ Automatic HTTPS and domains
+- ✅ Built-in monitoring and logs
+- ✅ ~$11-12/month (after $5 free credit)
+
+**Quick Deploy:**
+```bash
+# 1. Create Railway project
+# 2. Deploy PostgreSQL
+# 3. Deploy API service (uses railway.toml)
+# 4. Deploy Web service (uses apps/web/railway.json)
+# 5. Configure environment variables
+# 6. Done!
+```
+
+### Alternative: Vercel + Railway
+
+Deploy frontend to Vercel and backend to Railway:
+- See `DEPLOYMENT.md` for detailed instructions
+- Frontend on Vercel (free tier)
+- Backend + Database on Railway (~$5-10/month)
+
+### Manual Deployment
+
+**Frontend:**
 ```bash
 cd apps/web
 bun run build
-bun run start
+bun run start  # Runs on port 3000
 ```
 
-### Backend (Elysia)
-
-Deploy to any Bun-compatible hosting:
-
+**Backend:**
 ```bash
 cd apps/api
 bun run build
-bun run start
+bun run start  # Runs on port 3001
 ```
 
-### Environment Variables
+**Database Migrations:**
+```bash
+cd packages/db
+bun run db:push  # Push schema changes
+```
 
-Ensure all production environment variables are set:
-- Use strong JWT secrets
-- Set `NODE_ENV=production`
-- Configure CORS for production frontend URL
-- Enable Secure cookies
+### Environment Variables (Production)
+
+Ensure these are set:
+- `NODE_ENV=production`
+- CORS configured for production frontend URL
+- OAuth redirect URIs match production URLs
+- Database URL uses SSL connection
+- All secrets are secure
 
 ## Contributing
 
