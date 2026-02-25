@@ -2,6 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { Card, CardHeader, CardTitle, CardContent } from '@horo/ui';
+import { useSession } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 /**
  * Full Chart / Deep Reading Screen
@@ -11,8 +14,40 @@ import { Card, CardHeader, CardTitle, CardContent } from '@horo/ui';
  * - 10-year 大運 cycle timeline (swipeable)
  * - Thai astrology life rhythm analysis
  * - AI narrative combining both systems
+ *
+ * Protected route - requires authentication
  */
 export default function ChartPage() {
+  const { data: session, isPending: sessionLoading } = useSession();
+  const router = useRouter();
+
+  // Redirect unauthenticated users to login
+  useEffect(() => {
+    if (!session && !sessionLoading) {
+      router.push('/login');
+    }
+  }, [session, sessionLoading, router]);
+
+  // Show loading state while checking session
+  if (sessionLoading || !session) {
+    return (
+      <div className="min-h-screen bg-voidBlack flex items-center justify-center">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.5, 1, 0.5],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          className="w-16 h-16 border-4 border-royalPurple border-t-transparent rounded-full animate-spin"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-6xl mx-auto space-y-8">

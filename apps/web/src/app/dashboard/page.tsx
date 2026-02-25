@@ -4,6 +4,10 @@ import { motion } from 'framer-motion';
 import { Card, CardHeader, CardTitle, CardContent } from '@horo/ui';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
+import { useSession } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { ClientDate } from '@/components/client-date';
 
 /**
  * Main Dashboard - Daily Horoscope (Home)
@@ -14,17 +18,31 @@ import { api } from '@/lib/api';
  * - Lucky number, color, direction
  * - Share button → generates styled card (IG Story/LINE/X sized)
  * - Refreshes at midnight Thai time (UTC+7)
+ *
+ * Protected route - requires authentication
  */
 export default function DashboardPage() {
+  const { data: session, isPending: sessionLoading } = useSession();
+  const router = useRouter();
+
+  // Redirect unauthenticated users to login
+  useEffect(() => {
+    if (!session && !sessionLoading) {
+      router.push('/login');
+    }
+  }, [session, sessionLoading, router]);
+
   const { data: dailyReading, isLoading } = useQuery({
     queryKey: ['daily-reading'],
     queryFn: () => api.get('/fortune/daily'),
     staleTime: 1000 * 60 * 60, // 1 hour
+    enabled: !!session, // Only fetch when authenticated
   });
 
-  if (isLoading) {
+  // Show loading state while checking session or fetching data
+  if (sessionLoading || isLoading || !session) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-voidBlack flex items-center justify-center">
         <motion.div
           animate={{
             scale: [1, 1.2, 1],
@@ -50,14 +68,12 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center space-y-2"
         >
+          <p className="text-paleOrchid font-oracle">
+            สวัสดี, {session.user.name || 'เจ้า'}
+          </p>
           <h1 className="text-4xl font-heading text-ghostWhite">ดวงชะตาวันนี้</h1>
           <p className="text-ashGray">
-            {new Date().toLocaleDateString('th-TH', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              weekday: 'long',
-            })}
+            <ClientDate />
           </p>
         </motion.div>
 

@@ -9,7 +9,7 @@ import { THAI_TIME_PERIODS } from '@horo/shared';
 /**
  * Step 5: Birth Time
  *
- * "เจ้าเกิดตอนเช้า หรือ ตอนมืด"
+ * "ถ้าอยากรู้โชคชะตาที่แม่นขึ้นกว่าเดิม จงบอกช่วงเวลาที่เจ้าเกิดมาซะ"
  * - Period selector with Thai time names
  * - Map to Chinese 2-hour periods (時辰): 12 periods
  * - Include "ไม่ทราบ" (don't know) option → skips Bazi, uses Thai astrology only
@@ -61,7 +61,7 @@ export function StepBirthTime() {
           transition={{ delay: 0.2 }}
           className="text-2xl md:text-3xl text-center text-ghostWhite font-heading"
         >
-          เจ้าเกิดตอนเช้า หรือ ตอนมืด
+          ถ้าอยากรู้โชคชะตาที่แม่นขึ้นกว่าเดิม จงบอกช่วงเวลาที่เจ้าเกิดมาซะ
         </motion.h1>
 
         <div className="space-y-6">

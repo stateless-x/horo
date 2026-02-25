@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input } from '@horo/ui';
+import { useSession } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 /**
  * Compatibility / ดูดวงคู่ (VIRAL FEATURE)
@@ -12,10 +14,41 @@ import { Card, CardHeader, CardTitle, CardContent, Button, Input } from '@horo/u
  * - Compatibility analysis
  * - Generate shareable card
  * - Invite flow: User A shares → User B enters data → both see result → User B becomes new user
+ *
+ * Protected route - requires authentication
  */
 export default function CompatibilityPage() {
+  const { data: session, isPending: sessionLoading } = useSession();
+  const router = useRouter();
   const [partnerName, setPartnerName] = useState('');
   const [hasResult, setHasResult] = useState(false);
+
+  // Redirect unauthenticated users to login
+  useEffect(() => {
+    if (!session && !sessionLoading) {
+      router.push('/login');
+    }
+  }, [session, sessionLoading, router]);
+
+  // Show loading state while checking session
+  if (sessionLoading || !session) {
+    return (
+      <div className="min-h-screen bg-voidBlack flex items-center justify-center">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.5, 1, 0.5],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+          className="w-16 h-16 border-4 border-royalPurple border-t-transparent rounded-full animate-spin"
+        />
+      </div>
+    );
+  }
 
   const handleCalculate = () => {
     // Mock calculation

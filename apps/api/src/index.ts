@@ -4,6 +4,7 @@ import { cookie } from '@elysiajs/cookie';
 import { config } from './config';
 import { auth } from './lib/auth';
 import { fortuneRoutes } from './routes/fortune';
+import { inviteRoutes } from './routes/invite';
 
 const app = new Elysia()
   .use(cors({
@@ -20,6 +21,7 @@ const app = new Elysia()
     return auth.handler(request);
   })
   .use(fortuneRoutes)
+  .use(inviteRoutes)
   .listen(config.port);
 
 console.log(
