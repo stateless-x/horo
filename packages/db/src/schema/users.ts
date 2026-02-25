@@ -1,20 +1,51 @@
-import { pgTable, uuid, varchar, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean } from 'drizzle-orm/pg-core';
 
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  supabaseUid: varchar('supabase_uid', { length: 255 }).unique(),
-  name: varchar('name', { length: 255 }).notNull(),
-  email: varchar('email', { length: 255 }),
-  provider: varchar('provider', { length: 50 }), // 'google' | 'x' | 'guest'
-  avatarUrl: varchar('avatar_url', { length: 500 }),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+/**
+ * Better Auth Schema
+ *
+ * These tables are required by Better Auth for authentication.
+ * DO NOT modify the structure unless you know what you're doing.
+ *
+ * Better Auth automatically manages these tables.
+ */
+
+export const users = pgTable('user', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  emailVerified: boolean('emailVerified').notNull().default(false),
+  image: text('image'),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
 });
 
-export const sessions = pgTable('sessions', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').references(() => users.id).notNull(),
-  refreshTokenEnc: varchar('refresh_token_enc', { length: 1000 }), // Encrypted refresh token
-  expiresAt: timestamp('expires_at').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+export const sessions = pgTable('session', {
+  id: text('id').primaryKey(),
+  expiresAt: timestamp('expiresAt').notNull(),
+  ipAddress: text('ipAddress'),
+  userAgent: text('userAgent'),
+  userId: text('userId')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+});
+
+export const accounts = pgTable('account', {
+  id: text('id').primaryKey(),
+  accountId: text('accountId').notNull(),
+  providerId: text('providerId').notNull(),
+  userId: text('userId')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  accessToken: text('accessToken'),
+  refreshToken: text('refreshToken'),
+  idToken: text('idToken'),
+  expiresAt: timestamp('expiresAt'),
+  password: text('password'),
+});
+
+export const verifications = pgTable('verification', {
+  id: text('id').primaryKey(),
+  identifier: text('identifier').notNull(),
+  value: text('value').notNull(),
+  expiresAt: timestamp('expiresAt').notNull(),
 });

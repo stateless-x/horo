@@ -1,9 +1,9 @@
-import { pgTable, uuid, varchar, timestamp, integer, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, integer, boolean } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 export const birthProfiles = pgTable('birth_profiles', {
   id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').references(() => users.id).notNull(),
+  userId: text('user_id').references(() => users.id).notNull(),
   birthDate: timestamp('birth_date').notNull(),
   birthHour: integer('birth_hour'), // 0-23, null if unknown
   birthTimePeriod: varchar('birth_time_period', { length: 50 }), // Thai time period name

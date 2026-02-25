@@ -13,6 +13,7 @@
     "@horo/shared": "workspace:*",
     "@horo/ui": "workspace:*",
     "@tanstack/react-query": "^5.62.11",
+    "better-auth": "^1.2.4",
     "zustand": "^5.0.3",
     "framer-motion": "^11.15.0",
     "next": "^15.1.7",

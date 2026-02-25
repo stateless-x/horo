@@ -3,12 +3,13 @@
 import { motion } from 'framer-motion';
 import { Button } from '@horo/ui';
 import { useOnboardingStore } from '@/stores/onboarding';
+import { signIn } from '@/lib/auth-client';
 
 /**
  * Step 7: Auth Prompt
  *
  * "เพื่อเก็บดวงชะตาของเจ้าไว้ เชื่อมบัญชีของเจ้า"
- * - Google OAuth + X.com OAuth buttons
+ * - Google OAuth + Twitter/X OAuth buttons (via Better Auth)
  * - Also show "ข้าม" (Skip) link for guests
  * - User has ALREADY seen value
  * - **CRITICAL: Auth MUST come AFTER teaser result (Step 6)**
@@ -16,14 +17,18 @@ import { useOnboardingStore } from '@/stores/onboarding';
 export function StepAuth() {
   const { nextStep } = useOnboardingStore();
 
-  const handleGoogleLogin = () => {
-    // Redirect to backend OAuth endpoint
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/login?provider=google`;
+  const handleGoogleLogin = async () => {
+    await signIn.social({
+      provider: 'google',
+      callbackURL: '/dashboard',
+    });
   };
 
-  const handleXLogin = () => {
-    // Redirect to backend OAuth endpoint
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/login?provider=x`;
+  const handleXLogin = async () => {
+    await signIn.social({
+      provider: 'twitter',
+      callbackURL: '/dashboard',
+    });
   };
 
   const handleSkip = () => {

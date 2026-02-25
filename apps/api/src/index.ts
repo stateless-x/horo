@@ -2,7 +2,7 @@ import { Elysia } from 'elysia';
 import { cors } from '@elysiajs/cors';
 import { cookie } from '@elysiajs/cookie';
 import { config } from './config';
-import { authRoutes } from './routes/auth';
+import { auth } from './lib/auth';
 import { fortuneRoutes } from './routes/fortune';
 
 const app = new Elysia()
@@ -15,7 +15,10 @@ const app = new Elysia()
     message: 'Horo API',
     version: '0.1.0',
   }))
-  .use(authRoutes)
+  // Better Auth endpoints - handles /api/auth/*
+  .all('/api/auth/*', async ({ request }) => {
+    return auth.handler(request);
+  })
   .use(fortuneRoutes)
   .listen(config.port);
 

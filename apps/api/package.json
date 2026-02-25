@@ -13,10 +13,9 @@
     "@horo/db": "workspace:*",
     "@horo/shared": "workspace:*",
     "@horo/astrology": "workspace:*",
-    "@supabase/supabase-js": "^2.49.2",
+    "better-auth": "^1.2.4",
     "elysia": "^1.1.31",
     "@elysiajs/cors": "^1.2.0",
-    "@elysiajs/jwt": "^1.2.0",
     "@elysiajs/cookie": "^0.8.0",
     "@google/generative-ai": "^0.21.0"
   },

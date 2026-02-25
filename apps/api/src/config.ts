@@ -6,14 +6,16 @@ export const config = {
     url: process.env.DATABASE_URL!,
   },
 
-  supabase: {
-    url: process.env.SUPABASE_URL!,
-    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  },
-
-  jwt: {
-    secret: process.env.JWT_SECRET!,
-    expiresIn: '7d',
+  oauth: {
+    baseUrl: process.env.OAUTH_BASE_URL || 'http://localhost:3001',
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+    twitter: {
+      clientId: process.env.TWITTER_CLIENT_ID!,
+      clientSecret: process.env.TWITTER_CLIENT_SECRET!,
+    },
   },
 
   gemini: {
@@ -28,9 +30,10 @@ export const config = {
 // Validate required environment variables
 const required = [
   'DATABASE_URL',
-  'SUPABASE_URL',
-  'SUPABASE_SERVICE_ROLE_KEY',
-  'JWT_SECRET',
+  'GOOGLE_CLIENT_ID',
+  'GOOGLE_CLIENT_SECRET',
+  'TWITTER_CLIENT_ID',
+  'TWITTER_CLIENT_SECRET',
   'GEMINI_API_KEY',
 ];
 
