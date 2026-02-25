@@ -1,0 +1,20 @@
+# Ignore everything except apps/web
+apps/api
+packages/db/drizzle
+packages/db/node_modules
+
+# Node modules
+node_modules
+.turbo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs (except Next.js)
+dist
+build
+
+# Logs
+*.log

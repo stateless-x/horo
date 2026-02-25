@@ -1,0 +1,17 @@
+# Nixpacks Configuration for Railway
+# This file tells Railway how to build and deploy your app
+
+[phases.setup]
+nixPkgs = ["bun"]
+
+[phases.install]
+cmds = ["bun install"]
+
+[phases.build]
+cmds = [
+  "cd packages/db && bun run db:generate",
+  "cd apps/api && bun run build"
+]
+
+[start]
+cmd = "bun run migrate:deploy"
