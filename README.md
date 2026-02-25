@@ -272,11 +272,16 @@ Deploy frontend, backend, and database to Railway for a unified platform.
 ```bash
 # 1. Create Railway project
 # 2. Deploy PostgreSQL
-# 3. Deploy API service (uses railway.toml)
-# 4. Deploy Web service (uses apps/web/railway.json)
+# 3. Deploy API service (Railway auto-detects Bun monorepo)
+# 4. Deploy Web service (from same GitHub repo)
 # 5. Configure environment variables
-# 6. Done!
+# 6. Done! Railway handles migrations automatically
 ```
+
+**Build System:** Railway auto-detection (no Dockerfile needed)
+- Detects Bun from `package.json`
+- Uses `railway.toml` and `railway.json` for configuration
+- See `RAILWAY_BUILD_OPTIONS.md` for details
 
 ### Alternative: Vercel + Railway
 
