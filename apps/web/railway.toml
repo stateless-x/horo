@@ -1,6 +1,5 @@
 [build]
-# Use Nixpacks (Railway's auto-builder) instead of Dockerfile
-builder = "NIXPACKS"
+# Let Railway auto-detect the best builder (will use Nixpacks for Bun + Next.js)
 watchPaths = ["apps/web/**", "packages/ui/**", "packages/shared/**"]
 
 [deploy]
