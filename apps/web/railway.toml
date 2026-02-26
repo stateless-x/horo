@@ -12,6 +12,6 @@ watchPaths = ["apps/web/**", "packages/ui/**", "packages/shared/**"]
 # Use Dockerfile CMD instead (standalone mode uses server.js)
 # startCommand is commented out to let Dockerfile CMD take over
 healthcheckPath = "/"
-healthcheckTimeout = 100
+healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10

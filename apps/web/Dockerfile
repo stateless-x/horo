@@ -58,14 +58,18 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
+# Debug: List files to verify structure (remove this after debugging)
+RUN ls -la /app && ls -la /app/apps/web/
+
 USER nextjs
 
 EXPOSE 3000
 
-# Health check - use PORT from environment
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+# Health check - use PORT from environment (increased start-period for cold starts)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
   CMD bun run -e 'fetch(`http://localhost:${process.env.PORT || 3000}`).then(r => r.ok ? process.exit(0) : process.exit(1))'
 
 # Start the Next.js application
 # In standalone mode, server.js is at apps/web/server.js (maintains monorepo structure)
-CMD ["node", "apps/web/server.js"]
+# Use Bun to run Node.js server (Bun can execute Node.js code)
+CMD ["sh", "-c", "echo 'Starting Next.js server on port '${PORT:-3000} && bun apps/web/server.js"]
