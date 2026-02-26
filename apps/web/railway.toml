@@ -1,3 +1,7 @@
+[service]
+# Explicitly name this service to avoid confusion with API service
+name = "web"
+
 [build]
 builder = "dockerfile"
 dockerfilePath = "apps/web/Dockerfile"
@@ -5,7 +9,8 @@ dockerfilePath = "apps/web/Dockerfile"
 watchPaths = ["apps/web/**", "packages/ui/**", "packages/shared/**"]
 
 [deploy]
-startCommand = "bun run start"
+# Use Dockerfile CMD instead (standalone mode uses server.js)
+# startCommand is commented out to let Dockerfile CMD take over
 healthcheckPath = "/"
 healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"

@@ -30,18 +30,39 @@ You need OAuth credentials for:
    ```
 6. Copy **Client ID** and **Client Secret**
 
-## Step 2: Get Twitter/X OAuth Credentials
+## Step 2: Get X (Twitter) OAuth 2.0 Credentials
 
-1. Go to [Twitter Developer Portal](https://developer.twitter.com/en/portal/dashboard)
-2. Create a new app or select existing one
-3. Go to **Settings** → **User authentication settings**
-4. Enable **OAuth 2.0**
-5. Add callback URLs:
-   ```
-   http://localhost:3001/api/auth/callback/twitter
-   https://your-production-domain.com/api/auth/callback/twitter
-   ```
-6. Copy **Client ID** and **Client Secret**
+**IMPORTANT**: By default, X apps only show OAuth 1.0a credentials (Consumer Key/Secret). You must enable OAuth 2.0 separately.
+
+### Step-by-Step Instructions:
+
+1. Go to [X Developer Portal](https://developer.x.com/en/portal/dashboard)
+2. Select your app from the list
+3. Look for **"User authentication settings"** section
+4. Click **"Set up"** (it will say "User authentication not set up" if you haven't enabled OAuth 2.0)
+5. Configure OAuth 2.0 settings:
+   - **App permissions**: Select permissions (usually "Read" + "Write" for user data)
+   - **Type of App**: Select **"Web App"**
+   - **App info**:
+     - **Callback URI / Redirect URL**:
+       ```
+       http://localhost:3001/api/auth/callback/twitter
+       ```
+       (Add production URL later: `https://your-domain.com/api/auth/callback/twitter`)
+     - **Website URL**: Your app's website (can use localhost for development)
+   - **Client type**: Select **"Confidential"** (required to get Client Secret)
+6. **Save** the settings
+7. Go to **"Keys and Tokens"** tab
+8. You'll now see **OAuth 2.0** credentials:
+   - ✅ **Client ID** → Use this for `TWITTER_CLIENT_ID`
+   - ✅ **Client Secret** → Use this for `TWITTER_CLIENT_SECRET`
+
+### What NOT to Use:
+- ❌ **Consumer Key** (OAuth 1.0a - ignore this)
+- ❌ **Consumer Secret** (OAuth 1.0a - ignore this)
+- ❌ **Bearer Token** (App-only auth - ignore this)
+
+**Note**: If you only see Consumer Keys and no Client ID/Secret, you haven't enabled OAuth 2.0 yet. Go back to step 4.
 
 ## Step 3: Configure Environment Variables
 
@@ -58,9 +79,9 @@ OAUTH_BASE_URL=http://localhost:3001
 GOOGLE_CLIENT_ID=your-google-client-id-here.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=your-google-client-secret
 
-# Twitter/X OAuth 2.0
-TWITTER_CLIENT_ID=your-twitter-client-id
-TWITTER_CLIENT_SECRET=your-twitter-client-secret
+# X (Twitter) OAuth 2.0 - Must use OAuth 2.0 credentials, NOT Consumer Keys
+TWITTER_CLIENT_ID=your-x-client-id
+TWITTER_CLIENT_SECRET=your-x-client-secret
 
 # Google Gemini API
 GEMINI_API_KEY=your-gemini-api-key
@@ -294,7 +315,7 @@ Better Auth uses different table structures, so direct migration may require cus
 - [Better Auth Documentation](https://www.better-auth.com/)
 - [Better Auth GitHub](https://github.com/better-auth/better-auth)
 - [Google OAuth 2.0 Setup](https://developers.google.com/identity/protocols/oauth2)
-- [Twitter OAuth 2.0 Setup](https://developer.twitter.com/en/docs/authentication/oauth-2-0)
+- [X OAuth 2.0 Setup](https://developer.x.com/en/docs/authentication/oauth-2-0)
 
 ## Support
 

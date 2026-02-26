@@ -52,11 +52,16 @@ railway link
 railway up --service api
 ```
 
-Configuration:
-- **Root Directory**: `/apps/api`
+**IMPORTANT - Monorepo Configuration**:
+- **Root Directory**: `/` (repository root, NOT `/apps/api`)
 - **Builder**: Dockerfile
-- **Dockerfile Path**: `Dockerfile`
-- **Start Command**: `bun run start`
+- **Dockerfile Path**: `apps/api/Dockerfile` (relative to repo root)
+- **Start Command**: Leave empty (Dockerfile CMD will be used)
+
+> **Why `/` ?** The Dockerfile builds from repo root because it needs access to:
+> - Root `package.json`, `bun.lock`, `turbo.json`
+> - `packages/` directory (workspace dependencies)
+> - Multiple `apps/` directories
 
 #### Service 2: Web (Frontend)
 
@@ -71,11 +76,13 @@ railway link
 railway up --service web
 ```
 
-Configuration:
-- **Root Directory**: `/apps/web`
+**IMPORTANT - Monorepo Configuration**:
+- **Root Directory**: `/` (repository root, NOT `/apps/web`)
 - **Builder**: Dockerfile
-- **Dockerfile Path**: `Dockerfile`
-- **Start Command**: `bun run start`
+- **Dockerfile Path**: `apps/web/Dockerfile` (relative to repo root)
+- **Start Command**: Leave empty (Dockerfile CMD will be used)
+
+> **Railway will use the correct `railway.toml`** for each service automatically based on the Dockerfile path and watch paths configured in each `railway.toml` file.
 
 ## Environment Variables
 
@@ -148,9 +155,9 @@ There are two ways to run migrations:
 
 1. In Railway dashboard, create a new service called "migrate"
 2. Configure it:
-   - **Root Directory**: `/deployment`
+   - **Root Directory**: `/` (repository root)
    - **Builder**: Dockerfile
-   - **Dockerfile Path**: `Dockerfile.migrate`
+   - **Dockerfile Path**: `deployment/Dockerfile.migrate` (relative to repo root)
    - **Service Type**: One-off Job
 3. Set environment variable:
    - `DATABASE_URL=${{Postgres.DATABASE_URL}}`
@@ -280,6 +287,84 @@ Railway automatically monitors these endpoints and restarts services if unhealth
 2. Check `NEXT_PUBLIC_API_URL` in Web points to API service
 3. Ensure both URLs use `https://` (not `http://`)
 4. Check Railway service URLs in dashboard
+
+### Build Error: "/apps/web": not found
+
+**Error**: `failed to calculate checksum: "/apps/web": not found`
+
+**Cause**: Root Directory is set to `/apps/web` but Dockerfile expects to build from repository root
+
+**Solution**:
+1. Go to Railway dashboard → Select the service
+2. Click **Settings**
+3. Set **Root Directory**: `/` (repository root) or leave empty
+4. Set **Dockerfile Path**: `apps/web/Dockerfile` (for Web) or `apps/api/Dockerfile` (for API)
+5. Redeploy
+
+**Why**: Monorepo Dockerfiles need access to:
+- Root `package.json`, `bun.lock`, `turbo.json`
+- `packages/` directory (workspace dependencies)
+- `apps/` directory
+
+### Runtime Error: "Script not found 'start'"
+
+**Error**: `error: Script not found "start"`
+
+**Cause**: Railway's `startCommand` in `railway.toml` overrides the Dockerfile's CMD
+
+**Solution**:
+The `startCommand` has been removed from both `railway.toml` files to let the Dockerfile CMD take over:
+- Web uses Next.js standalone mode: `CMD ["bun", "run", "server.js"]`
+- API uses built dist file: `CMD ["bun", "run", "dist/index.js"]`
+
+If you need to override the start command, do it in Railway's dashboard Settings, not in `railway.toml`.
+
+**Verification**:
+Check deployment logs - should show container starting without "Script not found" errors.
+
+### Wrong railway.toml Being Used
+
+**Problem**: Web service reading `apps/api/railway.toml` (or vice versa)
+
+**Symptoms**:
+- Railway shows "The value is set in apps/api/railway.toml" for Web service
+- Wrong healthcheck path
+- Both services deploying on every change
+
+**Cause**: Railway can't distinguish between services in monorepo
+
+**Solution**:
+
+Each `railway.toml` now has a `[service]` name section:
+```toml
+[service]
+name = "web"  # or "api"
+```
+
+**Steps to fix**:
+
+1. **Create TWO separate services in Railway**:
+   - Go to Railway Dashboard → New Service
+   - Service 1: Link to your repo, name it "api"
+   - Service 2: Link to same repo, name it "web"
+
+2. **For EACH service**, configure in Settings:
+   - **Root Directory**: `/` (same for both!)
+   - **Service Name**: Must match the name in `railway.toml`
+     - API service → Must be named "api" in Railway
+     - Web service → Must be named "web" in Railway
+   - **Dockerfile Path**: Railway auto-detects from `railway.toml`
+
+3. **Commit and push** the updated `railway.toml` files with `[service]` sections
+
+4. **Redeploy both services**
+
+**Verification**:
+- Web service logs show: "Using railway.toml from apps/web/railway.toml"
+- API service logs show: "Using railway.toml from apps/api/railway.toml"
+- Make a change to `apps/api/` → Only API service rebuilds
+- Make a change to `apps/web/` → Only Web service rebuilds
+- Make a change to `packages/shared/` → Both rebuild (both depend on it)
 
 ## File Structure
 
