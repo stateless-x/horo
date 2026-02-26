@@ -3,6 +3,7 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   transpilePackages: ['@horo/shared', '@horo/ui'],
   reactStrictMode: true,
+  output: 'standalone',
   experimental: {
     optimizePackageImports: ['@horo/ui'],
   },

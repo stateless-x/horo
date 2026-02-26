@@ -16,6 +16,10 @@ const app = new Elysia()
     message: 'Horo API',
     version: '0.1.0',
   }))
+  .get('/health', () => ({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+  }))
   // Better Auth endpoints - handles /api/auth/*
   .all('/api/auth/*', async ({ request }) => {
     return auth.handler(request);

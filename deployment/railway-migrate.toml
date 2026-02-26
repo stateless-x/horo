@@ -1,0 +1,11 @@
+# Railway configuration for database migrations
+# This can be used as a one-off migration job in Railway
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile.migrate"
+
+[deploy]
+# This is a one-off job, not a service
+startCommand = "/app/migrate.sh"
+restartPolicyType = "NEVER"
