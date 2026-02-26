@@ -1,13 +1,12 @@
 [build]
-builder = "DOCKERFILE"
-dockerfilePath = "apps/web/Dockerfile"
-# IMPORTANT: Build context must be the repository root for monorepo workspace dependencies
+# Use Nixpacks (Railway's auto-builder) instead of Dockerfile
+builder = "NIXPACKS"
 watchPaths = ["apps/web/**", "packages/ui/**", "packages/shared/**"]
 
 [deploy]
-# Use Dockerfile CMD instead (standalone mode uses server.js)
-# Railway will use the CMD from Dockerfile
+# HOSTNAME=0.0.0.0 ensures the server binds to all interfaces so Railway can reach it
+startCommand = "cd apps/web && HOSTNAME=0.0.0.0 bun run start"
 healthcheckPath = "/"
-healthcheckTimeout = 300
+healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
