@@ -1,16 +1,12 @@
-[service]
-# Explicitly name this service to avoid confusion with API service
-name = "web"
-
 [build]
-builder = "dockerfile"
+builder = "DOCKERFILE"
 dockerfilePath = "apps/web/Dockerfile"
 # IMPORTANT: Build context must be the repository root for monorepo workspace dependencies
 watchPaths = ["apps/web/**", "packages/ui/**", "packages/shared/**"]
 
 [deploy]
 # Use Dockerfile CMD instead (standalone mode uses server.js)
-# startCommand is commented out to let Dockerfile CMD take over
+# Railway will use the CMD from Dockerfile
 healthcheckPath = "/"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"

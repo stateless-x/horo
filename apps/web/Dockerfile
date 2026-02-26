@@ -72,4 +72,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
 # Start the Next.js application
 # In standalone mode, server.js is at apps/web/server.js (maintains monorepo structure)
 # Use Bun to run Node.js server (Bun can execute Node.js code)
-CMD ["sh", "-c", "echo 'Starting Next.js server on port '${PORT:-3000} && bun apps/web/server.js"]
+CMD ["sh", "-c", "echo '=== Starting Next.js Server ===' && echo 'PORT: '${PORT:-3000} && echo 'NODE_ENV: '${NODE_ENV} && echo 'Checking if server.js exists...' && ls -la apps/web/server.js && echo 'Starting server...' && bun apps/web/server.js"]

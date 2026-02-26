@@ -7,8 +7,9 @@ dockerfilePath = "apps/web/Dockerfile"
 watchPaths = ["apps/web/**", "packages/ui/**", "packages/shared/**"]
 
 [deploy]
-startCommand = "bun run start"
+# Use Dockerfile CMD instead (standalone mode uses server.js)
+# Railway will use the CMD from Dockerfile
 healthcheckPath = "/"
-healthcheckTimeout = 100
+healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
