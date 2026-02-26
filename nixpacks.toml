@@ -1,0 +1,14 @@
+# Disable Nixpacks for this monorepo
+# Railway should use Dockerfiles instead
+
+[phases.setup]
+nixPkgs = []
+
+[phases.install]
+cmds = []
+
+[phases.build]
+cmds = []
+
+[start]
+cmd = "echo 'This monorepo uses Dockerfiles for each service. Please configure Railway to use the Dockerfile builder.'"

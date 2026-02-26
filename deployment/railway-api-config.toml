@@ -1,7 +1,9 @@
+# Railway Configuration for API Service
+# Paste this in Railway Dashboard > Service Settings > railway.toml section
+
 [build]
 builder = "DOCKERFILE"
 dockerfilePath = "apps/api/Dockerfile"
-# IMPORTANT: Build context must be the repository root for monorepo workspace dependencies
 watchPaths = ["apps/api/**", "packages/db/**", "packages/shared/**", "packages/astrology/**"]
 
 [deploy]
