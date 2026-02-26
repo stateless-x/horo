@@ -34,17 +34,13 @@ COPY --from=deps /app/turbo.json ./turbo.json
 WORKDIR /app/apps/web
 RUN bun run build
 
-# Production stage
-FROM base AS runner
+# Production stage - Use Node.js 20 for Next.js runtime
+FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Install Node.js for Next.js standalone server
-# Next.js standalone is optimized for Node.js, not Bun
-RUN apt-get update && apt-get install -y nodejs && rm -rf /var/lib/apt/lists/*
-
-# Create non-root user
-RUN groupadd -r nodejs && useradd -r -g nodejs nextjs
+# Create non-root user (alpine uses addgroup/adduser)
+RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001 -G nodejs
 
 # Copy Next.js standalone output
 # Next.js standalone preserves monorepo structure
