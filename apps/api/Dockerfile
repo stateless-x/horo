@@ -49,13 +49,13 @@ COPY --from=builder /app/node_modules ./node_modules
 
 # Set environment to production
 ENV NODE_ENV=production
-ENV PORT=3000
+# Do NOT set PORT here - Railway injects it at runtime
 
 EXPOSE 3000
 
-# Health check
+# Health check - use PORT from environment
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD bun run -e 'fetch("http://localhost:3000/health").then(r => r.ok ? process.exit(0) : process.exit(1))'
+  CMD bun run -e 'fetch(`http://localhost:${process.env.PORT || 3000}/health`).then(r => r.ok ? process.exit(0) : process.exit(1))'
 
 # Start the application
 CMD ["bun", "run", "dist/index.js"]

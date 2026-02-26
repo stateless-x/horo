@@ -1,5 +1,5 @@
 [build]
-builder = "DOCKERFILE"
+builder = "dockerfile"
 dockerfilePath = "apps/web/Dockerfile"
 # IMPORTANT: Build context must be the repository root for monorepo workspace dependencies
 watchPaths = ["apps/web/**", "packages/ui/**", "packages/shared/**"]

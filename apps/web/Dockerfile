@@ -46,7 +46,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV PORT=3000
+# Do NOT set PORT here - Railway injects it at runtime
 
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs && \
@@ -61,9 +61,9 @@ USER nextjs
 
 EXPOSE 3000
 
-# Health check
+# Health check - use PORT from environment
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD bun run -e 'fetch("http://localhost:3000").then(r => r.ok ? process.exit(0) : process.exit(1))'
+  CMD bun run -e 'fetch(`http://localhost:${process.env.PORT || 3000}`).then(r => r.ok ? process.exit(0) : process.exit(1))'
 
 # Start the Next.js application
 CMD ["bun", "run", "server.js"]
