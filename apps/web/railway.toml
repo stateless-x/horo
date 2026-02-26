@@ -3,8 +3,8 @@
 watchPaths = ["apps/web/**", "packages/ui/**", "packages/shared/**"]
 
 [deploy]
-# HOSTNAME=0.0.0.0 ensures the server binds to all interfaces so Railway can reach it
-startCommand = "cd apps/web && HOSTNAME=0.0.0.0 bun run start"
+# Use -H 0.0.0.0 flag to bind to all interfaces so Railway can reach it
+startCommand = "cd apps/web && bun next start -H 0.0.0.0"
 healthcheckPath = "/"
 healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"
