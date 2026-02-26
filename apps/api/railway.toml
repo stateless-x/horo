@@ -1,9 +1,0 @@
-# Railway Configuration for API Service
-# This service runs migrations and starts the Elysia backend
-#
-# IMPORTANT: Set Root Directory to "apps/api" in Railway Dashboard
-# Build configuration is in nixpacks.toml (forces Bun instead of Node.js)
-
-[deploy]
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10

@@ -1,9 +1,0 @@
-# Railway Configuration for Web Service
-# This service runs the Next.js frontend
-#
-# IMPORTANT: Set Root Directory to "apps/web" in Railway Dashboard
-# Build configuration is in nixpacks.toml (forces Bun instead of Node.js)
-
-[deploy]
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
