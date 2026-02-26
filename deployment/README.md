@@ -306,18 +306,29 @@ Railway automatically monitors these endpoints and restarts services if unhealth
 - `packages/` directory (workspace dependencies)
 - `apps/` directory
 
-### Runtime Error: "Script not found 'start'"
+### Runtime Error: "Script not found 'start'" or "Script not found 'server.js'"
 
-**Error**: `error: Script not found "start"`
+**Error**: `error: Script not found "start"` or `error: Script not found "server.js"`
 
-**Cause**: Railway's `startCommand` in `railway.toml` overrides the Dockerfile's CMD
+**Cause 1**: Railway's `startCommand` in `railway.toml` overrides the Dockerfile's CMD
 
-**Solution**:
+**Solution 1**:
 The `startCommand` has been removed from both `railway.toml` files to let the Dockerfile CMD take over:
-- Web uses Next.js standalone mode: `CMD ["bun", "run", "server.js"]`
+- Web uses Next.js standalone mode: `CMD ["node", "apps/web/server.js"]`
 - API uses built dist file: `CMD ["bun", "run", "dist/index.js"]`
 
-If you need to override the start command, do it in Railway's dashboard Settings, not in `railway.toml`.
+**Cause 2**: Wrong path to `server.js` in monorepo
+
+**Solution 2**:
+Next.js standalone mode preserves the monorepo structure. The CMD must be:
+```dockerfile
+CMD ["node", "apps/web/server.js"]  # NOT "server.js" alone
+```
+
+**Important Notes**:
+- Use `node` (not `bun`) for Next.js standalone - it's optimized for Node.js
+- In monorepo, `server.js` is at `apps/web/server.js` inside the container
+- If you need to override the start command, do it in Railway's dashboard Settings, not in `railway.toml`
 
 **Verification**:
 Check deployment logs - should show container starting without "Script not found" errors.
