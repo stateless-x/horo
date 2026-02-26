@@ -1,5 +1,5 @@
 [build]
-# Let Railway auto-detect the best builder (will use Dockerfile for API)
+builder = "DOCKERFILE"
 dockerfilePath = "apps/api/Dockerfile"
 watchPaths = ["apps/api/**", "packages/db/**", "packages/shared/**", "packages/astrology/**"]
 

@@ -1,10 +1,10 @@
 [build]
-# Let Railway auto-detect the best builder (will use Nixpacks for Bun + Next.js)
+builder = "DOCKERFILE"
+dockerfilePath = "apps/web/Dockerfile"
 watchPaths = ["apps/web/**", "packages/ui/**", "packages/shared/**"]
 
 [deploy]
-# Use -H 0.0.0.0 flag to bind to all interfaces so Railway can reach it
-startCommand = "cd apps/web && bun next start -H 0.0.0.0"
+# Let Dockerfile CMD handle the start command
 healthcheckPath = "/"
 healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"
