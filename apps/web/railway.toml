@@ -1,11 +1,16 @@
 # Railway Configuration for Web Service
 # This service runs the Next.js frontend
+#
+# IMPORTANT: Set Root Directory to "apps/web" in Railway Dashboard
+# Railway will start from apps/web, so commands must navigate to monorepo root
 
 [build]
 builder = "NIXPACKS"
+# Navigate to monorepo root, install dependencies, then build web app
 buildCommand = "cd ../.. && bun install && cd apps/web && bun run build"
 
 [deploy]
-startCommand = "cd ../../apps/web && bun run start"
+# Start Next.js from the web directory (Railway is already in apps/web)
+startCommand = "bun run start"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10

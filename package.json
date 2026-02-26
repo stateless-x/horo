@@ -14,7 +14,7 @@
     "db:generate": "turbo run db:generate",
     "db:push": "turbo run db:push",
     "db:studio": "turbo run db:studio",
-    "migrate:deploy": "node scripts/migrate-and-start.js"
+    "migrate:deploy": "node deployment/migrate-and-start.js"
   },
   "devDependencies": {
     "turbo": "^2.3.3",

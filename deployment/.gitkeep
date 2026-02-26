@@ -1,0 +1,2 @@
+# This file ensures the deployment folder is tracked by git
+# The deployment folder contains critical files for Railway deployment

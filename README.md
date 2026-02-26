@@ -23,12 +23,16 @@ A mobile-first fortune-telling application combining Chinese Astrology (Bazi) an
 horo/
 ├── apps/
 │   ├── web/          # Next.js 16 frontend
+│   │   └── railway.toml
 │   └── api/          # Elysia backend
+│       └── railway.toml
 ├── packages/
 │   ├── db/           # Drizzle schema, migrations
 │   ├── astrology/    # Bazi + Thai astrology calculators (pure TypeScript)
 │   ├── ui/           # Shared UI components
 │   └── shared/       # Types, constants, Zod schemas
+├── deployment/       # 🚨 CRITICAL: Railway deployment files (DO NOT DELETE)
+│   └── migrate-and-start.js
 ├── package.json
 └── turbo.json
 ```
