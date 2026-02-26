@@ -1,0 +1,14 @@
+# Nixpacks Configuration for Web Service
+# Forces Nixpacks to use Bun instead of Node.js/npm
+
+[phases.setup]
+nixPkgs = ["bun"]
+
+[phases.install]
+cmds = ["cd ../.. && bun install"]
+
+[phases.build]
+cmds = ["cd ../.. && cd apps/web && bun run build"]
+
+[start]
+cmd = "bun run start"

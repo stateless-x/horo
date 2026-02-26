@@ -1,0 +1,14 @@
+# Nixpacks Configuration for API Service
+# Forces Nixpacks to use Bun instead of Node.js/npm
+
+[phases.setup]
+nixPkgs = ["bun"]
+
+[phases.install]
+cmds = ["cd ../.. && bun install"]
+
+[phases.build]
+cmds = ["cd ../.. && cd apps/api && bun run build"]
+
+[start]
+cmd = "cd ../.. && bun run migrate:deploy"

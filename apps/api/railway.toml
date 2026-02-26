@@ -2,15 +2,8 @@
 # This service runs migrations and starts the Elysia backend
 #
 # IMPORTANT: Set Root Directory to "apps/api" in Railway Dashboard
-# Railway will start from apps/api, so commands must navigate to monorepo root
-
-[build]
-builder = "NIXPACKS"
-# Navigate to monorepo root and install all dependencies
-buildCommand = "cd ../.. && bun install && cd apps/api && bun run build"
+# Build configuration is in nixpacks.toml (forces Bun instead of Node.js)
 
 [deploy]
-# Navigate to monorepo root and run migration + start script
-startCommand = "cd ../.. && bun run migrate:deploy"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
