@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Horo — BI Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a14; color: #e0e0e0; padding: 20px 24px; }
+
+  h1 { text-align: center; font-size: 26px; color: #fff; margin-bottom: 4px; }
+  .subtitle { text-align: center; color: #666; margin-bottom: 24px; font-size: 13px; }
+
+  .section-title { font-size: 18px; color: #fff; margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #1e1e35; display: flex; align-items: center; gap: 8px; }
+  .section-title .emoji { font-size: 20px; }
+
+  /* KPI Cards */
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: 12px; margin-bottom: 8px; }
+  .kpi { background: #12121f; border-radius: 10px; padding: 16px; text-align: center; border: 1px solid #1e1e35; }
+  .kpi .value { font-size: 32px; font-weight: 700; color: #7c6ff7; }
+  .kpi .value.pink { color: #e06090; }
+  .kpi .value.teal { color: #50c8c8; }
+  .kpi .value.orange { color: #f0a050; }
+  .kpi .value.green { color: #50c870; }
+  .kpi .label { font-size: 11px; color: #777; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .kpi .delta { font-size: 11px; color: #50c870; margin-top: 2px; }
+  .kpi .delta.warn { color: #f0a050; }
+
+  /* Chart Grid */
+  .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 16px; }
+  .chart-card { background: #12121f; border-radius: 10px; padding: 20px; border: 1px solid #1e1e35; }
+  .chart-card.wide { grid-column: 1 / -1; }
+  .chart-card h3 { margin-bottom: 12px; font-size: 14px; color: #aaa; font-weight: 500; }
+  .chart-card canvas { max-height: 280px; }
+
+  /* Insights */
+  .insight { background: #0f0f1f; border-left: 3px solid #7c6ff7; padding: 8px 12px; margin-top: 10px; border-radius: 0 6px 6px 0; font-size: 12px; color: #999; line-height: 1.5; }
+  .insight strong { color: #b0a8f7; }
+  .insight.marketing { border-left-color: #e06090; }
+  .insight.marketing strong { color: #f080a0; }
+  .insight.product { border-left-color: #50c8c8; }
+  .insight.product strong { color: #70e0e0; }
+
+  /* Funnel */
+  .funnel { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .funnel-step { display: flex; align-items: center; gap: 12px; }
+  .funnel-bar { height: 32px; border-radius: 4px; display: flex; align-items: center; padding: 0 12px; font-size: 13px; font-weight: 600; color: #fff; min-width: 60px; }
+  .funnel-label { font-size: 12px; color: #888; white-space: nowrap; }
+  .funnel-pct { font-size: 12px; color: #50c870; font-weight: 600; margin-left: auto; }
+
+  /* Heatmap-like table */
+  .heat-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .heat-table th { font-size: 11px; color: #666; padding: 6px 8px; text-align: center; font-weight: 500; }
+  .heat-table td { font-size: 13px; padding: 6px 8px; text-align: center; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<h1>Horo — BI Dashboard</h1>
+<p class="subtitle">Live data as of March 16, 2026 · 1,347 users</p>
+
+<!-- ============ GROWTH OVERVIEW ============ -->
+<div class="section-title"><span class="emoji">📈</span> Growth Overview</div>
+<div class="kpi-row">
+  <div class="kpi"><div class="value">1,347</div><div class="label">Total Users</div></div>
+  <div class="kpi"><div class="value pink">1,317</div><div class="label">Birth Profiles</div><div class="delta">97.8% created profile</div></div>
+  <div class="kpi"><div class="value teal">89.2%</div><div class="label">Onboarding Rate</div><div class="delta warn">145 dropped off</div></div>
+  <div class="kpi"><div class="value orange">1,160</div><div class="label">Mar 15 Signups</div></div>
+  <div class="kpi"><div class="value green">169</div><div class="label">Mar 16 (today)</div></div>
+  <div class="kpi"><div class="value">72</div><div class="label">Chart Narratives</div></div>
+  <div class="kpi"><div class="value">30</div><div class="label">Compatibility Checks</div></div>
+</div>
+
+<div class="charts">
+
+  <!-- Signups Timeline -->
+  <div class="chart-card">
+    <h3>Daily Signups</h3>
+    <canvas id="signupsChart"></canvas>
+    <div class="insight marketing"><strong>98.6% of all users came in the last 2 days.</strong> This is a viral event — identify the source tweet/post and amplify it immediately.</div>
+  </div>
+
+  <!-- Viral Day Hourly Breakdown -->
+  <div class="chart-card">
+    <h3>Mar 15 Hourly Signup Pattern (UTC)</h3>
+    <canvas id="hourlyChart"></canvas>
+    <div class="insight marketing"><strong>Peak: 7AM UTC (2PM ICT)</strong> — lunch break / afternoon scrolling. Viral content likely posted ~6AM UTC (1PM ICT). <strong>Best time to post:</strong> 11AM-1PM Thai time.</div>
+  </div>
+
+  <!-- Funnel -->
+  <div class="chart-card">
+    <h3>User Funnel</h3>
+    <div class="funnel">
+      <div class="funnel-step">
+        <div class="funnel-bar" style="width: 100%; background: #7c6ff7;">1,347</div>
+        <div class="funnel-label">Registered</div>
+        <div class="funnel-pct">100%</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-bar" style="width: 97.8%; background: #6c5fd7;">1,317</div>
+        <div class="funnel-label">Created Birth Profile</div>
+        <div class="funnel-pct">97.8%</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-bar" style="width: 89.2%; background: #5c4fb7;">1,202</div>
+        <div class="funnel-label">Completed Onboarding</div>
+        <div class="funnel-pct">89.2%</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-bar" style="width: 5.3%; background: #e06090;">72</div>
+        <div class="funnel-label">Generated Full Narrative</div>
+        <div class="funnel-pct" style="color: #f0a050;">5.3%</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-bar" style="width: 2.2%; background: #50c8c8;">30</div>
+        <div class="funnel-label">Used Compatibility</div>
+        <div class="funnel-pct" style="color: #f0a050;">2.2%</div>
+      </div>
+    </div>
+    <div class="insight product"><strong>Big drop: 89% onboarded → 5.3% narrative.</strong> Users sign up but don't engage deeper. Is the reading behind a paywall? If free, the CTA is broken. If paid, 5.3% conversion is actually decent for day 1.</div>
+  </div>
+
+  <!-- Auth Provider x Gender -->
+  <div class="chart-card">
+    <h3>Auth Provider × Gender</h3>
+    <canvas id="authGenderChart"></canvas>
+    <div class="insight marketing"><strong>Twitter female users (444)</strong> are the viral engine. <strong>Twitter male (67)</strong> is very low — male acquisition likely needs different content/channel strategy.</div>
+  </div>
+
+</div>
+
+<!-- ============ DEMOGRAPHICS ============ -->
+<div class="section-title"><span class="emoji">👤</span> User Demographics — Who Are Your Users?</div>
+
+<div class="charts">
+
+  <!-- Gender -->
+  <div class="chart-card">
+    <h3>Gender Split</h3>
+    <canvas id="genderChart"></canvas>
+    <div class="insight marketing"><strong>85.7% female.</strong> Marketing content, tone, and visuals should lean feminine. Male acquisition is an untapped opportunity — consider "ดูดวงคู่" or relationship-angle content to attract male users through their partners.</div>
+  </div>
+
+  <!-- Generation -->
+  <div class="chart-card">
+    <h3>Generation Breakdown</h3>
+    <canvas id="genChart"></canvas>
+    <div class="insight marketing"><strong>Gen Z (1997-2004) = 55.7%</strong> of users. Content should be snackable, shareable, IG/TikTok-friendly. <strong>Late Millennials (1990-96) = 20.5%</strong> — secondary audience, may have higher willingness to pay.</div>
+  </div>
+
+  <!-- Birth Year -->
+  <div class="chart-card wide">
+    <h3>Birth Year Distribution (Age Profile)</h3>
+    <canvas id="birthYearChart"></canvas>
+    <div class="insight"><strong>Peak: 2001 (154 users, age ~25).</strong> Sharp dropoff after 2004 — Gen Alpha (<18) less interested. Sweet spot is 20-29 year olds.</div>
+  </div>
+
+  <!-- Birth Day of Week -->
+  <div class="chart-card">
+    <h3>Birth Day of Week</h3>
+    <canvas id="dowChart"></canvas>
+    <div class="insight product"><strong>Monday-born users lead (252).</strong> In Thai astrology, birth day = ruling planet. Consider personalized "วันเกิด" content — e.g. "คนเกิดวันจันทร์ สัปดาห์นี้..." as daily push notifications.</div>
+  </div>
+
+  <!-- Birth Time -->
+  <div class="chart-card">
+    <h3>Birth Time Period Distribution</h3>
+    <canvas id="timeChart"></canvas>
+    <div class="insight product"><strong>Only 1.3% unknown time</strong> — exceptional data completeness. Morning periods (เช้าตรู่-สายเช้า-เที่ยง) = 38.4% — this is real birth data, not random selection.</div>
+  </div>
+</div>
+
+<!-- ============ PERSONALITY ============ -->
+<div class="section-title"><span class="emoji">🧠</span> Personality & MBTI — What Do Your Users Think Like?</div>
+
+<div class="charts">
+
+  <!-- MBTI -->
+  <div class="chart-card">
+    <h3>MBTI Distribution</h3>
+    <canvas id="mbtiChart"></canvas>
+    <div class="insight marketing"><strong>INFP + INFJ = 35.6%</strong> — these are idealistic, meaning-seeking personality types. They crave self-understanding and deep content. Marketing angle: "เข้าใจตัวเองมากขึ้น" resonates more than "ทำนายอนาคต".</div>
+  </div>
+
+  <!-- MBTI Temperament -->
+  <div class="chart-card">
+    <h3>MBTI Temperament Groups</h3>
+    <canvas id="temperamentChart"></canvas>
+    <div class="insight product"><strong>Introverted Intuitive (IN__) = 56.6%</strong> — these users prefer deep, text-heavy, reflective content over flashy visuals. They share privately (DM, close friends story) not publicly. <strong>Word-of-mouth > ads.</strong></div>
+  </div>
+
+  <!-- Top MBTI by Gender -->
+  <div class="chart-card">
+    <h3>Top 5 MBTI — Female</h3>
+    <canvas id="mbtiFemaleChart"></canvas>
+    <div class="insight">Female users: <strong>INFP (217) > INFJ (202)</strong>. Feelers lead by a wide margin — emotional, personal content wins.</div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Top 5 MBTI — Male</h3>
+    <canvas id="mbtiMaleChart"></canvas>
+    <div class="insight">Male users: <strong>INFJ (31) leads</strong>, then INFP/INTP/INTJ tied (18 each). Males skew more Thinking — they want analytical/logical fortune content, not just emotional.</div>
+  </div>
+
+</div>
+
+<!-- ============ ACTIONABLE ============ -->
+<div class="section-title"><span class="emoji">🎯</span> Actionable Recommendations</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 12px; margin-bottom: 40px;">
+
+  <div class="chart-card">
+    <h3>🔥 Immediate (This Week)</h3>
+    <ul style="font-size: 13px; color: #bbb; line-height: 2; padding-left: 16px;">
+      <li><strong>Find & amplify the viral source</strong> — 1,160 signups in one day, identify the tweet/post</li>
+      <li><strong>Fix onboarding → narrative funnel</strong> — 89% → 5.3% is a massive drop</li>
+      <li><strong>Post during 11AM-1PM ICT</strong> — that's when your users are most active</li>
+      <li><strong>Recover 145 incomplete onboardings</strong> — push notification or email nudge</li>
+    </ul>
+  </div>
+
+  <div class="chart-card">
+    <h3>📱 Marketing Strategy</h3>
+    <ul style="font-size: 13px; color: #bbb; line-height: 2; padding-left: 16px;">
+      <li><strong>Target: Women 20-29, INFP/INFJ</strong> — your core is clear</li>
+      <li><strong>Twitter/X is your viral channel</strong> (38.3% of signups) — invest in shareable quote cards</li>
+      <li><strong>Tone: "เข้าใจตัวเอง"</strong> not "ทำนายดวง" — your users want self-discovery</li>
+      <li><strong>Leverage MBTI × Bazi</strong> — unique combo no competitor has, make it a hook</li>
+    </ul>
+  </div>
+
+  <div class="chart-card">
+    <h3>🛠️ Product Opportunities</h3>
+    <ul style="font-size: 13px; color: #bbb; line-height: 2; padding-left: 16px;">
+      <li><strong>Daily "วันเกิด" push</strong> — 7 birth day segments × daily = personalized retention</li>
+      <li><strong>Compatibility is underused (30 uses)</strong> — make it more prominent, it's a viral loop (invite a friend)</li>
+      <li><strong>Shareable result cards</strong> — INFP/INFJ share via DM/close friends, design for that</li>
+      <li><strong>"คนเกิดปี 2001" community content</strong> — your largest single cohort (154 users)</li>
+    </ul>
+  </div>
+
+  <div class="chart-card">
+    <h3>💰 Monetization Signals</h3>
+    <ul style="font-size: 13px; color: #bbb; line-height: 2; padding-left: 16px;">
+      <li><strong>72 narrative generations</strong> — if this is paid, ~5.3% conversion day 1 is promising</li>
+      <li><strong>Late Millennials (270 users, age 30-36)</strong> — highest purchasing power segment, target with premium features</li>
+      <li><strong>Compatibility = premium feature</strong> — only 30 uses but high intent signal, consider freemium model</li>
+      <li><strong>Daily readings (only 2)</strong> — this feature seems unactivated, could be daily retention + monetization hook</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+const purple = '#7c6ff7';
+const purpleLight = '#a99ff7';
+const purpleDark = '#4a3fb7';
+const pink = '#e06090';
+const pinkLight = '#f080a0';
+const teal = '#50c8c8';
+const orange = '#f0a050';
+const blue = '#5090f0';
+const green = '#50c870';
+Chart.defaults.color = '#777';
+Chart.defaults.borderColor = '#1e1e35';
+Chart.defaults.font.size = 11;
+
+// Daily Signups
+new Chart(document.getElementById('signupsChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Feb 27','Feb 28','Mar 1','Mar 2','Mar 3','Mar 6','Mar 15','Mar 16'],
+    datasets: [{
+      label: 'Signups',
+      data: [1, 1, 5, 7, 3, 1, 1160, 169],
+      backgroundColor: [purple,purple,purple,purple,purple,purple, pink, pinkLight],
+      borderRadius: 4,
+    }]
+  },
+  options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+// Hourly Mar 15
+new Chart(document.getElementById('hourlyChart'), {
+  type: 'line',
+  data: {
+    labels: ['6AM','7AM','8AM','9AM','10AM','11AM','12PM','1PM','2PM','3PM','4PM','5PM','6PM','7PM','8PM','9PM','10PM','11PM'],
+    datasets: [{
+      label: 'Signups',
+      data: [61,147,122,121,94,75,75,59,67,63,66,66,50,34,15,11,13,21],
+      borderColor: pink,
+      backgroundColor: 'rgba(224,96,144,0.1)',
+      fill: true,
+      tension: 0.3,
+      pointRadius: 3,
+      pointBackgroundColor: pink,
+    }]
+  },
+  options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+// Auth x Gender
+new Chart(document.getElementById('authGenderChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Google ♀','Google ♂','Twitter ♀','Twitter ♂'],
+    datasets: [{
+      label: 'Users',
+      data: [695, 125, 444, 67],
+      backgroundColor: [pink, purple, pinkLight, purpleLight],
+      borderRadius: 4,
+    }]
+  },
+  options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+// Gender
+new Chart(document.getElementById('genderChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Female (1,129)','Male (188)'],
+    datasets: [{ data: [1129, 188], backgroundColor: [pink, purple], borderWidth: 0 }]
+  },
+  options: { plugins: { legend: { position: 'bottom' } }, cutout: '65%' }
+});
+
+// Generation
+new Chart(document.getElementById('genChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Gen Z 97-04 (734)','Millennial Late 90-96 (270)','Gen Alpha/Z 05+ (249)','Millennial Early 81-89 (55)','Gen X & older (9)'],
+    datasets: [{ data: [734, 270, 249, 55, 9], backgroundColor: [pink, purple, teal, orange, '#555'], borderWidth: 0 }]
+  },
+  options: { plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } }, cutout: '55%' }
+});
+
+// Birth Year
+const birthYears = [
+  {y:1970,c:1},{y:1971,c:1},{y:1977,c:1},{y:1978,c:5},{y:1980,c:1},{y:1981,c:3},{y:1982,c:4},{y:1983,c:4},
+  {y:1984,c:2},{y:1985,c:1},{y:1986,c:7},{y:1987,c:10},{y:1988,c:11},{y:1989,c:13},{y:1990,c:13},{y:1991,c:22},
+  {y:1992,c:25},{y:1993,c:36},{y:1994,c:39},{y:1995,c:58},{y:1996,c:77},{y:1997,c:72},{y:1998,c:72},
+  {y:1999,c:72},{y:2000,c:103},{y:2001,c:154},{y:2002,c:91},{y:2003,c:92},{y:2004,c:78},{y:2005,c:67},
+  {y:2006,c:55},{y:2007,c:45},{y:2008,c:40},{y:2009,c:23},{y:2010,c:12},{y:2011,c:6},{y:2014,c:1}
+];
+new Chart(document.getElementById('birthYearChart'), {
+  type: 'bar',
+  data: {
+    labels: birthYears.map(b => b.y),
+    datasets: [{
+      label: 'Users',
+      data: birthYears.map(b => b.c),
+      backgroundColor: birthYears.map(b => {
+        if (b.y >= 1997 && b.y <= 2004) return pink;
+        if (b.y >= 1990 && b.y <= 1996) return purple;
+        if (b.y >= 2005) return teal;
+        return '#444';
+      }),
+      borderRadius: 2,
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true }, x: { ticks: { maxRotation: 45 } } }
+  }
+});
+
+// Birth DOW
+new Chart(document.getElementById('dowChart'), {
+  type: 'bar',
+  data: {
+    labels: ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์'],
+    datasets: [{
+      label: 'Users',
+      data: [166, 252, 156, 171, 218, 210, 144],
+      backgroundColor: ['#f04040', '#f0d040', pink, green, orange, blue, purple],
+      borderRadius: 4,
+    }]
+  },
+  options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+// Birth Time
+new Chart(document.getElementById('timeChart'), {
+  type: 'bar',
+  data: {
+    labels: ['สายเช้า','บ่ายโมง','เที่ยง','เช้าตรู่','บ่ายสาม','ค่ำ','รุ่งเช้า','เย็น','สองทุ่ม','ตีหนึ่ง','เที่ยงคืน','ตีสอง','ไม่ทราบ'],
+    datasets: [{
+      label: 'Count',
+      data: [207,164,153,146,114,84,83,77,72,71,68,61,17],
+      backgroundColor: [pink,pink,pink,purpleLight,purpleLight,purple,purple,teal,teal,teal,teal,teal,'#444'],
+      borderRadius: 4,
+    }]
+  },
+  options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { ticks: { maxRotation: 45 } } } }
+});
+
+// MBTI
+new Chart(document.getElementById('mbtiChart'), {
+  type: 'bar',
+  data: {
+    labels: ['INFP','INFJ','ENFP','INTP','INTJ','ENFJ','ISFJ','ISFP','ENTJ','ISTJ','ISTP','ENTP','ESFJ','ESFP','ESTJ','ESTP'],
+    datasets: [{
+      label: 'Count',
+      data: [235,233,103,97,92,72,64,59,45,45,39,32,18,9,9,8],
+      backgroundColor: [pink,pink,purpleLight,purple,purple,purpleLight,teal,teal,orange,teal,teal,orange,'#555','#555','#555','#555'],
+      borderRadius: 4,
+    }]
+  },
+  options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
+});
+
+// Temperament
+new Chart(document.getElementById('temperamentChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['IN__ Introvert Intuitive (657)','EN__ Extrovert Intuitive (252)','IS__ Introvert Sensing (207)','ES__ Extrovert Sensing (44)'],
+    datasets: [{ data: [657, 252, 207, 44], backgroundColor: [pink, purpleLight, teal, '#555'], borderWidth: 0 }]
+  },
+  options: { plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } }, cutout: '55%' }
+});
+
+// Female MBTI
+new Chart(document.getElementById('mbtiFemaleChart'), {
+  type: 'bar',
+  data: {
+    labels: ['INFP','INFJ','ENFP','INTP','INTJ'],
+    datasets: [{
+      label: 'Count',
+      data: [217, 202, 91, 79, 74],
+      backgroundColor: [pink, pink, purpleLight, purple, purple],
+      borderRadius: 4,
+    }]
+  },
+  options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+// Male MBTI
+new Chart(document.getElementById('mbtiMaleChart'), {
+  type: 'bar',
+  data: {
+    labels: ['INFJ','INFP','INTP','INTJ','ENTJ'],
+    datasets: [{
+      label: 'Count',
+      data: [31, 18, 18, 18, 13],
+      backgroundColor: [purple, purpleLight, teal, teal, orange],
+      borderRadius: 4,
+    }]
+  },
+  options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+</script>
+
+</body>
+</html>

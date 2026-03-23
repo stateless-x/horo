@@ -1,0 +1,10 @@
+[submodule "horo-fe"]
+	path = horo-fe
+	url = https://github.com/stateless-x/horo-fe.git
+	branch = master
+	update = rebase
+[submodule "horo-be"]
+	path = horo-be
+	url = https://github.com/stateless-x/horo-be.git
+	branch = master
+	update = rebase
