@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "stats-html",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-l", "5500", "."],
+      "port": 5500
+    },
+    {
       "name": "horo-be-dev",
       "runtimeExecutable": "bun",
       "runtimeArgs": ["run", "dev"],
