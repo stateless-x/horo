@@ -125,7 +125,9 @@ Use sentence and character envelopes rather than Thai word counts. Log over-budg
 
 Persist novelty metadata with the reading. Start with structured tags and phrase overlap; add semantic embeddings only if measured false negatives justify the cost.
 
-### Daily category-score diversity (open defect, found 2026-09-05)
+### Daily category-score diversity (RESOLVED 2026-09-05)
+
+Resolved by option 1 below: scores are computed in `horo-be/lib/astrology/daily-scores.ts` on a 0 to 100 scale and overwritten after generation. See `docs/deterministic-category-scores.md`. The text below is kept as the record of the defect.
 
 Observed in production: a reading whose four category scores were all `2`. Verified not a parsing bug — `horo-be/src/lib/llm.ts` applies no score defaults or clamps, so stored scores are exactly what the model returned.
 
