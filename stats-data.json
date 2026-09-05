@@ -1,0 +1,618 @@
+{
+  "generatedAt": "April 14, 2026",
+  "totals": {
+    "users": 1667,
+    "profiles": 1634,
+    "onboardingCompleted": 1521,
+    "onboardingRate": 91.2,
+    "profileRate": 98,
+    "dropOff": 146,
+    "narratives": 72,
+    "compatibilityChecks": 281,
+    "dailyReadings": 46
+  },
+  "peakDay": {
+    "date": "2026-03-15",
+    "count": 1160
+  },
+  "signupsTimeline": [
+    {
+      "date": "2026-02-27",
+      "count": 1
+    },
+    {
+      "date": "2026-02-28",
+      "count": 1
+    },
+    {
+      "date": "2026-03-01",
+      "count": 5
+    },
+    {
+      "date": "2026-03-02",
+      "count": 7
+    },
+    {
+      "date": "2026-03-03",
+      "count": 3
+    },
+    {
+      "date": "2026-03-06",
+      "count": 1
+    },
+    {
+      "date": "2026-03-15",
+      "count": 1160
+    },
+    {
+      "date": "2026-03-16",
+      "count": 189
+    },
+    {
+      "date": "2026-03-17",
+      "count": 37
+    },
+    {
+      "date": "2026-03-18",
+      "count": 16
+    },
+    {
+      "date": "2026-03-19",
+      "count": 9
+    },
+    {
+      "date": "2026-03-20",
+      "count": 13
+    },
+    {
+      "date": "2026-03-21",
+      "count": 13
+    },
+    {
+      "date": "2026-03-22",
+      "count": 6
+    },
+    {
+      "date": "2026-03-23",
+      "count": 4
+    },
+    {
+      "date": "2026-03-24",
+      "count": 4
+    },
+    {
+      "date": "2026-03-25",
+      "count": 1
+    },
+    {
+      "date": "2026-03-26",
+      "count": 4
+    },
+    {
+      "date": "2026-03-27",
+      "count": 2
+    },
+    {
+      "date": "2026-03-28",
+      "count": 2
+    },
+    {
+      "date": "2026-03-29",
+      "count": 1
+    },
+    {
+      "date": "2026-03-30",
+      "count": 4
+    },
+    {
+      "date": "2026-03-31",
+      "count": 2
+    },
+    {
+      "date": "2026-04-01",
+      "count": 2
+    },
+    {
+      "date": "2026-04-02",
+      "count": 1
+    },
+    {
+      "date": "2026-04-03",
+      "count": 2
+    },
+    {
+      "date": "2026-04-05",
+      "count": 1
+    },
+    {
+      "date": "2026-04-06",
+      "count": 2
+    },
+    {
+      "date": "2026-04-07",
+      "count": 1
+    },
+    {
+      "date": "2026-04-08",
+      "count": 2
+    },
+    {
+      "date": "2026-04-09",
+      "count": 1
+    },
+    {
+      "date": "2026-04-10",
+      "count": 2
+    },
+    {
+      "date": "2026-04-11",
+      "count": 1
+    },
+    {
+      "date": "2026-04-12",
+      "count": 3
+    },
+    {
+      "date": "2026-04-13",
+      "count": 155
+    },
+    {
+      "date": "2026-04-14",
+      "count": 9
+    }
+  ],
+  "hourlySignupsPeakDay": [
+    {
+      "hour": 0,
+      "count": 0
+    },
+    {
+      "hour": 1,
+      "count": 0
+    },
+    {
+      "hour": 2,
+      "count": 0
+    },
+    {
+      "hour": 3,
+      "count": 0
+    },
+    {
+      "hour": 4,
+      "count": 0
+    },
+    {
+      "hour": 5,
+      "count": 0
+    },
+    {
+      "hour": 6,
+      "count": 61
+    },
+    {
+      "hour": 7,
+      "count": 147
+    },
+    {
+      "hour": 8,
+      "count": 122
+    },
+    {
+      "hour": 9,
+      "count": 121
+    },
+    {
+      "hour": 10,
+      "count": 94
+    },
+    {
+      "hour": 11,
+      "count": 75
+    },
+    {
+      "hour": 12,
+      "count": 75
+    },
+    {
+      "hour": 13,
+      "count": 59
+    },
+    {
+      "hour": 14,
+      "count": 67
+    },
+    {
+      "hour": 15,
+      "count": 63
+    },
+    {
+      "hour": 16,
+      "count": 66
+    },
+    {
+      "hour": 17,
+      "count": 66
+    },
+    {
+      "hour": 18,
+      "count": 50
+    },
+    {
+      "hour": 19,
+      "count": 34
+    },
+    {
+      "hour": 20,
+      "count": 15
+    },
+    {
+      "hour": 21,
+      "count": 11
+    },
+    {
+      "hour": 22,
+      "count": 13
+    },
+    {
+      "hour": 23,
+      "count": 21
+    }
+  ],
+  "gender": {
+    "female": 1409,
+    "male": 225
+  },
+  "authGender": {
+    "google": {
+      "female": 885,
+      "male": 155
+    },
+    "twitter": {
+      "female": 540,
+      "male": 76
+    }
+  },
+  "birthYearDist": [
+    {
+      "year": 1966,
+      "count": 1
+    },
+    {
+      "year": 1970,
+      "count": 2
+    },
+    {
+      "year": 1971,
+      "count": 1
+    },
+    {
+      "year": 1975,
+      "count": 1
+    },
+    {
+      "year": 1977,
+      "count": 2
+    },
+    {
+      "year": 1978,
+      "count": 6
+    },
+    {
+      "year": 1980,
+      "count": 1
+    },
+    {
+      "year": 1981,
+      "count": 6
+    },
+    {
+      "year": 1982,
+      "count": 8
+    },
+    {
+      "year": 1983,
+      "count": 6
+    },
+    {
+      "year": 1984,
+      "count": 3
+    },
+    {
+      "year": 1985,
+      "count": 4
+    },
+    {
+      "year": 1986,
+      "count": 9
+    },
+    {
+      "year": 1987,
+      "count": 11
+    },
+    {
+      "year": 1988,
+      "count": 14
+    },
+    {
+      "year": 1989,
+      "count": 16
+    },
+    {
+      "year": 1990,
+      "count": 16
+    },
+    {
+      "year": 1991,
+      "count": 26
+    },
+    {
+      "year": 1992,
+      "count": 31
+    },
+    {
+      "year": 1993,
+      "count": 41
+    },
+    {
+      "year": 1994,
+      "count": 48
+    },
+    {
+      "year": 1995,
+      "count": 65
+    },
+    {
+      "year": 1996,
+      "count": 92
+    },
+    {
+      "year": 1997,
+      "count": 94
+    },
+    {
+      "year": 1998,
+      "count": 91
+    },
+    {
+      "year": 1999,
+      "count": 94
+    },
+    {
+      "year": 2000,
+      "count": 120
+    },
+    {
+      "year": 2001,
+      "count": 189
+    },
+    {
+      "year": 2002,
+      "count": 116
+    },
+    {
+      "year": 2003,
+      "count": 116
+    },
+    {
+      "year": 2004,
+      "count": 100
+    },
+    {
+      "year": 2005,
+      "count": 83
+    },
+    {
+      "year": 2006,
+      "count": 69
+    },
+    {
+      "year": 2007,
+      "count": 54
+    },
+    {
+      "year": 2008,
+      "count": 46
+    },
+    {
+      "year": 2009,
+      "count": 28
+    },
+    {
+      "year": 2010,
+      "count": 14
+    },
+    {
+      "year": 2011,
+      "count": 7
+    },
+    {
+      "year": 2013,
+      "count": 1
+    },
+    {
+      "year": 2014,
+      "count": 1
+    },
+    {
+      "year": 2025,
+      "count": 1
+    }
+  ],
+  "birthDow": [
+    204,
+    318,
+    203,
+    215,
+    262,
+    243,
+    189
+  ],
+  "birthTimePeriod": [
+    {
+      "period": "สายเช้า",
+      "count": 259
+    },
+    {
+      "period": "บ่ายโมง",
+      "count": 202
+    },
+    {
+      "period": "เที่ยง",
+      "count": 194
+    },
+    {
+      "period": "เช้าตรู่",
+      "count": 173
+    },
+    {
+      "period": "บ่ายสาม",
+      "count": 143
+    },
+    {
+      "period": "ค่ำ",
+      "count": 106
+    },
+    {
+      "period": "รุ่งเช้า",
+      "count": 104
+    },
+    {
+      "period": "เย็น",
+      "count": 99
+    },
+    {
+      "period": "ตีหนึ่ง",
+      "count": 89
+    },
+    {
+      "period": "สองทุ่ม",
+      "count": 84
+    },
+    {
+      "period": "เที่ยงคืน",
+      "count": 76
+    },
+    {
+      "period": "ตีสอง",
+      "count": 75
+    },
+    {
+      "period": "unknown",
+      "count": 30
+    }
+  ],
+  "mbti": {
+    "order": [
+      "INFP",
+      "INFJ",
+      "ENFP",
+      "INTP",
+      "INTJ",
+      "ENFJ",
+      "ISFJ",
+      "ISFP",
+      "ENTJ",
+      "ISTJ",
+      "ISTP",
+      "ENTP",
+      "ESFJ",
+      "ESFP",
+      "ESTJ",
+      "ESTP"
+    ],
+    "counts": [
+      297,
+      285,
+      126,
+      113,
+      126,
+      84,
+      78,
+      77,
+      62,
+      53,
+      44,
+      35,
+      25,
+      10,
+      10,
+      10
+    ],
+    "map": {
+      "INFP": 297,
+      "INFJ": 285,
+      "INTJ": 126,
+      "ENFP": 126,
+      "INTP": 113,
+      "ENFJ": 84,
+      "ISFJ": 78,
+      "ISFP": 77,
+      "ENTJ": 62,
+      "ISTJ": 53,
+      "ISTP": 44,
+      "ENTP": 35,
+      "ESFJ": 25,
+      "ESFP": 10,
+      "ESTP": 10,
+      "ESTJ": 10
+    }
+  },
+  "mbtiFemale": [
+    {
+      "mbti": "INFP",
+      "count": 272
+    },
+    {
+      "mbti": "INFJ",
+      "count": 251
+    },
+    {
+      "mbti": "ENFP",
+      "count": 109
+    },
+    {
+      "mbti": "INTJ",
+      "count": 99
+    },
+    {
+      "mbti": "INTP",
+      "count": 94
+    }
+  ],
+  "mbtiMale": [
+    {
+      "mbti": "INFJ",
+      "count": 34
+    },
+    {
+      "mbti": "INTJ",
+      "count": 27
+    },
+    {
+      "mbti": "INFP",
+      "count": 25
+    },
+    {
+      "mbti": "INTP",
+      "count": 19
+    },
+    {
+      "mbti": "ENFP",
+      "count": 17
+    }
+  ],
+  "generations": {
+    "genZ": 920,
+    "milLate": 319,
+    "genAlphaZ": 304,
+    "milEarly": 77,
+    "genXOlder": 14
+  },
+  "temperament": {
+    "IN": 821,
+    "EN": 307,
+    "IS": 252,
+    "ES": 55
+  }
+}
