@@ -31,11 +31,8 @@ separate `admin` schema so an admin can never be counted as a customer.
 
 ## Start here
 
-The default branch of this repository is not the one you want. `master` holds an
-older, unrelated project. The system lives on `main`:
-
 ```bash
-git clone --branch main --recurse-submodules https://github.com/stateless-x/horo.git
+git clone --recurse-submodules https://github.com/stateless-x/horo.git
 ```
 
 Already cloned without submodules? `git submodule update --init --recursive`.
@@ -73,6 +70,13 @@ Destructive changes are the exception, and they fail quietly. Push runs without
 `--force`, so a dropped column or a changed type waits for a confirmation that
 never comes in a deploy. Apply those to the database by hand first, then ship a
 schema that already matches.
+
+## The `master` branch is dead
+
+This repository still carries a `master` branch holding the original Turbo
+monorepo, the version of this product that existed before it was split into
+separate repositories in February 2026. It shares no history with `main` and
+nothing deploys from it. It is kept only as a record. Ignore it.
 
 ## Documentation
 
