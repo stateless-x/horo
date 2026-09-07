@@ -205,6 +205,22 @@
 
 </div>
 
+
+<!-- ============ SURFACE ENGAGEMENT ============ -->
+<div class="section-title"><span class="emoji">📱</span> Dashboard Surface Engagement</div>
+<div class="kpi-row">
+  <div class="kpi"><div class="value" id="svTodayUsers">0</div><div class="label">Today Tab — Unique Users</div><div class="delta" id="svTodayDays">0 user-days</div></div>
+  <div class="kpi"><div class="value teal" id="svFortuneUsers">0</div><div class="label">Fortune Tab — Unique Users</div><div class="delta" id="svFortuneDays">0 user-days</div></div>
+</div>
+
+<div class="charts">
+  <div class="chart-card wide">
+    <h3>Surface Opens by MBTI (unique users)</h3>
+    <canvas id="surfaceMbtiChart"></canvas>
+    <div class="insight product">Counts one open per user per Bangkok day, so a tab left open all afternoon still counts once. <strong id="svEmptyNote">Showing zeros — no data yet.</strong> The surface_views table starts collecting once the tracking ships; see the <code>surfaceViews</code> comment in this file's script for how to refresh it.</div>
+  </div>
+</div>
+
 <!-- ============ ACTIONABLE ============ -->
 <div class="section-title"><span class="emoji">🎯</span> Actionable Recommendations</div>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 12px; margin-bottom: 40px;">
@@ -449,6 +465,39 @@ new Chart(document.getElementById('mbtiMaleChart'), {
   },
   options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
 });
+
+// ── Dashboard Surface Engagement ────────────────────────────────────────────
+// PLACEHOLDER: all zeros because the surface_views table has no data yet.
+//
+// To refresh: run `bun run scripts/fetch-stats.ts` in horo-be, open the
+// generated stats-data.json, and replace this ENTIRE object literal (through
+// the closing `};`, including the .map placeholder line) with the value of its
+// `surfaceViews` key. Do not hand-edit individual numbers.
+const surfaceViews = {
+  today: { uniqueUsers: 0, viewDays: 0 },
+  fortune: { uniqueUsers: 0, viewDays: 0 },
+  byMbti: ['INFP','INFJ','ENFP','INTP','INTJ','ENFJ','ISFJ','ISFP','ENTJ','ISTJ','ISTP','ENTP','ESFJ','ESFP','ESTJ','ESTP','unknown']
+    .map(mbti => ({ mbti, today: { uniqueUsers: 0, viewDays: 0 }, fortune: { uniqueUsers: 0, viewDays: 0 } })),
+};
+
+document.getElementById('svTodayUsers').textContent = surfaceViews.today.uniqueUsers.toLocaleString();
+document.getElementById('svTodayDays').textContent = surfaceViews.today.viewDays.toLocaleString() + ' user-days';
+document.getElementById('svFortuneUsers').textContent = surfaceViews.fortune.uniqueUsers.toLocaleString();
+document.getElementById('svFortuneDays').textContent = surfaceViews.fortune.viewDays.toLocaleString() + ' user-days';
+document.getElementById('svEmptyNote').hidden = surfaceViews.today.viewDays + surfaceViews.fortune.viewDays > 0;
+
+new Chart(document.getElementById('surfaceMbtiChart'), {
+  type: 'bar',
+  data: {
+    labels: surfaceViews.byMbti.map(r => r.mbti),
+    datasets: [
+      { label: 'Today', data: surfaceViews.byMbti.map(r => r.today.uniqueUsers), backgroundColor: purple, borderRadius: 4 },
+      { label: 'Fortune', data: surfaceViews.byMbti.map(r => r.fortune.uniqueUsers), backgroundColor: teal, borderRadius: 4 },
+    ]
+  },
+  options: { plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } }
+});
+
 </script>
 
 </body>
