@@ -4,22 +4,46 @@
     {
       "name": "stats-html",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["serve", "-l", "5500", "."],
+      "runtimeArgs": [
+        "serve",
+        "-l",
+        "5500",
+        "."
+      ],
       "port": 5500
     },
     {
       "name": "horo-be-dev",
       "runtimeExecutable": "bun",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3001,
       "cwd": "horo-be"
     },
     {
       "name": "horo-fe-dev",
       "runtimeExecutable": "bun",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000,
       "cwd": "horo-fe"
+    },
+    {
+      "name": "horo-admin-dev",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "-p",
+        "3002"
+      ],
+      "port": 3002,
+      "cwd": "horo-admin"
     }
   ]
 }
