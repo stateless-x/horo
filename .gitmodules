@@ -8,3 +8,8 @@
 	url = https://github.com/stateless-x/horo-be.git
 	branch = master
 	update = rebase
+[submodule "horo-admin"]
+	path = horo-admin
+	url = https://github.com/stateless-x/horo-admin.git
+	branch = main
+	update = rebase
