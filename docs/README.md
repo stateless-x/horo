@@ -2,7 +2,7 @@
 type: REFERENCE
 status: active
 scope: documentation-routing
-last_reviewed: 2026-09-05
+last_reviewed: 2026-09-07
 owner: product
 ---
 
@@ -12,6 +12,7 @@ owner: product
 - [claude-ui-handoff.md](claude-ui-handoff.md) — bounded frontend implementation packet for Claude. Read only when working on the current `horo-fe` UI refinement.
 - [claude-ui-correction-1.md](claude-ui-correction-1.md) — first reviewed correction packet for closing Today hierarchy, donation interruption, and adapter gaps.
 - [deterministic-category-scores.md](deterministic-category-scores.md) — shipped record of the 0 to 100 daily and chart scoring: formulas, constants, route overwrite, legacy-row upgrade, verification. Read before touching any score or its prompt.
+- [horo-admin-plan.md](horo-admin-plan.md) — plan and architecture decision for the `horo-admin` analytics dashboard: separate repo, own email/password login in a Postgres schema `admin`, read-only stats from production. Read before touching admin auth, the seed script, or dashboard metrics.
 - [../horo-be/docs/compatibility-scoring.md](../horo-be/docs/compatibility-scoring.md) — implemented compatibility v2 formula, guarantees, evidence, and deployment gate.
 
 Repo-specific docs live in `horo-fe/docs/` and `horo-be/docs/`.
@@ -24,6 +25,7 @@ Repo-specific docs live in `horo-fe/docs/` and `horo-be/docs/`.
 | `claude-ui-handoff.md` | 3 | 3 | 2 | 3 | 3 | 14/15 (A) |
 | `horo-be/docs/compatibility-scoring.md` | 3 | 3 | 3 | 3 | 3 | 15/15 (A) |
 | `deterministic-category-scores.md` | 3 | 3 | 2 | 3 | 2 | 13/15 (A) |
+| `horo-admin-plan.md` | 3 | 2 | 3 | 2 | 3 | 13/15 (A) |
 
 The handoff and correction packet trade a little efficiency for explicit acceptance detail. The scoring reference is short, indexed, verified against code and tests, and includes an explicit rollout gate and verification commands.
 
@@ -34,3 +36,5 @@ FRESH before → after:
 
 - `claude-ui-handoff.md`: 13/15 → 14/15; R 2→3 after replacing the stale backend-contract note with the verified v2 response shape and rollout order. Other dimensions unchanged.
 - `horo-be/docs/compatibility-scoring.md`: 14/15 → 15/15; H 2→3 after resolving the migration ambiguity with the API `contentVersion` boundary and an explicit reader-before-writer rollout. Other dimensions unchanged.
+
+- `horo-admin-plan.md` (new, 2026-09-07): 13/15 (A) current only; F 3 (index entry, frontmatter scope) · R 2 (metadata and authority rule present, but the repo it describes is being built, so paths are prescriptive rather than spot-checked) · E 3 (decision table, data-source table, no transcript) · S 2 (plan carrying an ADR-lite block) · H 3 (seed command, env vars, increments with verify steps, done-when).
