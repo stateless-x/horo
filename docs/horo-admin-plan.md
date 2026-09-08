@@ -63,12 +63,27 @@ idempotently by the seed script.
 | Totals, funnel, signups timeline | `user`, `birth_profiles`, `chart_narratives`, `daily_readings`, `compatibility` |
 | Audience (gender, MBTI, birth year, day of week, time period) | `birth_profiles`, `account` |
 | Page opens, category opens, tab opens, shares, compatibility by type | `product_events` (new data) unioned with `surface_views` (first deploy only) |
+| CTA clicks between surfaces | `product_events` where `event = 'cta_clicked'`, `detail` = the cta id |
 | MBTI split of any engagement metric | join `birth_profiles.user_id` |
 | Retention (DAU/WAU/MAU, cohorts, repeat daily readers, hourly heatmap) | `product_events`, `surface_views`, `daily_readings` |
 
 Event vocabulary is owned by `horo-be/lib/shared/types/analytics.ts`
-(`surface_viewed`, `category_opened`, `tab_opened`, `compatibility_checked`,
-`reading_shared`). Add an event there first; the dashboard consumes it.
+(`surface_viewed`, `category_opened`, `tab_opened`, `cta_clicked`,
+`compatibility_checked`, `reading_shared`, plus the compatibility lifecycle).
+Add an event there first; the dashboard consumes it.
+
+`cta_clicked` is the one event that answers "did the invitation work", so it is
+read differently from the rest. Its `detail` holds a cta id from the closed
+`TRACKED_CTAS` list, named `<from>_<to>`, and it is **not deduped** — every
+click is a row. So:
+
+- clicks = `COUNT(*)`, people = `COUNT(DISTINCT user_id)`; the dashboard shows
+  both, because one reader clicking a band five times is a different fact from
+  five readers clicking it once.
+- the number that matters is the ratio against the source surface's opens in
+  the same range: `cta_clicked{cta:'today_monthly_chart'}` distinct users over
+  `surface_viewed{surface:'today'}` distinct users is the click-through rate of
+  the monthly-reading band, and the reason that band exists.
 
 ## Pages (v1)
 
@@ -77,7 +92,8 @@ Event vocabulary is owned by `horo-be/lib/shared/types/analytics.ts`
 3. `/audience` ผู้ใช้: gender, MBTI, temperament, generation, birth day of
    week, birth time period, provider × gender.
 4. `/engagement` การใช้งาน: surface opens, category opens by page, fortune
-   tabs, shares, compatibility by relationship type, MBTI split control.
+   tabs, CTA clicks with their click-through rate against the source surface,
+   shares, compatibility by relationship type, MBTI split control.
 5. `/retention` การกลับมา: DAU/WAU/MAU, daily-reading repeat rate, weekly
    cohorts, hourly heatmap.
 
@@ -106,6 +122,12 @@ Each step ships on its own and can be reverted alone.
 - `stats.html` is marked superseded in the root README.
 
 ## Follow-ups
+
+- Surface `cta_clicked` on `/engagement`: a table of cta id x (clicks, unique
+  users, CTR vs the source surface's opens in range), plus the three ids in
+  `TRACKED_CTAS` labelled in Thai. Until that ships the events are recorded but
+  invisible — the engagement queries read the compatibility and category event
+  sets only.
 
 - Read-only Postgres role for the dashboard's `DATABASE_URL`.
 - Admin management page (invite, role change) once a second admin is needed.
