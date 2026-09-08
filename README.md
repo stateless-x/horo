@@ -37,11 +37,26 @@ git clone --recurse-submodules https://github.com/stateless-x/horo.git
 
 Already cloned without submodules? `git submodule update --init --recursive`.
 
-Then, in each of the three directories, `bun install` and copy `.env.example` to
-`.env.local`. No secrets are in git, so those files are yours to fill in.
+Then let `scripts/` do the rest. It checks each submodule is populated, copies
+`.env.example` to `.env.local` where one is missing, installs when
+`node_modules` is absent, and starts each server on its own port.
 
-Run the backend first. The frontend calls it on load and shows an error state
-without it.
+```bash
+./scripts/dev.sh          # backend :3001 + frontend :3000
+./scripts/dev.sh all      # the above plus admin :3002
+./scripts/dev.sh admin    # one service on its own
+./scripts/restart.sh      # stop, then start again
+./scripts/stop.sh         # stop everything
+```
+
+The first run copies the `.env.example` files and stops. No secrets are in git,
+so fill in `DATABASE_URL` and the API keys, then run it again.
+
+Servers run in the background with logs under `.dev/logs/<service>.log`;
+`./scripts/dev.sh -f` starts them and follows the output. Ordering is handled —
+the frontend calls the backend on load and shows an error state without it.
+
+To run one in the foreground instead:
 
 ```bash
 cd horo-be    && bun run dev            # 3001
