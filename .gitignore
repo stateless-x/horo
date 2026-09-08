@@ -1,0 +1,4 @@
+# Local dev server state written by scripts/dev.sh
+.dev/
+
+.DS_Store
