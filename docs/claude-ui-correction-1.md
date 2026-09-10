@@ -2,7 +2,7 @@
 type: HANDOFF
 status: active
 scope: horo-fe-ui-correction-round-1
-last_reviewed: 2026-09-04
+last_reviewed: 2026-09-10
 owner: product
 supersedes: []
 superseded_by: null
@@ -39,11 +39,34 @@ The date selects are pre-populated and the CTA is disabled only when the name is
 Locations: `src/components/ads/donation-modal.tsx`, Today and compatibility call sites
 
 - `AutoDonationModal` currently opens after 1.5 seconds on every eligible page view and ignores its existing storage key. This interrupts reading and was observed repeatedly during testing.
-- Do not auto-open it on the compatibility form. If used on a result surface, show it only after primary value is visible, no earlier than 10 seconds, and at most once per seven days using a timestamp in local storage.
-- Respect the existing permanent-dismiss value if present.
+- Do not auto-open it on the compatibility form. If used on a result surface, show it only after primary value is visible, no earlier than 10 seconds, and at most once per seven days using a timestamp in local storage. **[Frequency rule superseded 2026-09-10 — see note below. The 10-second delay and the compatibility-form exclusion still stand.]**
+- Respect the existing permanent-dismiss value if present. **[Superseded 2026-09-10 — see note below.]**
 - Give the modal `role="dialog"`, `aria-modal="true"`, a labelled heading, initial focus, focus containment, and focus restoration. Make the close target at least 44×44px.
 - Because this file is already being corrected, replace the decorative emoji used as interface icons and remove the hardcoded `#FF5E5B`/hover/shadow variants. Use the existing icon set and approved semantic/design tokens.
 - Preserve the explicit footer/support entry point regardless of auto-display eligibility.
+
+> **Superseded 2026-09-10 — donation frequency rules only.**
+>
+> The seven-day cooldown and the permanent dismiss ("ไม่แสดงอีก") were both
+> removed by product decision. `AutoDonationModal` now opens 10 seconds after
+> mount on every eligible visit, and the legacy `horo-donation-dismissed` /
+> `horo-donation-last-auto-shown` keys are no longer read, so users who opted
+> out under the old rules re-enter rotation.
+>
+> This knowingly gives back the interruption protection §4 was written to add.
+> The tradeoff was accepted at ~26 monthly active users [M, prod 2026-09-10],
+> where the cost of over-showing is small and the donation surface is one of
+> only two monetization paths in the product. If active users grow by an order
+> of magnitude, revisit it — the original complaint (auto-open interrupting a
+> reading) becomes real again at scale.
+>
+> Everything else in §4 still holds: the 10-second delay, the compatibility-form
+> exclusion, the dialog semantics and focus handling, the icon/token cleanup,
+> and the always-available footer entry point.
+>
+> Rationale and evidence: `~/product-decisions/horo/2026-09-10-monetize.md`.
+> Current behaviour is documented in the `AutoDonationModal` docstring, which
+> is the source of truth.
 
 ## 5. Harden small adapters
 
@@ -59,7 +82,7 @@ Locations: `src/features/fortune/hooks/use-daily-fortune.ts`, `src/lib/thai-loca
 - There is no separate warning card.
 - No hardcoded color hex remains in touched Today code.
 - No emoji-as-icon or one-off color hex remains in the corrected donation modal.
-- Donation never appears on the compatibility form and cannot auto-open more than once in seven days.
+- Donation never appears on the compatibility form. ~~and cannot auto-open more than once in seven days~~ — the frequency half of this criterion was retired 2026-09-10 (see §4 note); the compatibility-form exclusion still applies.
 - Keyboard users can enter, close, and leave the donation dialog without losing focus.
 - Legacy daily hooks are 100 characters or fewer.
 - `bun run type-check` passes.

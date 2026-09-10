@@ -2,7 +2,7 @@
 type: REFERENCE
 status: active
 scope: documentation-routing
-last_reviewed: 2026-09-07
+last_reviewed: 2026-09-10
 owner: product
 ---
 
@@ -10,7 +10,7 @@ owner: product
 
 - [ui-content-refinement-plan.md](ui-content-refinement-plan.md) — canonical active product, content, retention, schema-rollout, and UI plan. Read before changing generated readings or dashboard result surfaces.
 - [claude-ui-handoff.md](claude-ui-handoff.md) — bounded frontend implementation packet for Claude. Read only when working on the current `horo-fe` UI refinement.
-- [claude-ui-correction-1.md](claude-ui-correction-1.md) — first reviewed correction packet for closing Today hierarchy, donation interruption, and adapter gaps.
+- [claude-ui-correction-1.md](claude-ui-correction-1.md) — first reviewed correction packet for closing Today hierarchy, donation interruption, and adapter gaps. §4's donation *frequency* rules (seven-day cooldown, permanent dismiss) were superseded 2026-09-10; the rest of the packet still applies.
 - [deterministic-category-scores.md](deterministic-category-scores.md) — shipped record of the 0 to 100 daily and chart scoring: formulas, constants, route overwrite, legacy-row upgrade, verification. Read before touching any score or its prompt.
 - [horo-admin-plan.md](horo-admin-plan.md) — plan and architecture decision for the `horo-admin` analytics dashboard: separate repo, own email/password login in a Postgres schema `admin`, read-only stats from production. Read before touching admin auth, the seed script, or dashboard metrics.
 - [../horo-be/docs/compatibility-scoring.md](../horo-be/docs/compatibility-scoring.md) — implemented compatibility v2 formula, guarantees, evidence, and deployment gate.
