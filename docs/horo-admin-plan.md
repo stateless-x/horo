@@ -2,7 +2,7 @@
 type: PLAN
 status: active
 scope: horo-admin-analytics-dashboard
-last_reviewed: 2026-09-07
+last_reviewed: 2026-09-11
 owner: product
 supersedes: []
 superseded_by: null
@@ -64,13 +64,14 @@ idempotently by the seed script.
 | Audience (gender, MBTI, birth year, day of week, time period) | `birth_profiles`, `account` |
 | Page opens, category opens, tab opens, shares, compatibility by type | `product_events` (new data) unioned with `surface_views` (first deploy only) |
 | CTA clicks between surfaces | `product_events` where `event = 'cta_clicked'`, `detail` = the cta id |
+| Affiliate link opens | `product_events` where `event = 'affiliate_link_opened'`, `category` = placement, `detail` = affiliate link id, `surface` = today\|fortune |
 | MBTI split of any engagement metric | join `birth_profiles.user_id` |
 | Retention (DAU/WAU/MAU, cohorts, repeat daily readers, hourly heatmap) | `product_events`, `surface_views`, `daily_readings` |
 
 Event vocabulary is owned by `horo-be/lib/shared/types/analytics.ts`
 (`surface_viewed`, `category_opened`, `tab_opened`, `cta_clicked`,
-`compatibility_checked`, `reading_shared`, plus the compatibility lifecycle).
-Add an event there first; the dashboard consumes it.
+`affiliate_link_opened`, `compatibility_checked`, `reading_shared`, plus the
+compatibility lifecycle). Add an event there first; the dashboard consumes it.
 
 `cta_clicked` is the one event that answers "did the invitation work", so it is
 read differently from the rest. Its `detail` holds a cta id from the closed
@@ -88,13 +89,19 @@ click is a row. So:
 ## Pages (v1)
 
 1. `/login`: email + password.
-2. `/` ภาพรวม: KPI tiles, signups line, funnel, surface opens by day.
+2. `/` ภาพรวม: KPI tiles (with deltas vs the previous window), signups line,
+   funnel, surface opens by day.
 3. `/audience` ผู้ใช้: gender, MBTI, temperament, generation, birth day of
    week, birth time period, provider × gender.
-4. `/engagement` การใช้งาน: surface opens, category opens by page, fortune
+4. `/acquisition` ที่มาผู้สมัคร: signups by acquisition channel and each
+   channel's quality (does it retain, not just acquire).
+5. `/engagement` การใช้งาน: surface opens, category opens by page, fortune
    tabs, CTA clicks with their click-through rate against the source surface,
-   shares, compatibility by relationship type, MBTI split control.
-5. `/retention` การกลับมา: DAU/WAU/MAU, daily-reading repeat rate, weekly
+   affiliate-link opens by placement and surface, shares, compatibility by
+   relationship type, MBTI split control.
+6. `/segments` กลุ่มผู้ใช้: who opens what, split by age group and MBTI, plus
+   segment sizes against who's actually active in range.
+7. `/retention` การกลับมา: DAU/WAU/MAU, daily-reading repeat rate, weekly
    cohorts, hourly heatmap.
 
 All pages accept `?range=7d|30d|90d|all` (default 30d) where a window applies.
@@ -116,18 +123,27 @@ Each step ships on its own and can be reverted alone.
 
 ## Done when
 
-- `askpurin@pm.me` can log in and see all four pages against production.
+- `askpurin@pm.me` can log in and see all six dashboard pages against
+  production.
 - Every number on the Overview page reconciles with
   `horo-be/scripts/fetch-stats.ts` output for the same day.
 - `stats.html` is marked superseded in the root README.
 
-## Follow-ups
+## Shipped since v1
 
-- Surface `cta_clicked` on `/engagement`: a table of cta id x (clicks, unique
-  users, CTR vs the source surface's opens in range), plus the three ids in
-  `TRACKED_CTAS` labelled in Thai. Until that ships the events are recorded but
-  invisible — the engagement queries read the compatibility and category event
-  sets only.
+- `cta_clicked` surfaced on `/engagement`: a table of cta id x (clicks, unique
+  users, CTR vs the source surface's opens in range), the three ids in
+  `TRACKED_CTAS` labelled in Thai.
+- `affiliate_link_opened` surfaced on `/engagement`: opens by placement and by
+  surface (today/fortune), plus a total KPI tile.
+- Signup-source attribution as its own page, `/acquisition`.
+- User segments as their own page, `/segments` (age group and MBTI splits,
+  segment sizes vs active-in-range).
+- KPI deltas vs the previous comparable window (`KpiTile`'s `delta` prop).
+- Page layout standardised to PageHeading → KPI strip → `Section`s (`<h2>`) of
+  `Card`s (`<h3>`) across all six dashboard pages.
+
+## Follow-ups
 
 - Read-only Postgres role for the dashboard's `DATABASE_URL`.
 - Admin management page (invite, role change) once a second admin is needed.
