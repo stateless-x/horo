@@ -212,6 +212,9 @@ writing it, so it does not match itself), and the guard test passes along with `
 - `assertCanUnlock` grants the welcome gift (49 มู), then spends `compat_unlock` (49) for the row.
 - The wallet exists only while the lock is on. Otherwise `GET /api/wallet` returns `{ enabled: false }`, with no welcome
   gift and no header chip. So the gift lands at the first locked ดวงคู่ result. The wallet page shows no donation button.
+- **One-flow purchase:** short of the price, the door's primary button is "ปลดล็อก ฿49". It creates an order with
+  `unlock_ref` = this row, and payment credits the pack, then unlocks the row with no second tap (`fulfilPaidOrder`).
+  "ซื้อแพ็กคุ้มกว่า" opens the packs. Ledger rows name the pair and link to it. The Pawjai banner is off the ดวงคู่ page.
 - An unlock that is short answers 402 `{ error: 'insufficient_balance', balance, price }` (`INSUFFICIENT_BALANCE` in the shared wallet types). `page.tsx` rethrows the 402 so the door sees it.
 - The door reads `GET /api/wallet`: "ใช้ 49 มู ปลดล็อก (มี N มู)". A 402 turns it into "เติมมู", which
   opens a pack sheet with 3 packs, each with a disabled "PromptPay เร็ว ๆ นี้".
@@ -225,7 +228,6 @@ writing it, so it does not match itself), and the guard test passes along with `
   (`horo-be/docs/wallet.md`). Until then, a failure that repeats on every attempt leaves the user paid with no report.
   **This blocks turning the lock on in production.**
 - Paid unlocks don't count toward the daily 5-check cap. The unlock route has no rate limit today.
-- Move `<PawjaiAdsBanner />` off `horo-fe/src/app/dashboard/compatibility/page.tsx`: no ads next to paid content.
 - Checkout (T7) replaces the disabled pack buttons.
 
 **Done when:**
