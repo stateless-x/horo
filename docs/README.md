@@ -13,6 +13,7 @@ owner: product
 - [claude-ui-correction-1.md](claude-ui-correction-1.md) — first reviewed correction packet for closing Today hierarchy, donation interruption, and adapter gaps. §4's donation *frequency* rules (seven-day cooldown, permanent dismiss) were superseded 2026-09-10; the rest of the packet still applies.
 - [deterministic-category-scores.md](deterministic-category-scores.md) — shipped record of the 0 to 100 daily and chart scoring: formulas, constants, route overwrite, legacy-row upgrade, verification. Read before touching any score or its prompt.
 - [horo-admin-plan.md](horo-admin-plan.md) — plan and architecture decision for the `horo-admin` analytics dashboard: separate repo, own email/password login in a Postgres schema `admin`, read-only stats from production. Read before touching admin auth, the seed script, or dashboard metrics.
+- [../horo-be/docs/wallet.md](../horo-be/docs/wallet.md) — มู wallet (1 มู = ฿1): prices in `pricing.ts`, the append-only `wallet_ledger`, spend/refund/credit invariants, `/api/wallet` routes, the ดวงคู่ unlock seam, and what's deferred (Stripe, bonus expiry, admin). Read before touching prices, credits, orders or the unlock.
 - [../horo-be/docs/compatibility-scoring.md](../horo-be/docs/compatibility-scoring.md) — implemented compatibility v2 formula, guarantees, evidence, and deployment gate.
 
 Repo-specific docs live in `horo-fe/docs/` and `horo-be/docs/`.
@@ -30,6 +31,9 @@ Repo-specific docs live in `horo-fe/docs/` and `horo-be/docs/`.
 The handoff and correction packet trade a little efficiency for explicit acceptance detail. The scoring reference is short, indexed, verified against code and tests, and includes an explicit rollout gate and verification commands.
 
 FRESH before → after:
+
+- `horo-be/docs/wallet.md` (new, 2026-09-27): 13/15 (A) current only; F 3 (index entry, descriptive name, frontmatter scope) · R 3 (status and date metadata, authority rule; invariants checked against `tests/wallet.test.ts` and a lock-on browser run on 2026-09-27) · E 3 (file map table first, short sections) · S 2 (a spec that also carries the deferred list and a note on the unlock route, which the compatibility doc owns) · H 2 (paths, test command and guard order, but no explicit own / don't-touch boundary for the compatibility files).
+- `monetization-tickets.md`: 12/15 (B) → 13/15 (A); R 2→3 (T3 and T4 marked built with pointers to the code, T8 split into built and still-to-do, the credit-ledger sketch marked superseded by `wallet.md`). Other dimensions unchanged.
 
 - `deterministic-category-scores.md`: 12/15 (B) → 13/15 (A); F 2→3 (added this index entry) · R 1→3 (status shipped with updated date and an authority rule; scale corrected from 1 to 5 to 0 to 100; constants and ranges spot-checked against `daily-scores.ts`, the test suites, and production rows on 2026-09-05) · E 3→2 (grew with the chart section and two tables) · S 3→3 · H 3→2 (the surgical file list that made it handoff-ready as a plan was dropped once it shipped; commands and acceptance properties remain).
 - `ui-content-refinement-plan.md`: the daily category-score defect section is marked RESOLVED with a pointer; not rescored, one marker only.

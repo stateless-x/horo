@@ -1,6 +1,6 @@
 ---
 type: PLAN
-status: active — T1, T2 and T8's locked mode (flag off) built on feat/monetization-prep, not merged; the ledger and payments are not built (2026-09-27)
+status: active — T1, T2, T3, T4 (มู ledger) and T8's locked mode + spend built on feat/monetization-prep, not merged; payments (T5) not built (2026-09-27)
 scope: paid products, credits, payments, removal of donation and forced Shopee, wallpaper waitlist
 last_reviewed: 2026-09-27
 owner: product
@@ -18,8 +18,8 @@ disagree, the code wins; update this doc in the same commit.
 |---|---|---|---|---|
 | T1 | Remove the auto-opening donation modal | fe | S | — |
 | T2 | Remove the two forced Shopee openers | fe | S | — |
-| T3 | Payment + credit schema | be | S | — |
-| T4 | Credit and entitlement service | be | M | T3 |
+| T3 | Payment + credit schema (built: มู) | be | S | — |
+| T4 | Credit and entitlement service (built: มู wallet) | be | M | T3 |
 | T5 | PromptPay gateway: charge, webhook, status | be | M | T3, T4 |
 | T6 | Funnel events | fe + be | S | — |
 | T7 | Checkout sheet (PromptPay QR) | fe | M | T5, T6 |
@@ -50,6 +50,10 @@ Rules that hold across tickets:
 - Prices live in one config (`horo-be/src/lib/pricing.ts`), in satang (integer), never floats.
 
 ## Credit tracking design (T3, T4)
+
+**Superseded for credits (2026-09-27):** credits became มู, a closed-loop unit pegged 1 = ฿1 and sold in packs.
+The built design is `horo-be/docs/wallet.md`: tables `orders` and `wallet_ledger`, prices in `src/lib/pricing.ts`.
+The sketch below is kept for the `entitlements` table, which T9 and T10 still need.
 
 Three tables. The ledger is append-only: a row is never updated or deleted, the balance is `SUM(delta)`, and a
 refund or correction is a new row. That gives an audit trail for free and makes "where did this credit come from"
@@ -130,21 +134,34 @@ writing it, so it does not match itself), and the guard test passes along with `
 **Done when:** no code path opens a new tab the user didn't tap for. Baseline to beat: 178 opens, 93% forced [M, 2026-09-27].
 
 ### T3 · Payment + credit schema
-- New `horo-be/lib/db/schema/payments.ts` with the three tables and indexes above, exported from `schema/index.ts`.
-- Additive only, so `drizzle-kit push` applies it at deploy with no manual SQL (see `.claude/CLAUDE.md`).
-
-**Done when:** `bun run db:push` against a local DB creates the tables, and a duplicate insert on each unique index fails.
+**Built on feat/monetization-prep (2026-09-27):**
+- `horo-be/lib/db/schema/wallet.ts`: `orders` and the append-only `wallet_ledger`. There is no `entitlements` table
+  yet, since `compat_unlock` doesn't need one.
+- Partial unique indexes cover order credit, the welcome gift, one spend per thing, and one refund per spend.
+- `bun run db:push` on the local DB created both tables, and a second push reports "No changes detected".
+- Duplicate inserts on each unique index fail with 23505 (`tests/wallet.test.ts`).
+- Design and invariants: `horo-be/docs/wallet.md`.
 
 ### T4 · Credit and entitlement service
-- `horo-be/src/lib/credits.ts`: `balance(userId)`, `grantWelcome(userId)`, `spend(userId, compatibilityId)`,
-  `creditFromOrder(orderId)`, `refundOrder(orderId)`.
-- `horo-be/src/lib/entitlements.ts`: `hasMonthPass(userId, 'YYYY-MM')`, `hasYearReading(userId, date)`,
-  `grantFromOrder(orderId)`. A year order writes 12 `month_pass` rows plus one `year_reading` row.
-- Months use the Bangkok calendar (same helper the chart route uses at `src/systems/fortune/routes.ts` ~line 668).
-- `GET /api/wallet` returns `{ compatCredits, monthPasses: ['2026-11'], yearReading: { validTo } | null }`.
+**Built on feat/monetization-prep (2026-09-27) as the มู wallet:**
+- `horo-be/src/lib/wallet.ts` provides `balance`, `ensureWelcome`, `spend`, `refundSpend`, `createOrder`, `getOrder`,
+  `creditOrder`, `adjust` and `ledger`. Each balance-dependent write runs under the per-user advisory lock.
+- Routes: `GET /api/wallet` returns `{ balance, cap, packs, prices, ledger }`.
+  - `POST /api/wallet/checkout` creates a pending order and returns `payment: 'unavailable'` until T5.
+  - `GET /api/wallet/orders/:id` returns the order's status.
+  - A dev-only `POST /api/wallet/dev/grant` exists.
+- Tests cover:
+  - concurrent double-spend;
+  - welcome granted once across concurrent first touches;
+  - a replayed `creditOrder`;
+  - a refund, then spend again (refused, never free);
+  - the cap at checkout and on credit;
+  - the dev grant refused in production and on a non-local DB.
 
-**Done when:** tests cover double-spend under concurrency, a replayed webhook, refund after spend, and the month
-boundary in Bangkok time.
+**Still to do:**
+- `hasMonthPass`, `hasYearReading` and `grantFromOrder` with the `entitlements` table (T9, T10), plus the Bangkok month
+  boundary tests.
+- Bonus expiry enforcement.
 
 ### T5 · PromptPay gateway
 - **Decision (2026-09-27): provider = Stripe, PromptPay via Stripe.** Merchant eligibility (individual or
@@ -188,20 +205,29 @@ boundary in Bangkok time.
   every v4 row. History carries no reading text. Tested per route on the serialized JSON.
 - **Grandfather.** A row with its detail present is always full. v1 and v2 rows are unchanged. Their share links still
   return the stored text, which was never paid.
-- **Frontend.** A locked row renders the teaser and the door with "ใช้ 1 เครดิตปลดล็อก (มี 1 เครดิต)". The tap shows
+- **Frontend.** A locked row renders the teaser and the door (CTA text now from the wallet, below). The tap shows
   "กำลังเขียนฉบับเต็ม (ราว 20 วินาที)", then reveals the full report in place, without a reload.
 
-**Still to do (needs T4 and T7):**
-- Replace the body of `assertCanUnlock` with the credit ledger. The `spend` row must commit in the same transaction as
-  the detail patch, so a failed generation costs nothing.
-- **Until then, lock on means every unlock is refused (402),** except in dev with `COMPAT_UNLOCK_FREE=1`. The CTA text
-  is hard-coded, so do not turn the lock on in production before the ledger lands.
-- Door CTA from the real balance:
-  - balance ≥ 1 → "ใช้ 1 เครดิตปลดล็อก (เหลือ N)";
-  - balance 0 → "ปลดล็อก ฿49", with a secondary "3 คน ฿99" that opens T7 checkout.
-- Grant the welcome credit on the first compatibility result, so it lands in the wallet at the moment it's useful.
+**Built with T4 (2026-09-27):**
+- `assertCanUnlock` grants the welcome gift (49 มู), then spends `compat_unlock` (49) for the row.
+- The door reads `GET /api/wallet`: "ใช้ 49 มู ปลดล็อก (มี N มู)". A 402 turns it into "เติมมู", which
+  opens a pack sheet with 3 packs, each with a disabled "PromptPay เร็ว ๆ นี้".
+- A header chip "มู N" links to `/dashboard/wallet`: balance, packs, ledger.
+- Verified on the lock-on stack without `COMPAT_UNLOCK_FREE`: a new check shows the door with มี 49, the unlock spends
+  49 and opens the full report, and a second locked row gets a 402 and the pack sheet.
+
+**Still to do:**
+- **The spend commits before generation.** A failed generation is not refunded. The retry is free, because the spend
+  is keyed to the row. The long-term fix is to insert the spend in the same transaction as the detail patch.
+- **Integration edits owned by the compatibility work:**
+  - the 402 body `{ error: 'insufficient_balance', balance, price }` in `reading.ts`;
+  - `page.tsx` `handleUnlock` rethrowing a 402 with its status;
+  - the `compatibility-v4` "no credit" test stubbing the wallet.
+- **Welcome timing.** The welcome gift lands on the first wallet touch, which is any dashboard page (the header chip),
+  not the first compatibility result.
 - Paid unlocks don't count toward the daily 5-check cap. The unlock route has no rate limit today.
 - Move `<PawjaiAdsBanner />` off `horo-fe/src/app/dashboard/compatibility/page.tsx`: no ads next to paid content.
+- Checkout (T7) replaces the disabled pack buttons.
 
 **Done when:**
 - a new account sees one free unlock;
