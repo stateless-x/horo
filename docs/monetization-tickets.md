@@ -210,6 +210,8 @@ writing it, so it does not match itself), and the guard test passes along with `
 
 **Built with T4 (2026-09-27):**
 - `assertCanUnlock` grants the welcome gift (49 มู), then spends `compat_unlock` (49) for the row.
+- The wallet exists only while the lock is on. Otherwise `GET /api/wallet` returns `{ enabled: false }`, with no welcome
+  gift and no header chip. So the gift lands at the first locked ดวงคู่ result. The wallet page shows no donation button.
 - An unlock that is short answers 402 `{ error: 'insufficient_balance', balance, price }` (`INSUFFICIENT_BALANCE` in the shared wallet types). `page.tsx` rethrows the 402 so the door sees it.
 - The door reads `GET /api/wallet`: "ใช้ 49 มู ปลดล็อก (มี N มู)". A 402 turns it into "เติมมู", which
   opens a pack sheet with 3 packs, each with a disabled "PromptPay เร็ว ๆ นี้".
@@ -218,12 +220,10 @@ writing it, so it does not match itself), and the guard test passes along with `
   49 and opens the full report, and a second locked row gets a 402 and the pack sheet.
 
 **Still to do:**
-- **The spend commits before generation.** A failed generation is not refunded. A retry is never charged a second
-  time, but a failure that repeats on every attempt leaves the user paid with no report. Example: a partner name with
-  digits fails the detail's number check on every retry. That case needs a manual `refundSpend` until the spend moves into
-  the same transaction as the detail patch. **This blocks turning the lock on in production.**
-- **Welcome timing.** The welcome gift lands on the first wallet touch, which is any dashboard page (the header chip),
-  not the first compatibility result.
+- **The route still charges before generating.** The wallet side of the fix is built. The route should call
+  `checkUnlock`, then generate, then run one transaction `{ chargeUnlockWithin + patch the detail }`
+  (`horo-be/docs/wallet.md`). Until then, a failure that repeats on every attempt leaves the user paid with no report.
+  **This blocks turning the lock on in production.**
 - Paid unlocks don't count toward the daily 5-check cap. The unlock route has no rate limit today.
 - Move `<PawjaiAdsBanner />` off `horo-fe/src/app/dashboard/compatibility/page.tsx`: no ads next to paid content.
 - Checkout (T7) replaces the disabled pack buttons.
