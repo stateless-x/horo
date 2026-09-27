@@ -210,6 +210,7 @@ writing it, so it does not match itself), and the guard test passes along with `
 
 **Built with T4 (2026-09-27):**
 - `assertCanUnlock` grants the welcome gift (49 มู), then spends `compat_unlock` (49) for the row.
+- An unlock that is short answers 402 `{ error: 'insufficient_balance', balance, price }` (`INSUFFICIENT_BALANCE` in the shared wallet types). `page.tsx` rethrows the 402 so the door sees it.
 - The door reads `GET /api/wallet`: "ใช้ 49 มู ปลดล็อก (มี N มู)". A 402 turns it into "เติมมู", which
   opens a pack sheet with 3 packs, each with a disabled "PromptPay เร็ว ๆ นี้".
 - A header chip "มู N" links to `/dashboard/wallet`: balance, packs, ledger.
@@ -219,10 +220,6 @@ writing it, so it does not match itself), and the guard test passes along with `
 **Still to do:**
 - **The spend commits before generation.** A failed generation is not refunded. The retry is free, because the spend
   is keyed to the row. The long-term fix is to insert the spend in the same transaction as the detail patch.
-- **Integration edits owned by the compatibility work:**
-  - the 402 body `{ error: 'insufficient_balance', balance, price }` in `reading.ts`;
-  - `page.tsx` `handleUnlock` rethrowing a 402 with its status;
-  - the `compatibility-v4` "no credit" test stubbing the wallet.
 - **Welcome timing.** The welcome gift lands on the first wallet touch, which is any dashboard page (the header chip),
   not the first compatibility result.
 - Paid unlocks don't count toward the daily 5-check cap. The unlock route has no rate limit today.
