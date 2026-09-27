@@ -218,8 +218,10 @@ writing it, so it does not match itself), and the guard test passes along with `
   49 and opens the full report, and a second locked row gets a 402 and the pack sheet.
 
 **Still to do:**
-- **The spend commits before generation.** A failed generation is not refunded. The retry is free, because the spend
-  is keyed to the row. The long-term fix is to insert the spend in the same transaction as the detail patch.
+- **The spend commits before generation.** A failed generation is not refunded. A retry is never charged a second
+  time, but a failure that repeats on every attempt leaves the user paid with no report. Example: a partner name with
+  digits fails the detail's number check on every retry. That case needs a manual `refundSpend` until the spend moves into
+  the same transaction as the detail patch. **This blocks turning the lock on in production.**
 - **Welcome timing.** The welcome gift lands on the first wallet touch, which is any dashboard page (the header chip),
   not the first compatibility result.
 - Paid unlocks don't count toward the daily 5-check cap. The unlock route has no rate limit today.
