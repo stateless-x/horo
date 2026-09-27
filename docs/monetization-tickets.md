@@ -1,6 +1,6 @@
 ---
 type: PLAN
-status: active — T1 and T2 built on feat/monetization-prep, not merged; nothing else built yet (2026-09-27)
+status: active — T1, T2 and T8's locked mode (flag off) built on feat/monetization-prep, not merged; the ledger and payments are not built (2026-09-27)
 scope: paid products, credits, payments, removal of donation and forced Shopee, wallpaper waitlist
 last_reviewed: 2026-09-27
 owner: product
@@ -175,23 +175,40 @@ boundary in Bangkok time.
 **Done when:** the paid → unlocked path works on a phone-width viewport without a reload.
 
 ### T8 · ดวงคู่: free summary, locked detail, credits
-- `GET /api/fortune/compatibility/:id` and `POST /compatibility` return the full analysis only when the row is
-  unlocked: created before launch, or a `spend` row exists. Otherwise return `locked: true` and omit the text.
-  The client never receives locked text.
-- **Close the share-link bypass.** `GET /api/fortune/compatibility/share/:token` needs no session and returns the full
-  `analysis` today (`src/systems/compatibility/routes.ts` ~line 488; all 526 rows have a share token [M]). It must return
-  only the free card fields (score, verdict, elements, names) unless the owner has unlocked that row. Apply the same
-  gate to `GET /compatibility/history` (~line 321).
-- Move `<PawjaiAdsBanner />` off `horo-fe/src/app/dashboard/compatibility/page.tsx` (no ads next to paid content).
-- `horo-fe/src/features/compatibility/compatibility-result.tsx`: keep the score, verdict, elements and share card.
-  In the locked section, show 3 lines of what's inside and one button:
-  - balance ≥ 1 → "ใช้ 1 เครดิตปลดล็อก (เหลือ N)"
-  - balance 0 → "ปลดล็อก ฿49" · secondary "3 คน ฿99"
-- Grant the welcome credit on the first compatibility result, so it lands in the wallet at the moment it's useful.
-- Paid unlocks don't count toward the daily 5-check cap (`src/systems/compatibility/routes.ts` ~line 115).
+**Built on feat/monetization-prep (2026-09-27), behind `COMPAT_LOCK_ENABLED` (off by default):**
+- **Teaser-first generation.** With the lock on, a check writes only the free teaser: the insight plan, then the cover
+  (verdict and three locked hints). The paid detail is written on unlock, from the same stored plan, and patched into
+  the same row. The detail's model cost is only spent on unlocks.
+  - Stored shape, flow and latency: `horo-be/docs/compatibility-response-fix.md`, "Locked mode".
+  - Measured: teaser about 7 s, detail about 15 s.
+- **`POST /api/fortune/compatibility/:id/unlock`.** Owner only and idempotent. The single-flight lock allows one generation
+  per row. Entitlement goes through the single seam `assertCanUnlock` in `horo-be/src/lib/entitlements.ts`.
+- **No locked text reaches a client.** POST, `GET /compatibility/:id` and unlock return `locked` and the teaser view
+  while `detail` is null, and never the stored `analysis` JSON for v4. The share link returns the free fields only for
+  every v4 row. History carries no reading text. Tested per route on the serialized JSON.
+- **Grandfather.** A row with its detail present is always full. v1 and v2 rows are unchanged. Their share links still
+  return the stored text, which was never paid.
+- **Frontend.** A locked row renders the teaser and the door with "ใช้ 1 เครดิตปลดล็อก (มี 1 เครดิต)". The tap shows
+  "กำลังเขียนฉบับเต็ม (ราว 20 วินาที)", then reveals the full report in place, without a reload.
 
-**Done when:** a new account sees one free unlock, the second person shows the ฿49 path, old rows stay open, and the
-share, history and detail responses contain no locked text for a locked row (test each route).
+**Still to do (needs T4 and T7):**
+- Replace the body of `assertCanUnlock` with the credit ledger. The `spend` row must commit in the same transaction as
+  the detail patch, so a failed generation costs nothing.
+- **Until then, lock on means every unlock is refused (402),** except in dev with `COMPAT_UNLOCK_FREE=1`. The CTA text
+  is hard-coded, so do not turn the lock on in production before the ledger lands.
+- Door CTA from the real balance:
+  - balance ≥ 1 → "ใช้ 1 เครดิตปลดล็อก (เหลือ N)";
+  - balance 0 → "ปลดล็อก ฿49", with a secondary "3 คน ฿99" that opens T7 checkout.
+- Grant the welcome credit on the first compatibility result, so it lands in the wallet at the moment it's useful.
+- Paid unlocks don't count toward the daily 5-check cap. The unlock route has no rate limit today.
+- Move `<PawjaiAdsBanner />` off `horo-fe/src/app/dashboard/compatibility/page.tsx`: no ads next to paid content.
+
+**Done when:**
+- a new account sees one free unlock;
+- the second person shows the ฿49 path;
+- old rows stay open;
+- the share, history and detail responses contain no locked text for a locked row. The route tests exist; extend them
+  for the ledger.
 
 ### T9 · ดวงเดือนหน้า month pass ฿29
 - The current month stays exactly as today. `chart_narratives` keeps one row per profile and is overwritten monthly.
