@@ -194,7 +194,7 @@ The compatibility form accepts an optional partner MBTI (`ไม่ระบุ`
 
 ### Voice and visual rules
 
-- UI instructions use `คุณ`; oracle prose may use `เจ้า`.
+- Use contemporary, respectful Thai everywhere. Generated readings use supplied names for both people and never `เจ้า`, `ข้า`, `กู`, `มึง`, or mystical narration.
 - Purple is the default semantic accent. Pink is reserved for romance; element colors represent actual element data only.
 - Clay imagery communicates meaning. Navigation, close, share, chevrons, and other controls remain conventional icons.
 - No emoji as interface icons.

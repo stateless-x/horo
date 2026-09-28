@@ -2,7 +2,7 @@
 type: REFERENCE
 status: active
 scope: documentation-routing
-last_reviewed: 2026-09-10
+last_reviewed: 2026-09-27
 owner: product
 ---
 
@@ -13,6 +13,7 @@ owner: product
 - [claude-ui-correction-1.md](claude-ui-correction-1.md) — first reviewed correction packet for closing Today hierarchy, donation interruption, and adapter gaps. §4's donation *frequency* rules (seven-day cooldown, permanent dismiss) were superseded 2026-09-10; the rest of the packet still applies.
 - [deterministic-category-scores.md](deterministic-category-scores.md) — shipped record of the 0 to 100 daily and chart scoring: formulas, constants, route overwrite, legacy-row upgrade, verification. Read before touching any score or its prompt.
 - [horo-admin-plan.md](horo-admin-plan.md) — plan and architecture decision for the `horo-admin` analytics dashboard: separate repo, own email/password login in a Postgres schema `admin`, read-only stats from production. Read before touching admin auth, the seed script, or dashboard metrics.
+- [monetization-tickets.md](monetization-tickets.md) — ticket list T1–T14 for Horo's first paid products (ดวงคู่ credits, ฿29 month pass, ฿99 year reading), credit-ledger design, donation and forced-Shopee removal, wallpaper waitlist. Read before touching payments, credits, paywalls, donation or affiliate code.
 - [../horo-be/docs/wallet.md](../horo-be/docs/wallet.md) — มู wallet (1 มู = ฿1): prices in `pricing.ts`, the append-only `wallet_ledger`, spend/refund/credit invariants, `/api/wallet` routes, the ดวงคู่ unlock seam, and what's deferred (Stripe, bonus expiry, admin). Read before touching prices, credits, orders or the unlock.
 - [../horo-be/docs/compatibility-scoring.md](../horo-be/docs/compatibility-scoring.md) — implemented compatibility v2 formula, guarantees, evidence, and deployment gate.
 
@@ -35,6 +36,8 @@ FRESH before → after:
 - `horo-be/docs/wallet.md` (new, 2026-09-27): 13/15 (A) current only; F 3 (index entry, descriptive name, frontmatter scope) · R 3 (status and date metadata, authority rule; invariants checked against `tests/wallet.test.ts` and a lock-on browser run on 2026-09-27) · E 3 (file map table first, short sections) · S 2 (a spec that also carries the deferred list and a note on the unlock route, which the compatibility doc owns) · H 2 (paths, test command and guard order, but no explicit own / don't-touch boundary for the compatibility files).
 - `horo-be/docs/compatibility-response-fix.md` (locked mode now paid in มู, 2026-09-27): 10/15 (B) → 12/15 (B); R 1→3 (the stale `NO_CREDIT` 402, the "ใช้ 1 เครดิต" door and "refused without credit" test lines replaced by the มู contract, and the retry and repeat-failure behaviour stated). F 2 (still not in this index) · E 2 · S 2 · H 3 unchanged.
 - `monetization-tickets.md`: 12/15 (B) → 13/15 (A); R 2→3 (T3 and T4 marked built with pointers to the code, T8 split into built and still-to-do, the credit-ledger sketch marked superseded by `wallet.md`). Other dimensions unchanged.
+
+- `monetization-tickets.md` (new, 2026-09-27): 12/15 (B) current only; F 3 (index entry, frontmatter scope, summary table) · R 2 (status and date metadata; file paths and line anchors spot-checked 2026-09-27, but it's a plan, so the new files it names don't exist yet) · E 3 (summary table first, each ticket independently readable) · S 2 (plan that also carries the credit-ledger design, which moves to a horo-be doc once built) · H 2 (paths, done-when and dependencies, but the gateway choice (Opn vs Stripe) is still open).
 
 - `deterministic-category-scores.md`: 12/15 (B) → 13/15 (A); F 2→3 (added this index entry) · R 1→3 (status shipped with updated date and an authority rule; scale corrected from 1 to 5 to 0 to 100; constants and ranges spot-checked against `daily-scores.ts`, the test suites, and production rows on 2026-09-05) · E 3→2 (grew with the chart section and two tables) · S 3→3 · H 3→2 (the surgical file list that made it handoff-ready as a plan was dropped once it shipped; commands and acceptance properties remain).
 - `ui-content-refinement-plan.md`: the daily category-score defect section is marked RESOLVED with a pointer; not rescored, one marker only.

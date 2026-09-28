@@ -53,7 +53,7 @@ idempotently by the seed script.
   only; a dedicated read-only Postgres role is a follow-up, not a blocker.
 - Never send birth data, names, or generated prose to any third party; the
   dashboard is first-party only.
-- UI addresses the admin as คุณ (not the oracle voice). Light theme, tokens
+- UI addresses the admin in contemporary, respectful Thai (the same grounded voice used across the product). Light theme, tokens
   from `horo-fe/DESIGN.md` light column.
 
 ## Data sources

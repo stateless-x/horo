@@ -186,7 +186,7 @@ writing it, so it does not match itself), and the guard test passes along with `
   "คืนเงินเต็มจำนวนภายใน 7 วัน". It polls every 3 seconds, then shows success and closes into the unlocked content.
   For ดวงคู่ the text already exists, so the unlock is instant. For the month pass and year reading, success lands on a
   "กำลังเตรียมดวง (ไม่กี่นาที)" state, plus an email when it's ready.
-- Copy is transactional and pronoun-free. The oracle voice resumes inside the reading.
+- Copy is transactional and pronoun-free. The grounded, friend-like voice continues inside the reading, using supplied names rather than archaic or hostile pronouns.
 - Hand to `impeccable` for the screen, following `horo-fe/DESIGN.md`.
 
 **Done when:** the paid → unlocked path works on a phone-width viewport without a reload.

@@ -56,9 +56,9 @@ reduction in how often it renders, not a find-and-replace.
 
 `DESIGN.md:293` states plainly:
 
-> **Don't** use the oracle voice (เจ้า/ข้า, Sarabun) on marketing chrome, or คุณ inside the reading experience.
+> **Superseded 2026-09-28.** Use the grounded voice everywhere: contemporary Thai, supplied names in readings, and never เจ้า/ข้า, กู/มึง, or mystical narration.
 
-`DESIGN.md:192-195` (The Two Voices Rule) is the governing section. These authenticated
+`DESIGN.md` (The Grounded Voice Rule) is the governing section. These authenticated
 in-app surfaces currently violate it:
 
 | File:line | String |
@@ -76,7 +76,7 @@ Excluded deliberately: `dashboard/settings/page.tsx:203,382` (ชื่อขอ
 account chrome, not the reading experience — arguably correct as-is. **Codex should rule on
 where the reading-experience boundary sits**; the two `dashboard/fortune/page.tsx` error/rate-limit
 strings (130, 175) are the genuinely ambiguous ones, since system messaging may reasonably sit
-outside the oracle voice.
+outside the reading voice boundary described above.
 
 ## Finding 3 — "Should it be more dynamic?"
 
