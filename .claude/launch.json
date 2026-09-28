@@ -44,6 +44,49 @@
       ],
       "port": 3002,
       "cwd": "horo-admin"
+    },
+    {
+      "name": "horo-be-dev-nodb",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "DATABASE_URL=postgres://nobody@127.0.0.1:1/none",
+        "REDIS_URL=redis://127.0.0.1:1",
+        "bun",
+        "run",
+        "dev"
+      ],
+      "port": 3001,
+      "cwd": "horo-be"
+    },
+    {
+      "name": "horo-be-dev-localdb",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "DATABASE_URL=\"postgresql://dev:$(docker exec local-postgres printenv POSTGRES_PASSWORD)@localhost:5432/horo_dev\" REDIS_URL=redis://127.0.0.1:6379 exec bun run dev"
+      ],
+      "port": 3001,
+      "cwd": "horo-be"
+    },
+    {
+      "name": "horo-be-locked-3011",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "PORT=3011 FRONTEND_URL=http://localhost:3010 CORS_ALLOWED_ORIGINS=http://localhost:3010 OAUTH_BASE_URL=http://localhost:3011 COMPAT_LOCK_ENABLED=1 DATABASE_URL=\"postgresql://dev:$(docker exec local-postgres printenv POSTGRES_PASSWORD)@localhost:5432/horo_dev\" REDIS_URL=redis://127.0.0.1:6379 exec bun src/index.ts"
+      ],
+      "port": 3011,
+      "cwd": "horo-be"
+    },
+    {
+      "name": "horo-fe-locked-3010",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "cd /private/tmp/claude-501/-Users-purin-dev-horo/6d62ef6b-b721-4233-8146-d577aa5320d5/scratchpad/fe-build-wt && exec bun run start -- -p 3010"
+      ],
+      "port": 3010,
+      "cwd": "horo-fe"
     }
   ]
 }
