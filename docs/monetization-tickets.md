@@ -262,8 +262,9 @@ writing it, so it does not match itself), and the guard test passes along with `
   PromptPay refund (T14). Never `adjust` from the webhook.
 - Env: Stripe secret and webhook secret in Railway. Never log the customer fields in the payload.
 
-**Done when:** a test-mode payment credits and unlocks within 5 seconds of the webhook, and replaying the webhook
-changes nothing.
+**Done when:** a test-mode payment is credited within 5 seconds of the webhook; the ดวงคู่ unlock finishes when generation
+ends (about 20 s) behind a visible progress state; replaying the webhook changes nothing. Verified in the sandbox on
+2026-09-29 (PO review): credit in ~7 s, report open in ~30 s, replay idempotent.
 
 ### T6 · Tracking plan events
 The spec is "Tracking plan (T6)" above.
@@ -290,14 +291,18 @@ this ticket adds the pay step.
   - Rows show the มู amount, the bonus chip, the baht price and a radio mark. The chip is
     `Math.floor(bonus / base * 100)`, computed from `pricing.ts` and never rounded up.
   - คุ้มสุด goes on ฿199. No "ยอดนิยม" badge until the pack mix is measured.
-  - One pay button that repeats the amount, "จ่าย ฿99 ด้วย PromptPay", and a trust line under it:
-    "จ่ายครั้งเดียว ไม่ตัดเงินอัตโนมัติ · มูไม่หมดอายุ".
+  - One pay button that repeats the amount, "จ่าย ฿99 ด้วย PromptPay", and two trust lines under it:
+    "จ่ายครั้งเดียว ไม่ตัดเงินอัตโนมัติ" / "มูที่เติมไม่หมดอายุ · โบนัสใช้ได้ 180 วัน" (bonus มู expire; PO review 2026-09-29).
 - **Two contexts, one component.**
   - From a locked door: the shortfall line, two packs (the smallest one that covers the price, plus one step up), the
     smallest preselected. It is paid as a one-flow purchase with `unlockRef`.
   - From the balance chip or the wallet page: all four packs, with ฿99 preselected.
 - **Door label.** When the balance is short, the button reads baht-first ("เปิดคำตอบทั้งหมด · ฿49"). When the balance
-  covers it, it reads "ใช้ 49 มู". Today it shows "· 49 มู (฿49)" in both cases; change it here.
+  covers it, "เปิดคำตอบทั้งหมด · 49 มู". Built and verified 2026-09-29.
+- **Open (owner):** whether the short-balance button opens the 2-pack door sheet (built, B) or goes straight to the QR
+  for the smallest covering pack with packs behind a link (A). PO recommends A for a first purchase.
+- **"ขอ QR ใหม่"** sends `replaceOrderId`; the server cancels the old charge first (409 `already_paid` if it had
+  succeeded). Found in the 2026-09-29 browser run: without it two QRs stayed live for one user.
 - **Pay step.**
   - On a phone: a large QR, a **บันทึก QR** button, and the hint "บันทึก → เปิดแอปธนาคาร → สแกนจากรูป". Add the
     bank-app buttons first if T5 picks Opn.
