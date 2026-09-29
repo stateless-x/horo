@@ -14,7 +14,7 @@ owner: product
 - [deterministic-category-scores.md](deterministic-category-scores.md) — shipped record of the 0 to 100 daily and chart scoring: formulas, constants, route overwrite, legacy-row upgrade, verification. Read before touching any score or its prompt.
 - [horo-admin-plan.md](horo-admin-plan.md) — plan and architecture decision for the `horo-admin` analytics dashboard: separate repo, own email/password login in a Postgres schema `admin`, read-only stats from production. Read before touching admin auth, the seed script, or dashboard metrics.
 - [monetization-tickets.md](monetization-tickets.md) — ticket list T1–T14 for Horo's first paid products (ดวงคู่ credits, ฿29 month pass, ฿99 year reading), credit-ledger design, donation and forced-Shopee removal, wallpaper waitlist. Read before touching payments, credits, paywalls, donation or affiliate code.
-- [../horo-be/docs/wallet.md](../horo-be/docs/wallet.md) — มู wallet (1 มู = ฿1): prices in `pricing.ts`, the append-only `wallet_ledger`, spend/refund/credit invariants, `/api/wallet` routes, the ดวงคู่ unlock seam, and what's deferred (Stripe, bonus expiry, admin). Read before touching prices, credits, orders or the unlock.
+- [../horo-be/docs/wallet.md](../horo-be/docs/wallet.md) — มู wallet (1 มู = ฿1): prices in `pricing.ts`, the append-only `wallet_ledger`, spend/refund/credit invariants, `/api/wallet` routes, the ดวงคู่ unlock seam, planned product passes (counted uses of one product, e.g. ดวงคู่ 3 คน for 98 มู; T15), the planned audit trail (who did what, including which admin) with per-user wallet and history pages (T16), and what's deferred (Stripe, bonus expiry, admin). Read before touching prices, credits, passes, orders or the unlock.
 - [../horo-be/docs/compatibility-scoring.md](../horo-be/docs/compatibility-scoring.md) — implemented compatibility v2 formula, guarantees, evidence, and deployment gate.
 
 Repo-specific docs live in `horo-fe/docs/` and `horo-be/docs/`.
@@ -32,6 +32,40 @@ Repo-specific docs live in `horo-fe/docs/` and `horo-be/docs/`.
 The handoff and correction packet trade a little efficiency for explicit acceptance detail. The scoring reference is short, indexed, verified against code and tests, and includes an explicit rollout gate and verification commands.
 
 FRESH before → after:
+
+- `monetization-tickets.md` (tracking plan, 2026-09-29): 14/15 (A) → 14/15 (A).
+  - The "Funnel we measure" section became the "Tracking plan": 17 events, 4 columns, and a metric → decision → rule
+    table.
+  - T6 was rewritten with done-when conditions and resized S → M.
+  - E stays 3 (tables); S stays 2 (the plan still carries specs). No dimension moved.
+
+- `monetization-tickets.md` (ticket sync, 2026-09-29): 13/15 (A) → 14/15 (A).
+  - R 3→3: the stale T5 route names (`/api/checkout { sku }`, `creditFromOrder`) were replaced with the built
+    `/api/wallet/checkout` and `fulfilPaidOrder`, and the ladder and decision-log pointer were updated.
+  - H 2→3: T5, T7, T13 and T16 now carry concrete routes, the admin-write decision and done-when conditions. The
+    provider choice is isolated as the one open item.
+  - F 3, E 3, S 2 unchanged.
+- `horo-be/docs/wallet.md` (admin route decided, 2026-09-29): 13/15 (A) → 14/15 (A).
+  - H 2→3: the open admin-write choice was replaced with the decided internal routes, the auth rule and the required
+    note.
+  - F 3, R 3, E 3, S 2 unchanged.
+
+- `horo-be/docs/wallet.md` (audit trail, user pages, 2026-09-29, second pass): 12/15 (B) → 13/15 (A).
+  - E 2→3: added a contents list that splits built from planned sections.
+  - H 2→2: the actor table, rollout rule and route contract are concrete, but how horo-admin writes is still an open choice between (a) and (b).
+  - F 3, R 3, S 2 unchanged.
+- `monetization-tickets.md` (T16, 2026-09-29): 13/15 (A) → 13/15 (A). T16 was added with done-when conditions, and T13 now requires the acting admin on each row. No dimension moved.
+
+- `horo-be/docs/wallet.md` (product passes, 2026-09-29): 11/15 (B) → 12/15 (B). This is a realistic re-score. The 13/15 recorded on 2026-09-27 no longer held: the door label claim had gone stale.
+  - F 3→3: the index entry now mentions passes.
+  - R 1→3: the stale "ปลดล็อก ฿49" label was replaced with the current `unlockLabel` and a pointer to the open decision; status and `last_reviewed` were bumped; the pass section is marked planned, not built.
+  - E 3→2: about 85 lines added with no TOC. Sections are still independently retrievable.
+  - S 2→2: a spec that now also carries a planned design, kept in its own section.
+  - H 2→2: tables, lock and transaction order, and refund rules are concrete; the one-flow pass purchase and the owner-unconfirmed numbers are still open.
+- `monetization-tickets.md` (T15, 2026-09-29): 11/15 (B) → 13/15 (A). Also a realistic re-score: the stale `assertCanUnlock` seam capped R at 1.
+  - R 1→3: the seam was renamed to `checkUnlock` / `chargeUnlockWithin` (0 hits for `assertCanUnlock` in `horo-be/src`), and status and date were bumped.
+  - H 2→2: T15 has done-when conditions, but the gateway and the pass one-flow are still open.
+  - F 3, E 3, S 2 unchanged.
 
 - `horo-be/docs/wallet.md` (new, 2026-09-27): 13/15 (A) current only; F 3 (index entry, descriptive name, frontmatter scope) · R 3 (status and date metadata, authority rule; invariants checked against `tests/wallet.test.ts` and a lock-on browser run on 2026-09-27) · E 3 (file map table first, short sections) · S 2 (a spec that also carries the deferred list and a note on the unlock route, which the compatibility doc owns) · H 2 (paths, test command and guard order, but no explicit own / don't-touch boundary for the compatibility files).
 - `horo-be/docs/compatibility-response-fix.md` (locked mode now paid in มู, 2026-09-27): 10/15 (B) → 12/15 (B); R 1→3 (the stale `NO_CREDIT` 402, the "ใช้ 1 เครดิต" door and "refused without credit" test lines replaced by the มู contract, and the retry and repeat-failure behaviour stated). F 2 (still not in this index) · E 2 · S 2 · H 3 unchanged.
