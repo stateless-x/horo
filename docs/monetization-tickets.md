@@ -1,6 +1,6 @@
 ---
 type: PLAN
-status: active — T1, T2, T3, T4 (มู ledger) and T8's locked mode + spend built on feat/monetization-prep, not merged; payments (T5) not built (2026-09-27); T5 and T7 redesigned, T15 product pass and T16 audit trail planned (2026-09-29)
+status: active — built on feat/monetization-prep, not merged: T1, T2, T3, T4, T5 (Stripe PromptPay), T7 (เติมมู pay step), T8 lock + spend, T16 (audit actors + history route); verified end to end on the Stripe sandbox 2026-09-29. Not built: T6 events, T9–T15, T13/T17 admin and accounting routes, the history page
 scope: paid products, credits, payments, removal of donation and forced Shopee, wallpaper waitlist
 last_reviewed: 2026-09-29
 owner: product
@@ -20,9 +20,9 @@ disagree, the code wins; update this doc in the same commit.
 | T2 | Remove the two forced Shopee openers | fe | S | — |
 | T3 | Payment + credit schema (built: มู) | be | S | — |
 | T4 | Credit and entitlement service (built: มู wallet) | be | M | T3 |
-| T5 | PromptPay gateway: charge, webhook, status | be | M | T3, T4 |
+| T5 | PromptPay gateway: charge, webhook, status — **built** (horo-be ee4453b…e70dafa) | be | M | T3, T4 |
 | T6 | Tracking plan: 17 events + 4 columns (see Tracking plan) | fe + be | M | — |
-| T7 | เติมมู sheet: packs, PromptPay QR, return from bank app | fe | M | T5, T6 |
+| T7 | เติมมู sheet: packs, PromptPay QR, return from bank app — **built** (horo-fe 43a882d…60c5080) | fe | M | T5, T6 |
 | T8 | ดวงคู่: free summary, locked detail, credits | be + fe | M | T4, T7 |
 | T9 | ดวงเดือนหน้า month pass ฿29 | be + fe | L | T4, T7 |
 | T10 | ดวงทั้งปี year reading ฿99 | be + fe | L | T4, T7, T9 |
@@ -31,7 +31,7 @@ disagree, the code wins; update this doc in the same commit.
 | T13 | Revenue page + manual grant/refund in horo-admin (via horo-be internal routes) | admin + be | M | T3, T4, T16 |
 | T14 | Trust: refund policy, Thai receipt, terms | fe + be | S | T5 |
 | T15 | Product pass: ดวงคู่ 3 คน for 98 มู | be + fe | M | T4, T8 (one-flow purchase also T5, T7) |
-| T16 | Wallet audit trail: actor on every ledger row, user history route | be + fe | S | T4; before merge to master |
+| T16 | Wallet audit trail: actor on every ledger row, user history route — **built** (horo-be 2056e95); history page not yet | be + fe | S | T4; before merge to master |
 | T17 | Accounting routes: monthly reconciliation, CSV exports, month close, `corrects` on reversals | be | M | T16, T5 |
 
 Release order: **R0** T1, T2, T6 (ship now, no dependencies) → **R1** T3, T4, T16, T5, T7, T8, T13, T14 (first money: ดวงคู่) →
@@ -299,8 +299,8 @@ this ticket adds the pay step.
   - From the balance chip or the wallet page: all four packs, with ฿99 preselected.
 - **Door label.** When the balance is short, the button reads baht-first ("เปิดคำตอบทั้งหมด · ฿49"). When the balance
   covers it, "เปิดคำตอบทั้งหมด · 49 มู". Built and verified 2026-09-29.
-- **Open (owner):** whether the short-balance button opens the 2-pack door sheet (built, B) or goes straight to the QR
-  for the smallest covering pack with packs behind a link (A). PO recommends A for a first purchase.
+- **Decided (owner, 2026-09-29): B.** The short-balance button opens the 2-pack door sheet. Revisit A only if door →
+  paid is poor after 300 doors.
 - **"ขอ QR ใหม่"** sends `replaceOrderId`; the server cancels the old charge first (409 `already_paid` if it had
   succeeded). Found in the 2026-09-29 browser run: without it two QRs stayed live for one user.
 - **Pay step.**
@@ -429,6 +429,8 @@ generates and the calendar is still there.
   See `horo-be/docs/wallet.md`, "Audit trail". Pages:
   - a per-user history (baht paid, มู credited and spent, pass uses, who did each);
   - an admin action log, filterable by admin.
+- **Comp (owner, 2026-09-29): moo grant only.** No "reopen a report free" action. The user's history shows
+  "ปรับยอดโดยทีมงาน · date · +N" and nothing else; the reason and the admin stay admin-side.
 - **Decided 2026-09-29:** admin writes go only through horo-be's private `/internal/wallet/*` and
   `/internal/orders/mark-paid` routes, behind `INTERNAL_API_SECRET`. horo-admin reads the wallet tables and never writes
   them (`horo-be/docs/wallet.md`, "How horo-admin writes").
