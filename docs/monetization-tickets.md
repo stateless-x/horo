@@ -32,6 +32,7 @@ disagree, the code wins; update this doc in the same commit.
 | T14 | Trust: refund policy, Thai receipt, terms | fe + be | S | T5 |
 | T15 | Product pass: ดวงคู่ 3 คน for 98 มู | be + fe | M | T4, T8 (one-flow purchase also T5, T7) |
 | T16 | Wallet audit trail: actor on every ledger row, user history route | be + fe | S | T4; before merge to master |
+| T17 | Accounting routes: monthly reconciliation, CSV exports, month close, `corrects` on reversals | be | M | T16, T5 |
 
 Release order: **R0** T1, T2, T6 (ship now, no dependencies) → **R1** T3, T4, T16, T5, T7, T8, T13, T14 (first money: ดวงคู่) →
 **R2** T9, T11, T12, T15 → **R3** T10.
@@ -253,8 +254,12 @@ writing it, so it does not match itself), and the guard test passes along with `
   - Ledger rows carry `actor_type = 'system'` and the event id (T16).
 - `GET /api/wallet/orders/:id` (exists) is the only status read. The client polls it, and only the webhook changes
   state.
-- Double scans: Stripe returns the excess to the merchant. Credit it as มู through `adjust` with a note; don't refund in
-  baht by hand.
+- Re-scan of an already-paid QR (known gap, decision 2026-09-29): Stripe takes the money, adds it to Horo's balance and
+  notifies the account outside the PaymentIntent (docs.stripe.com/payments/promptpay, "Repeated payments"). No webhook
+  fires, so nothing lands in `payment_events` by itself. Handling: (1) the pay step hides the QR the moment the order is
+  paid and the saved-QR hint says it works once; (2) an admin checks the Stripe balance for reimbursements weekly and
+  records each one as an `excess_payment` row through the internal route (T13), then contacts the buyer for a
+  PromptPay refund (T14). Never `adjust` from the webhook.
 - Env: Stripe secret and webhook secret in Railway. Never log the customer fields in the payload.
 
 **Done when:** a test-mode payment credits and unlocks within 5 seconds of the webhook, and replaying the webhook
@@ -423,6 +428,10 @@ generates and the calendar is still there.
   `/internal/orders/mark-paid` routes, behind `INTERNAL_API_SECRET`. horo-admin reads the wallet tables and never writes
   them (`horo-be/docs/wallet.md`, "How horo-admin writes").
   Refunds are sent manually by PromptPay transfer, and the row records it.
+- **Accountant audit (owner request 2026-09-29):** the monthly reconciliation (cash in, moo issued split
+  paid/promo/admin, moo spent, reversals, outstanding, with the identity check), CSV exports of ledger and orders, a
+  monthly close snapshot, a needs-review queue, and correction-by-reversal with a `corrects` reference. Spec:
+  `horo-be/docs/wallet.md`, "Accounting and audit". The backend routes are ticket T17; this page renders them.
 - Follow `horo-admin/DESIGN.md`. Verification per the admin limits: type-check, test, build.
 
 ### T14 · Trust
@@ -447,6 +456,19 @@ are proposed defaults the owner has not confirmed.
 - One row can't be opened by both a pass and a spend.
 - A failed generation leaves the use unspent.
 - All of these are covered by tests on the local Postgres.
+
+### T17 · Accounting routes
+Spec: `horo-be/docs/wallet.md`, "Accounting and audit".
+- Schema (additive): `wallet_ledger.corrects uuid null` (the row a reversal undoes), `report_snapshots`.
+- `/internal/reports/monthly`, `/internal/reports/ledger.csv`, `/internal/reports/orders.csv`,
+  `/internal/reports/close`, all behind `INTERNAL_API_SECRET`.
+- Origins (paid / promo / admin / reversal) derived in one shared function used by both the report and the CSV.
+
+**Done when:**
+- on the local DB, `issued_paid` equals cash in for a month with three paid orders and one refund;
+- the identity check passes, then fails after a hand-inserted row, and the report names that row;
+- a closed month re-run reproduces its snapshot;
+- the CSV opens in Excel with Thai text intact (BOM) and contains no admin email in the accountant variant.
 
 ### T16 · Wallet audit trail
 The spec is `horo-be/docs/wallet.md`, "Audit trail: who did what".

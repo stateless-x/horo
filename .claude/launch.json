@@ -87,6 +87,16 @@
       ],
       "port": 3010,
       "cwd": "horo-fe"
+    },
+    {
+      "name": "horo-fe-locked-dev-3010",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "NEXT_PUBLIC_API_URL=http://localhost:3011 exec bun run dev -- -p 3010"
+      ],
+      "port": 3010,
+      "cwd": "horo-fe"
     }
   ]
 }
