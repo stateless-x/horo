@@ -12,7 +12,8 @@ decision_log: ~/product-decisions/horo/2026-09-30-monetize.md (current); 2026-09
 > **2026-09-30 — Shop catalog supersedes parts of this doc.** See [shop-catalog-plan.md](shop-catalog-plan.md):
 > packs are now p50/p100/p300/p500/p1000 (+0/5/10/15/20%, bonus permanent), no balance cap, no welcome gift (flag
 > `welcome_gift`, off), and T15's "3 คน 98 มู" is replaced by ตั๋วรู้ใจ offers 1 ใบ 49 มู and 2 ใบ แถม 1 (3 tickets) 99 มู,
-> bought by exchanging มู in the Shop. The pack table and T15/T19 below are historical until B9 rewrites them.
+> bought by exchanging มู in the Shop. The pack table and the T15/T19 detail sections below are historical; the built
+> system is specified in horo-be/docs/wallet.md and horo-be/docs/shop.md.
 
 Horo's first paid products. **One-time payments only, no subscription.** When this doc and the code
 disagree, the code wins; update this doc in the same commit.
@@ -35,11 +36,11 @@ disagree, the code wins; update this doc in the same commit.
 | T12 | Opt-in element picks (Shopee, strategic) | fe | S | T2, T6 |
 | T13 | Revenue page + manual grant/refund in horo-admin (via horo-be internal routes) | admin + be | M | T3, T4, T16 |
 | T14 | Trust: refund policy, Thai receipt, terms | fe + be | S | T5 |
-| T15 | Product pass: ดวงคู่ 3 คน for 98 มู | be + fe | M | T4, T8, T19 (one-flow purchase also T5, T7) |
+| T15 | ~~Product pass: ดวงคู่ 3 คน for 98 มู~~ **superseded** by the Shop's ตั๋วรู้ใจ 2 ใบ แถม 1 (shop-catalog-plan.md); backend built 2026-09-30 | be + fe | M | — |
 | T16 | Wallet audit trail: actor on every ledger row, user history route — **built** (horo-be 2056e95); history page not yet | be + fe | S | T4; before merge to master |
 | T17 | Accounting routes: monthly reconciliation, CSV exports, month close, `corrects` on reversals | be | M | T16, T5 |
 | T18 | กระเป๋ามู + เติมมู: value-first story, currency assets, conversion-safe UX copy | fe | M | T7; T6 for measurement |
-| T19 | Feature credits: separate 90-day use rights, coupon tab, ticket asset and expiry | be + fe | M | T4; first feature that grants credits |
+| T19 | Feature credits: **built as ตั๋วรู้ใจ** 2026-09-30 (purchased never expire, promotion 30 days; horo-be/docs/shop.md); horo-fe pending | be + fe | M | — |
 | T20 | Promotional มู: admin-managed 30-day earn campaigns, reset rules, caps and audit | admin + be | M | T4, T6, T13, T16 |
 | T21 | ดวงคู่ conversion: personal question to beautiful wallet-aware unlock | fe | M | T8, T18; T19 coupon path; T6 measurement |
 

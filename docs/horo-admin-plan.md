@@ -142,6 +142,11 @@ Each step ships on its own and can be reverted alone.
 - KPI deltas vs the previous comparable window (`KpiTile`'s `delta` prop).
 - Page layout standardised to PageHeading → KPI strip → `Section`s (`<h2>`) of
   `Card`s (`<h3>`) across all six dashboard pages.
+- **ร้านค้า** section (2026-09-30, docs/shop-catalog-plan.md B8): `/shop` (funnel, door funnel, top-ups, มู, eTicket,
+  repeat, unlock health, needs attention), `/shop/catalog`, `/shop/activity` (per-user timeline), `/shop/tickets`
+  (grant, restore, refund, retry). Reads Postgres directly and shows a "table not created yet" state until horo-be's
+  tables exist; writes go through horo-be `/internal/catalog/*` and `/internal/feature-credits/*`. Replaces the
+  checkpoint `/tickets` page. Queries verified against the local DB on 2026-09-30.
 
 ## Follow-ups
 
