@@ -77,7 +77,10 @@ Rules that hold across tickets:
   more than the campaign's attainable reward, or the campaign clearly names the larger live target users are saving
   toward. A small 10-มู item is desired but not committed until its feature ticket is approved. Until then, see the T9
   leftover rule.
-- **Grandfather.** Every compatibility row created before R1 launch stays fully readable. Nothing free today is taken away.
+- **Legacy ดวงคู่ retired (owner, 2026-09-30; replaces the grandfather rule).** v1 and v2 compatibility rows (532 in
+  production) are hidden everywhere, kept in the table, and never deleted; only canon v1 (the teaser-first report) is
+  shown. A reader who checks the same person again gets a new canon report. See
+  `horo-be/docs/compatibility-response-fix.md`, "Canon v1".
 - **No ads or affiliate links on paid content, paywalls, or checkout.**
 - Prices live in one config (`horo-be/src/lib/pricing.ts`), in satang (integer), never floats.
 
@@ -342,7 +345,8 @@ this ticket adds the pay step.
 - An expired QR recovers in one tap.
 
 ### T8 · ดวงคู่: free summary, locked detail, credits
-**Built on feat/monetization-prep (2026-09-27), behind `COMPAT_LOCK_ENABLED` (off by default):**
+**Built on feat/monetization-prep (2026-09-27), behind the `compat_lock` feature flag (off by default; set in horo-admin
+สวิตช์ฟีเจอร์ since 2026-09-30, `horo-be/docs/feature-flags.md`; the `COMPAT_LOCK_ENABLED` env var is retired):**
 - **Teaser-first generation.** With the lock on, a check writes only the free teaser: the insight plan, then the cover
   (verdict and three locked hints). The paid detail is written on unlock, from the same stored plan, and patched into
   the same row. The detail's model cost is only spent on unlocks.
@@ -353,8 +357,9 @@ this ticket adds the pay step.
 - **No locked text reaches a client.** POST, `GET /compatibility/:id` and unlock return `locked` and the teaser view
   while `detail` is null, and never the stored `analysis` JSON for v4. The share link returns the free fields only for
   every v4 row. History carries no reading text. Tested per route on the serialized JSON.
-- **Grandfather.** A row with its detail present is always full. v1 and v2 rows are unchanged. Their share links still
-  return the stored text, which was never paid.
+- **Legacy retired (2026-09-30).** A row with its detail present is always full. v1 and v2 rows are hidden and their
+  share links answer 404 ("Legacy ดวงคู่ retired" above). Until 2026-09-30 they stayed readable and their share links
+  returned the stored text.
 - **Frontend.** A locked row renders the teaser and the door (CTA text now from the wallet, below). The tap shows
   "กำลังเขียนฉบับเต็ม (ราว 20 วินาที)", then reveals the full report in place, without a reload.
 
@@ -369,7 +374,7 @@ this ticket adds the pay step.
 - The door reads `GET /api/wallet`: "ใช้ 49 มู ปลดล็อก (มี N มู)". A 402 turns it into "เติมมู", which
   opens a pack sheet with 3 packs, each with a disabled "PromptPay เร็ว ๆ นี้".
 - A header chip "มู N" links to `/dashboard/wallet`: balance, packs, ledger.
-- Verified on the lock-on stack without `COMPAT_UNLOCK_FREE`: a new check shows the door with มี 49, the unlock spends
+- Verified on the lock-on stack without free unlocks (then `COMPAT_UNLOCK_FREE`, now the `compat_unlock_free` sub-flag): a new check shows the door with มี 49, the unlock spends
   49 and opens the full report, and a second locked row gets a 402 and the pack sheet.
 
 **Superseded before launch (owner, 2026-09-30):** the automatic 49-มู welcome grant above documents the current branch,
@@ -389,7 +394,7 @@ balance migration.
 **Done when:**
 - a new account sees the free summary and a ฿49 path unless an active T20 campaign has already granted enough มู;
 - an eligible promotional balance spends through the same ordinary 49-มู path, with no special welcome entitlement;
-- old rows stay open;
+- canon rows with a detail stay open; legacy rows stay hidden;
 - the share, history and detail responses contain no locked text for a locked row. The route tests exist; extend them
   for the ledger.
 
@@ -869,7 +874,9 @@ user id, delta, ledger row id and timestamp; it excludes reading content and bir
   explanation.
 
 ### T21 — ดวงคู่ conversion: from a personal question to a beautiful unlock
-**Status: built on `feat/monetization-prep` 2026-09-30.** The resolver, question-to-door handoff, relationship-aware
+**Status: built on `feat/monetization-prep` 2026-09-30.** A spend from balance now asks once before any มู move
+(`SpendConfirmSheet`: what it opens, the balance before and after, `49 มู เท่ากับ ฿49`, confirm or `ยังไม่ใช้ตอนนี้`);
+a top-up needs no second confirmation because the QR payment is the consent. The resolver, question-to-door handoff, relationship-aware
 copy, responsive behavior and failure reassurance are implemented. T6 measurement and the future T19 coupon payment
 path remain out of scope until their tickets ship.
 
@@ -901,7 +908,7 @@ payment with the shortest truthful path.
 
 | Reader state | Door message | Primary action |
 |---|---|---|
-| Paid or promotional balance covers 49 มู | `ใช้ 49 มู เพื่ออ่านคำตอบเฉพาะคู่นี้` | `เปิดคำอ่านฉบับเต็มด้วย 49 มู` |
+| Paid or promotional balance covers 49 มู | `ใช้ 49 มู เพื่ออ่านคำตอบเฉพาะคู่นี้` | `เปิดคำอ่านฉบับเต็มด้วย 49 มู`, then the confirm sheet: `ยืนยัน ใช้ 49 มู` |
 | Balance is short | `เติมแล้วเปิดคำตอบนี้ต่อให้อัตโนมัติ` | `เติมมูแล้วเปิดคำอ่านฉบับเต็ม ฿49` |
 | A valid feature credit applies | `ใช้สิทธิ์ที่มีได้ถึง 29 ธ.ค. 2569` | `ใช้คูปองเปิดคำอ่านฉบับเต็ม` |
 | Unlock is generating | `กำลังเขียนคำอ่านเฉพาะคู่นี้` | disabled progress state |

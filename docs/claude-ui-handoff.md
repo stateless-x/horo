@@ -10,6 +10,8 @@ superseded_by: null
 
 # Claude UI Implementation Handoff
 
+> **2026-09-30:** the ดวงคู่ parts of this document are superseded. Legacy markdown and v2 compatibility rendering were removed; only canon v1 (the teaser-first report) is shown, and legacy rows are hidden. See `horo-be/docs/compatibility-response-fix.md`, "Canon v1".
+
 ## Role
 
 You are the frontend implementation worker. Codex is the orchestrator and owns requirements, product decisions, visual direction, backend/schema sequencing, review, and final verification.

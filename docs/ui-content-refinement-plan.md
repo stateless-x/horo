@@ -10,6 +10,8 @@ superseded_by: null
 
 # สายมู Product, Content, and UI Refinement Plan
 
+> **2026-09-30:** the ดวงคู่ parts of this document are superseded. Legacy markdown and v2 compatibility rendering were removed; only canon v1 (the teaser-first report) is shown, and legacy rows are hidden. See `horo-be/docs/compatibility-response-fix.md`, "Canon v1".
+
 ## Executive decision
 
 Keep the current Modern Diviner's Room design system and clay visual language. The product problem is not onboarding and is not solved by a broad rebrand. The priority is to deliver useful personal value sooner, make daily readings meaningfully fresh, repair trust in ดวงคู่, and give users a clear reason to return.

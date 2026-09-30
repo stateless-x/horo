@@ -2,7 +2,7 @@
 type: REFERENCE
 status: active
 scope: documentation-routing
-last_reviewed: 2026-09-27
+last_reviewed: 2026-09-30
 owner: product
 ---
 
@@ -16,6 +16,8 @@ owner: product
 - [monetization-tickets.md](monetization-tickets.md) — ticket list T1–T21 for Horo's paid products, permanent and promotional มู, 30-day campaign resets/admin controls, feature credits, compatibility conversion, payment flows, donation removal and wallpaper demand tests. Read before touching prices, wallet grants, campaigns, credits, paywalls, payments, donation or affiliate code.
 - [../horo-be/docs/wallet.md](../horo-be/docs/wallet.md) — มู wallet (1 มู = ฿1): prices in `pricing.ts`, the append-only `wallet_ledger`, spend/refund/credit invariants, `/api/wallet` routes, the ดวงคู่ unlock seam, planned product passes (counted uses of one product, e.g. ดวงคู่ 3 คน for 98 มู; T15), the planned audit trail (who did what, including which admin) with per-user wallet and history pages (T16), and what's deferred (Stripe, bonus expiry, admin). Read before touching prices, credits, passes, orders or the unlock.
 - [../horo-be/docs/compatibility-scoring.md](../horo-be/docs/compatibility-scoring.md) — implemented compatibility v2 formula, guarantees, evidence, and deployment gate.
+- [../horo-be/docs/compatibility-response-fix.md](../horo-be/docs/compatibility-response-fix.md) — the one ดวงคู่ report (canon v1): legacy rows hidden, MBTI never shown, teaser-first locked mode, unlock flow, live budget. Read before touching compatibility generation, responses or the door.
+- [../horo-be/docs/feature-flags.md](../horo-be/docs/feature-flags.md) — product switches set in horo-admin (`compat_lock`, `compat_unlock_free`): rules, routes, local use, rollout. Read before adding a flag or gating a feature.
 
 Repo-specific docs live in `horo-fe/docs/` and `horo-be/docs/`.
 
@@ -32,6 +34,14 @@ Repo-specific docs live in `horo-fe/docs/` and `horo-be/docs/`.
 The handoff and correction packet trade a little efficiency for explicit acceptance detail. The scoring reference is short, indexed, verified against code and tests, and includes an explicit rollout gate and verification commands.
 
 FRESH before → after:
+
+- `horo-be/docs/compatibility-response-fix.md` (canon v1, 2026-09-30): 12/15 (B) → 13/15 (A).
+  - F 2→3: the env-flag table, the flat-v4 and "v2 unchanged" claims and the removed harness path were stale; all now match the code.
+  - H 2→3: a "Canon v1" section states the legacy rule, the MBTI rule, the door confirm and the one production backfill statement.
+  - R 3, E 2 (long doc), S 3 unchanged.
+- `horo-be/docs/feature-flags.md` (new, 2026-09-30): 13/15 (A). F 3, R 3 (verified with the live route and tests), E 3, S 2 (rules and rollout in one doc), H 2 (multi-process cache behaviour is reasoned, not measured).
+- `horo-be/docs/compatibility-scoring.md` (2026-09-30): 13/15 (A) → 14/15 (A). F 2→3: the v1/v2 API marking and the deleted content test were removed.
+- `monetization-tickets.md` (legacy retired, flags, confirm, 2026-09-30): 14/15 (A) → 14/15 (A). The grandfather rule was replaced by the owner's 2026-09-30 decision, T8 now names the flag, and T21 records the confirm step. No dimension moved.
 
 - `monetization-tickets.md` (tracking plan, 2026-09-29): 14/15 (A) → 14/15 (A).
   - The "Funnel we measure" section became the "Tracking plan": 17 events, 4 columns, and a metric → decision → rule
