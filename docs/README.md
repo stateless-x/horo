@@ -14,6 +14,8 @@ owner: product
 - [deterministic-category-scores.md](deterministic-category-scores.md) — shipped record of the 0 to 100 daily and chart scoring: formulas, constants, route overwrite, legacy-row upgrade, verification. Read before touching any score or its prompt.
 - [horo-admin-plan.md](horo-admin-plan.md) — plan and architecture decision for the `horo-admin` analytics dashboard: separate repo, own email/password login in a Postgres schema `admin`, read-only stats from production. Read before touching admin auth, the seed script, or dashboard metrics.
 - [monetization-tickets.md](monetization-tickets.md) — ticket list T1–T21 for Horo's paid products, permanent and promotional มู, 30-day campaign resets/admin controls, feature credits, compatibility conversion, payment flows, donation removal and wallpaper demand tests. Read before touching prices, wallet grants, campaigns, credits, paywalls, payments, donation or affiliate code.
+- [shop-catalog-plan.md](shop-catalog-plan.md) — approved plan (2026-09-30, owner decisions D1–D8) for the Shop catalog: eTicket, ตั๋วรู้ใจ (1 ใบ 49 มู; 2 ใบ แถม 1 = 3 tickets 99 มู), ladder p50–p1000, no cap, no welcome gift, มู → ticket exchange, unlock audit, admin catalog, shop/มู/eTicket stats. API contract §6, backend steps B0–B9. Read before touching the Shop, packs, tickets or catalog.
+- [shop-frontend-handoff.md](shop-frontend-handoff.md) — self-contained horo-fe packet for ChatGPT: reader API with example JSON, files to replace, steps F1–F9, fixed copy, client events. Read before building Shop/wallet/door UI.
 - [../horo-be/docs/wallet.md](../horo-be/docs/wallet.md) — มู wallet (1 มู = ฿1): prices in `pricing.ts`, the append-only `wallet_ledger`, spend/refund/credit invariants, `/api/wallet` routes, the ดวงคู่ unlock seam, planned product passes (counted uses of one product, e.g. ดวงคู่ 3 คน for 98 มู; T15), the planned audit trail (who did what, including which admin) with per-user wallet and history pages (T16), and what's deferred (Stripe, bonus expiry, admin). Read before touching prices, credits, passes, orders or the unlock.
 - [../horo-be/docs/compatibility-scoring.md](../horo-be/docs/compatibility-scoring.md) — implemented compatibility v2 formula, guarantees, evidence, and deployment gate.
 - [../horo-be/docs/compatibility-response-fix.md](../horo-be/docs/compatibility-response-fix.md) — the one ดวงคู่ report (canon v1): legacy rows hidden, MBTI never shown, teaser-first locked mode, unlock flow, live budget. Read before touching compatibility generation, responses or the door.
@@ -34,6 +36,9 @@ Repo-specific docs live in `horo-fe/docs/` and `horo-be/docs/`.
 The handoff and correction packet trade a little efficiency for explicit acceptance detail. The scoring reference is short, indexed, verified against code and tests, and includes an explicit rollout gate and verification commands.
 
 FRESH before → after:
+
+- `shop-catalog-plan.md` (new, rewritten with owner decisions 2026-09-30): F 3 (indexed; section table) · R 2 (status metadata, checkpoint claims checked against the committed code; nothing built yet) · E 2 (long, JSON examples) · S 3 (the frontend packet moved to its own file; §7 is a pointer) · H 3 (paths, IDs, tests and done-conditions per step). Total 13/15 (A, borderline; R is the gap until built).
+- `shop-frontend-handoff.md` (new): F 3 (indexed) · R 2 (contract not frozen until G1) · E 2 (repeats §6 on purpose so it stands alone) · S 3 (one handoff) · H 3 (files, steps, copy, done-conditions). Total 13/15 (A, borderline).
 
 - `horo-be/docs/compatibility-response-fix.md` (canon v1, 2026-09-30): 12/15 (B) → 13/15 (A).
   - F 2→3: the env-flag table, the flat-v4 and "v2 unchanged" claims and the removed harness path were stale; all now match the code.

@@ -9,6 +9,11 @@ decision_log: ~/product-decisions/horo/2026-09-30-monetize.md (current); 2026-09
 
 # Monetization tickets
 
+> **2026-09-30 — Shop catalog supersedes parts of this doc.** See [shop-catalog-plan.md](shop-catalog-plan.md):
+> packs are now p50/p100/p300/p500/p1000 (+0/5/10/15/20%, bonus permanent), no balance cap, no welcome gift (flag
+> `welcome_gift`, off), and T15's "3 คน 98 มู" is replaced by ตั๋วรู้ใจ offers 1 ใบ 49 มู and 2 ใบ แถม 1 (3 tickets) 99 มู,
+> bought by exchanging มู in the Shop. The pack table and T15/T19 below are historical until B9 rewrites them.
+
 Horo's first paid products. **One-time payments only, no subscription.** When this doc and the code
 disagree, the code wins; update this doc in the same commit.
 
