@@ -1,6 +1,6 @@
 ---
 type: PLAN
-status: approved 2026-09-30 (owner decisions D1–D8 below), building. Supersedes the ticket-pass checkpoint (horo-be ea7e3b8, horo-fe 086f58e, horo-admin 6b779a2) and T15 "3 คน 98 มู" in monetization-tickets.md
+status: approved 2026-09-30 (owner decisions D1–D8 below). horo-be B0–B7 built and verified on the local DB (4f5aa35…b4060a2, not pushed); horo-admin B8 built (not pushed); horo-fe not started; B9 docs in progress. Supersedes the ticket-pass checkpoint (horo-be ea7e3b8, horo-fe 086f58e, horo-admin 6b779a2) and T15 "3 คน 98 มู" in monetization-tickets.md
 scope: Shop catalog (eTicket category, ตั๋วรู้ใจ), มู top-up ladder, มู → eTicket exchange, ticket consumption and unlock audit, admin catalog/audit, sales and activity stats, gift phase 1
 last_reviewed: 2026-09-30
 owner: product
@@ -312,12 +312,14 @@ unknown product returns 404 `{ "error": "product_unavailable" }`.
 **`POST /api/wallet/checkout`**, the one-flow top-up → exchange → (unlock):
 ```json
 { "packId": "p100",
-  "offer": { "offerId": "heart_ticket_3", "expectedPriceMoo": 99, "idempotencyKey": "<uuid>" },  // optional
+  "offer": { "offerId": "heart_ticket_3", "expectedPriceMoo": 99 },                              // optional
   "unlockRef": "<compat row uuid>",                                                                  // optional; requires offer
   "replaceOrderId": "<uuid>" }                                                                       // optional, unchanged
 ```
-- `unlockRef` without `offer` → 400 `{ "error": "offer_required" }`. An unknown/unpublished offer → 404, a stale
-  price → 409, both before any charge.
+- `unlockRef` without `offer` → 400 `{ "error": "offer_required" }`. An unknown/unpublished offer → 404
+  `offer_unavailable`, a stale price → 409 `price_changed`, and a pack that plus the balance can't reach the price →
+  409 `{ "error": "pack_too_small", "balance", "credit", "price" }`, all before any order or charge.
+- The exchange's idempotency key is always `order:<orderId>`; the client sends none.
 - The response is unchanged (the QR). Once paid: credit the pack, exchange the offer, unlock `unlockRef`.
 - `GET /api/wallet/orders/:id` gains `"fulfilment": "done" | "failed" | null` and `"tickets": { usesLeft, expiring }`.
   On `failed` the มู stays in the wallet and the reader can retry with `POST /api/shop/purchases`.
@@ -337,7 +339,7 @@ Removed: `POST /api/wallet/tickets/buy`, `ticketPassId` on checkout, `compat_tic
 | `GET /internal/catalog/products` · `POST` · `PATCH /:id` | Products, drafts included |
 | `GET /internal/catalog/offers?productId` · `POST` · `PATCH /:id` | Offers. Price/quantity locked after publish → 409 `offer_locked` |
 | `POST /internal/catalog/offers/:id/publish` · `/archive` (same for products) | Status. Publishing a `physical` product → 409 `no_fulfilment_handler` |
-| `POST /internal/catalog/failures/:id/retry` | Re-run a failed order exchange with its idempotency key |
+| `POST /internal/catalog/failures/:id/retry { reason, actor }` | Re-run a failed order exchange with its idempotency key at the price agreed at checkout; the reason is stored on the purchase (`note`) or on the new failure row |
 | `POST /internal/catalog/purchases/:id/refund { reason, actor }` | Refund an unused purchase to มู. 409 `tickets_used` |
 | `POST /internal/feature-credits/grant { userId, uses, source: 'admin'\|'promotion', expiresAt?, reason, actor }` | Phase-1 gifts. `promotion` defaults to +30 days |
 | `POST /internal/feature-credits/uses/:useId/restore { reason, actor }` | Give back the ticket a use consumed. 409 `already_restored` |
@@ -390,12 +392,12 @@ Two sources, each the truth for its own question:
 
 | Event | Sent by | Where | `surface` / `category` / `detail` | Dedup |
 |---|---|---|---|---|
-| `shop_viewed` | client | Shop page mounts | `shop` / — / entry (`nav`\|`door`\|`wallet`\|`link`) | per user per day |
+| `shop_viewed` | client | Shop page mounts | `shop` / entry (`nav`\|`door`\|`wallet`\|`link`) / — | per user per day |
 | `product_viewed` | client | product sheet or mini-shop opens | `shop` / productId / entry (`shop`\|`mini_shop`) | per user, product, day |
 | `offer_selected` | client | reader taps an offer (not the preselection) | `shop` / productId / offerId | none |
-| `topup_started` | server | checkout creates an order | `wallet` / packId / offerId or — | order id |
-| `topup_completed` | server | `creditOrder` credits | `wallet` / packId / — | order id |
-| `catalog_purchase_completed` | server | exchange commits | `shop` / productId / `offerId:source` | purchase id |
+| `topup_started` | server | checkout started a charge | `wallet` / packId / offerId or — | order id |
+| `topup_completed` | server | the paid order is credited | `wallet` / packId / offerId or — | order id |
+| `catalog_purchase_completed` | server | exchange commits | `shop` / source (`wallet`\|`order`) / offerId | purchase id |
 | `ticket_consumed` | server | unlock saves | `compatibility` / `compat_unlock` / grant source | use id |
 | `fulfilment_failed` | server | order exchange fails | `shop` / offerId / reason | failure id |
 | `refund_requested` | server | admin refund route starts | `shop` / offerId / purchase id | purchase id |

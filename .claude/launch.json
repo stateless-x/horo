@@ -87,6 +87,16 @@
       ],
       "port": 3010,
       "cwd": "horo-fe"
+    },
+    {
+      "name": "horo-be-shop-fake-3021",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "PORT=3021 PAYMENT_PROVIDER=fake FRONTEND_URL=http://localhost:3010 CORS_ALLOWED_ORIGINS=http://localhost:3010 OAUTH_BASE_URL=http://localhost:3021 DATABASE_URL=\"postgresql://dev:$(docker exec local-postgres printenv POSTGRES_PASSWORD)@localhost:5432/horo_dev\" REDIS_URL=redis://127.0.0.1:6379 exec bun src/index.ts"
+      ],
+      "port": 3021,
+      "cwd": "horo-be"
     }
   ]
 }

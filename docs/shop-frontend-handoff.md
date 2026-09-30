@@ -137,12 +137,23 @@ Show `label` as given; `used` rows link to the report via `refId` (`compatibilit
 ### `POST /api/wallet/checkout` — top-up, optionally followed by an exchange and an unlock
 ```json
 { "packId": "p100",
-  "offer": { "offerId": "heart_ticket_3", "expectedPriceMoo": 99, "idempotencyKey": "<uuid>" },
+  "offer": { "offerId": "heart_ticket_3", "expectedPriceMoo": 99 },
   "unlockRef": "<compat row uuid>",
   "replaceOrderId": "<uuid>" }
 ```
 `offer`, `unlockRef` and `replaceOrderId` are optional, but `unlockRef` requires `offer` (else 400
-`offer_required`). An unavailable offer → 404 and a stale price → 409 **before** any QR. The response and the pay step
+`offer_required`). All of these come back **before** any QR, with nothing charged:
+
+| Status | Body | Do |
+|---|---|---|
+| 400 | `{ "error": "offer_required" }` | a bug: always send `offer` with `unlockRef` |
+| 404 | `{ "error": "offer_unavailable" }` | refresh the sheet |
+| 409 | `{ "error": "price_changed", "offer": { … } }` | show the new price, ask again |
+| 409 | `{ "error": "pack_too_small", "balance": 20, "credit": 50, "price": 99 }` | pick the next pack up (your smallest-pack rule should prevent it) |
+| 409 | `{ "error": "already_paid", "orderId": "…" }` | existing: that row's earlier QR was paid; poll that order |
+| 409 | `{ "error": "email_required" }` | existing |
+
+The server makes the exchange's idempotency key itself; don't send one in `offer`. The response and the pay step
 are unchanged (QR + `orderId`). Poll `GET /api/wallet/orders/:id`; it now also returns
 `"fulfilment": "done" | "failed" | null` and `"tickets": { usesLeft, expiring }`.
 - `status: "paid"` + `fulfilment: "done"`: the tickets are in; if `unlockRef` was sent, the report is opening.
