@@ -69,16 +69,6 @@
       "cwd": "horo-be"
     },
     {
-      "name": "horo-be-dev-localdb-locked",
-      "runtimeExecutable": "sh",
-      "runtimeArgs": [
-        "-c",
-        "DATABASE_URL=\"postgresql://dev:$(docker exec local-postgres printenv POSTGRES_PASSWORD)@localhost:5432/horo_dev\" REDIS_URL=redis://127.0.0.1:6379 exec bun run dev"
-      ],
-      "port": 3001,
-      "cwd": "horo-be"
-    },
-    {
       "name": "horo-be-locked-3011",
       "runtimeExecutable": "sh",
       "runtimeArgs": [
@@ -87,16 +77,6 @@
       ],
       "port": 3011,
       "cwd": "horo-be"
-    },
-    {
-      "name": "horo-fe-locked-3010",
-      "runtimeExecutable": "sh",
-      "runtimeArgs": [
-        "-c",
-        "cd /private/tmp/claude-501/-Users-purin-dev-horo/6d62ef6b-b721-4233-8146-d577aa5320d5/scratchpad/fe-build-wt && exec bun run start -- -p 3010"
-      ],
-      "port": 3010,
-      "cwd": "horo-fe"
     },
     {
       "name": "horo-fe-locked-dev-3010",
