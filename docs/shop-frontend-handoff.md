@@ -1,6 +1,6 @@
 ---
 type: HANDOFF
-status: ready for the frontend agent (ChatGPT). The backend contract is frozen at gate G1 in shop-catalog-plan.md; until then, build against the JSON below as mocks
+status: ready for the frontend agent (ChatGPT). Contract frozen (G1 passed 2026-09-30): horo-be feat/monetization-prep 4f5aa35…452b76f implements every route below, not pushed yet. The types are already synced into horo-fe (3ceeb6b), which leaves 31 compile errors in the checkpoint UI for F1 to fix
 scope: horo-fe only — Shop, mini-shop, exchange, top-up, door unlock, wallet balances and histories, client events
 last_reviewed: 2026-09-30
 owner: product
@@ -20,9 +20,10 @@ another agent to the contract below. Build only in **horo-fe**. Don't edit horo-
   think one is needed, ask the owner first, and if approved, add it to DESIGN.md.
 - **Voice:** grounded, contemporary Thai. Transactional copy is short and pronoun-free. Never เจ้า/ข้า.
 - **Money display:** always มู with baht beside it: `99 มู (฿99)`. 1 มู = ฿1.
-- **Types:** never hand-write API types. After the backend changes them, run `cd ../horo-be && bun run sync:types`;
-  it copies `horo-be/lib/shared/types/*` into `horo-fe/src/lib-packages/shared/types/` (files headed "GENERATED —
-  do not edit"). Until that lands, put mocks in one file (`src/features/shop/mock-shop.ts`) and delete it after.
+- **Types:** never hand-write API types. `src/lib-packages/shared/types/{shop,wallet,analytics}.ts` are already
+  synced from horo-be (files headed "GENERATED — do not edit"); import from there. If the backend changes them, the
+  owner re-runs `bun run sync:types` in horo-be. Without a running backend, put mocks in one file
+  (`src/features/shop/mock-shop.ts`) and delete it after.
 - **No `as any`, no swallowed errors, no fallback values that hide a failure.**
 - The whole wallet/Shop exists only while the backend flag `compat_lock` is on. `GET /api/wallet` returns
   `{ "enabled": false }` otherwise; show no Shop entry, no wallet, no door payment in that case (existing behaviour in
@@ -169,7 +170,7 @@ are unchanged (QR + `orderId`). Poll `GET /api/wallet/orders/:id`; it now also r
 
 | Step | Deliverable | Done when |
 |---|---|---|
-| F1 | Types synced (or mocks in one file); compile clean | `type-check` passes |
+| F1 | Fix the 31 compile errors the synced types expose (shop page, wallet page, pack sheet, mini-shop, feature-credit card, wallet-copy, two tests) | `type-check` passes |
 | F2 | **Shop** at `/dashboard/shop`: category heading → product card (visual, name, description, tickets-left) → offer list | Renders from `GET /api/shop`; empty state works |
 | F3 | **Product sheet / mini-shop**: `openProduct(productId, { entry, unlockRef? })` callable from any page (a provider + hook, e.g. `useMiniShop()`); the recommended offer preselected | Opens in place from the Shop, the wallet, and the ดวงคู่ door |
 | F4 | **Exchange.** Balance ≥ price → confirm → `POST /api/shop/purchases`. Balance < price → show the shortfall and two packs: the smallest whose `base + bonus ≥ price − balance` (preselected) and the next one up → `POST /api/wallet/checkout` with `offer` (+ `unlockRef` from a door) → existing pay step | Every §3 error handled; after success, balances update without a reload (invalidate `WALLET_QUERY_KEY`) |

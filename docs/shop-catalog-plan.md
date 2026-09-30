@@ -1,6 +1,6 @@
 ---
 type: PLAN
-status: approved 2026-09-30 (owner decisions D1–D8 below). horo-be B0–B7 built and verified on the local DB (4f5aa35…b4060a2, not pushed); horo-admin B8 built (not pushed); horo-fe not started; B9 docs in progress. Supersedes the ticket-pass checkpoint (horo-be ea7e3b8, horo-fe 086f58e, horo-admin 6b779a2) and T15 "3 คน 98 มู" in monetization-tickets.md
+status: approved 2026-09-30 (owner decisions D1–D8 below). Built, not pushed: horo-be B0–B7 + B9 (feat/monetization-prep 865f93e…452b76f; 563 tests pass on a local DB, the 1.1.38 build passes, API walk on the local DB); horo-admin B8 (main 0743a7c…fcfe400, queries checked on the local DB); types synced to horo-fe (3ceeb6b). horo-fe F1–F9 not started. Open gates: G2 (Stripe sandbox), G3, G4. Supersedes the ticket-pass checkpoint (horo-be ea7e3b8, horo-fe 086f58e, horo-admin 6b779a2) and T15 "3 คน 98 มู" in monetization-tickets.md
 scope: Shop catalog (eTicket category, ตั๋วรู้ใจ), มู top-up ladder, มู → eTicket exchange, ticket consumption and unlock audit, admin catalog/audit, sales and activity stats, gift phase 1
 last_reviewed: 2026-09-30
 owner: product
