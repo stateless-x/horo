@@ -3,6 +3,7 @@ type: OPERATIONS
 status: active
 scope: one-off steps after deploying the 1.0.0 / monetization-prep branches
 last_reviewed: 2026-10-06
+verified: horo-be route live in production 2026-10-06 (400 on the probe)
 owner: product
 ---
 
@@ -18,11 +19,10 @@ writes to production, and it asks for an exact row count first.
    then prove the new route is live:
 
    ```bash
-   curl -s -o /dev/null -w "%{http_code}\n" -X POST https://<horo-be host>/api/analytics/sponsor \
-     -H 'content-type: application/json' -d '{"sponsor":"acme","surface":"today","action":"view"}'
+   curl -s -w "\nHTTP %{http_code}\n" -X POST https://api.xn--y3cbx6azb.com/api/analytics/sponsor -H 'content-type: application/json' -d '{"sponsor":"acme","surface":"today","action":"view"}'
    ```
 
-   `400` means the new code is live (unknown sponsor rejected). `404` means the
+   (`api.xn--y3cbx6azb.com` is api.สายมู.com.) `400` means the new code is live (unknown sponsor rejected). `404` means the
    old image is still serving: the Railway build silently keeps it when a test
    fails.
 2. **horo-fe** (Vercel), then **horo-admin** (Railway).
