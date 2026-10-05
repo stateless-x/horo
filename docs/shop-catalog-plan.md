@@ -1,8 +1,8 @@
 ---
 type: PLAN
-status: approved 2026-09-30 (owner decisions D1–D8 below). Built, not pushed: horo-be B0–B7 + B9 (feat/monetization-prep 865f93e…452b76f; 563 tests pass on a local DB, the 1.1.38 build passes, API walk on the local DB); horo-admin B8 (main 0743a7c…fcfe400, queries checked on the local DB); types synced to horo-fe (3ceeb6b). horo-fe F1–F9 not started. Open gates: G2 (Stripe sandbox), G3, G4. Supersedes the ticket-pass checkpoint (horo-be ea7e3b8, horo-fe 086f58e, horo-admin 6b779a2) and T15 "3 คน 98 มู" in monetization-tickets.md
+status: approved 2026-09-30, amended for the owner-approved 2026-10-01 top-up prices. Shop and horo-fe work is local/unpushed; the older build-status and task checklist below are historical and must not be treated as a current progress report. Open launch gates remain G2, G3, G4.
 scope: Shop catalog (eTicket category, ตั๋วรู้ใจ), มู top-up ladder, มู → eTicket exchange, ticket consumption and unlock audit, admin catalog/audit, sales and activity stats, gift phase 1
-last_reviewed: 2026-09-30
+last_reviewed: 2026-10-01
 owner: product
 decision_log: ~/product-decisions/horo/2026-09-30c-monetize.md
 ---
@@ -45,24 +45,27 @@ Evidence: **39% of 504 compatibility rows came from readers who checked at least
 | First product | **ตั๋วรู้ใจ**: "ตั๋วสำหรับเปิดคำอ่านดวงคู่ ใช้ 1 ใบต่อ 1 คน ตั๋วที่ซื้อไม่มีวันหมดอายุ" |
 | Offer 1 | `heart_ticket_1`: 1 ใบ · 49 มู |
 | Offer 2 | `heart_ticket_3`: **2 ใบ แถม 1** → the buyer receives **3 tickets** · 99 มู · badges `แถม 1` (prominent) + `แนะนำ` |
-| Bigger tier | **Deprecated.** No ultra offer, not even as a draft |
+| Bigger tier | `heart_ticket_5`: 5 ใบ · 149 มู. No 10-ticket ultra offer |
 | Payment model | Top up general มู (PromptPay) → exchange มู for an offer. Two separate records, always |
 | Unlock model | One ticket is consumed **only in the same transaction that saves the report**. A failed generation consumes nothing and is logged for admin |
 | Mini-shop | Any page can open a designated product in a sheet. The full Shop stays browsable at `/dashboard/shop` |
 | Wallet | The มู balance, the ticket balance (with expiring grants called out), and a readable history for each |
 | Gifts, phase 1 | Admin, support and promotion grants only. Promotion grants expire after 30 days by default and are used first. Purchased tickets never expire |
 
-**Top-up ladder** (replaces p49/p99/p199/p399; 1 มู = ฿1; bonus มู are permanent; **no balance cap**):
+**Top-up ladder** (2026-10-01 owner-approved charm-price override; stable internal pack IDs; 1 base มู = ฿1; bonus มู are permanent; **no balance cap**):
 
 | Pack id | Pay | Base | Bonus | Receive | Chip |
 |---|---|---|---|---|---|
-| `p50` | ฿50 | 50 | 0 | 50 มู | — |
-| `p100` | ฿100 | 100 | 5 | 105 มู | +5% |
-| `p300` | ฿300 | 300 | 30 | 330 มู | +10% |
-| `p500` | ฿500 | 500 | 75 | 575 มู | +15% |
-| `p1000` | ฿1,000 | 1,000 | 200 | 1,200 มู | +20% |
+| `p50` | ฿49 | 49 | 0 | 49 มู | — |
+| `p100` | ฿99 | 99 | 0 | 99 มู | — |
+| `p150` | ฿149 | 149 | 0 | 149 มู | — |
+| `p300` | ฿299 | 299 | 31 | 330 มู | +10% |
+| `p500` | ฿499 | 499 | 76 | 575 มู | +15% |
+| `p1000` | ฿999 | 999 | 201 | 1,200 มู | +20% |
 
-`p50` covers offer 1 and `p100` covers offer 2, so a zero-balance reader always pays in one step.
+`p50`, `p100`, and `p150` exactly fund the 1/3/5-ticket offers for a zero-balance buyer. The large-pack chips
+round down the actual bonuses (31/299, 76/499, 201/999) to 10/15/20%; they do not promise an exact percentage.
+An existing partial balance can still leave extra มู after buying a fixed pack; exact-shortfall checkout is separate work.
 
 **Not in this build:** physical products, shipping, inventory, recipient gifts, gift-card purchase, baht refunds
 through Stripe (those stay manual, T13), a welcome gift, and any new currency. The code leaves a `physical`
@@ -287,7 +290,7 @@ unknown product returns 404 `{ "error": "product_unavailable" }`.
 **`GET /api/wallet`** (D2, D3: no `cap`, no welcome gift):
 ```json
 { "enabled": true, "balance": 55,
-  "packs": [ { "id": "p50", "priceBaht": 50, "base": 50, "bonus": 0, "bonusPercent": 0 }, … ],
+  "packs": [ { "id": "p50", "priceBaht": 49, "base": 49, "bonus": 0, "bonusPercent": 0 }, … ],
   "ledger": [ … ],
   "tickets": { "usesLeft": 4, "expiring": [ { "uses": 1, "expiresAt": "2026-10-30T00:00:00.000Z", "source": "promotion" } ] } }
 ```
@@ -365,7 +368,7 @@ blocks need the local Postgres (`horo-be-dev-localdb`). `bun run build` also run
 | Step | Change | Tests | Done when |
 |---|---|---|---|
 | **B0** | W5: drop the hand-written SQL and journal edit if nothing reads `drizzle/` | Existing suite | — |
-| **B1** | **Ladder, no cap, no welcome gift.** `PACKS` → p50…p1000. Remove `BONUS_TTL_DAYS` (bonus `expires_at = null`), `BALANCE_CAP` and every cap path (D2). `welcome_gift` flag, default off; `GET /api/wallet` and `checkUnlock` call `ensureWelcome` only when it's on (D3). Fix the 7 red tests | Unit: `bonusPercent` 0/5/10/15/20; a 10,000 มู credit succeeds; no welcome row with the flag off, one with it on | `GET /api/wallet` returns 5 packs, no `cap` |
+| **B1** | **Ladder, no cap, no welcome gift.** `PACKS` → p50…p1000. Remove `BONUS_TTL_DAYS` (bonus `expires_at = null`), `BALANCE_CAP` and every cap path (D2). `welcome_gift` flag, default off; `GET /api/wallet` and `checkUnlock` call `ensureWelcome` only when it's on (D3). Fix the 7 red tests | Unit: `bonusPercent` 0/0/0/10/15/20; a 10,000 มู credit succeeds; no welcome row with the flag off, one with it on | `GET /api/wallet` returns 6 packs, no `cap` |
 | **B2** | **Catalog schema, lazy seed, reader routes.** §5 tables; `GET /api/shop`, `GET /api/shop/products/:id`; `lib/shared/types/shop.ts` | Seed idempotent, doesn't overwrite an edited row, fails while tables are missing and succeeds next call. Drafts/archived never returned | **G1: contract frozen** |
 | **B3** | **Exchange.** `spendAmountWithin`/`refundAmount` (W8); `createCatalog(db, wallet, credits).purchase(...)`; `FULFILMENT_HANDLERS` (`feature_credit`; `physical` throws `NoFulfilmentHandler`); `POST /api/shop/purchases`. Delete `buyTicket`, `/tickets/buy`, `TICKET_PASSES` (W1, W7) | Replay = one purchase/spend/grant. Concurrent double-tap = one charge. Price mismatch 409, archived 404, short 402: nothing written. A handler throw rolls back the spend | Two purchases of `heart_ticket_3` with no report → 6 tickets |
 | **B4** | **Consumption + unlock audit + wallet read.** `consumeWithin` honours adjustments. `unlock_attempts` written for every outcome with LLM usage from `llm.ts` (D4). `ticket_required` adds `balance`. `GET /api/wallet` `tickets` with `expiring` (W4). `GET /api/wallet/tickets/history` | A failed generation consumes nothing and writes a `failed` attempt with the error ref. Promo used before purchase. Expired never used. Same row twice = one use | Ticket count and history match after grant → use → restore → expire |
@@ -444,3 +447,5 @@ Two sources, each the truth for its own question:
 **Phase 2 (not now): recipient gifts** add a `gifts` table (sender, recipient, offer snapshot, delivery state,
 accepted_at, expires_at, actor) and grant on acceptance with `source_type = 'gift'`. No reshaping of the exchange,
 ledger or grant tables. Build only after the promo metric shows use.
+
+FRESH before → after (2026-10-01 charm-price amendment): F 3→3 (indexed) · R 1→1 (corrected offer and pack prices and marked the old build checklist historical; other dated plan sections still need reconciliation) · E 2→2 (large but sectioned) · S 2→2 (plan still includes API-contract detail) · H 2→2 (pack IDs and gate list actionable; older completion evidence is historical). Total 10/15 nominal; effective C → C because a stale plan is capped until fully reconciled.

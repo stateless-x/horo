@@ -1,8 +1,8 @@
 ---
 type: HANDOFF
-status: ready for the frontend agent (ChatGPT). Contract frozen (G1 passed 2026-09-30): horo-be feat/monetization-prep 4f5aa35…452b76f implements every route below, not pushed yet. The types are already synced into horo-fe (3ceeb6b), which leaves 31 compile errors in the checkpoint UI for F1 to fix
+status: historical frontend handoff; Shop frontend is now built locally/unpushed. Pricing API example amended 2026-10-01; use the running `GET /api/wallet` response and current code for live amounts, not the original 2026-09-30 task checklist
 scope: horo-fe only — Shop, mini-shop, exchange, top-up, door unlock, wallet balances and histories, client events
-last_reviewed: 2026-09-30
+last_reviewed: 2026-10-01
 owner: product
 source_of_truth: docs/shop-catalog-plan.md §6 (API contract). If this file and §6 disagree, §6 wins; tell the owner
 ---
@@ -32,8 +32,8 @@ another agent to the contract below. Build only in **horo-fe**. Don't edit horo-
 ## 1. The product in one paragraph
 
 The Shop has categories. The first is **eTicket**, holding one product, **ตั๋วรู้ใจ** ("ตั๋วสำหรับเปิดคำอ่านดวงคู่
-ใช้ 1 ใบต่อ 1 คน ตั๋วที่ซื้อไม่มีวันหมดอายุ"). It has two offers: **1 ใบ · 49 มู** and **2 ใบ แถม 1 · 99 มู** (the reader
-gets 3 tickets; show a prominent `แถม 1` and a `แนะนำ` tag; preselect it). Readers first top up มู with PromptPay,
+ใช้ 1 ใบต่อ 1 คน ตั๋วที่ซื้อไม่มีวันหมดอายุ"). Its offers include **1 ใบ · 49 มู** and **2 ใบ แถม 1 · 99 มู** (the reader
+gets 3 tickets; show a prominent `แถม 1` and a `แนะนำ` tag; preselect it). The current catalog also offers **5 ใบ · 149 มู**. Readers first top up มู with PromptPay,
 then exchange มู for an offer. A ticket opens one locked ดวงคู่ (compatibility) report, and is used only when the
 report is saved successfully. Some tickets are gifts from Horo with an expiry date; they're used first.
 
@@ -70,7 +70,8 @@ All routes need the signed-in session (the existing `api` client in `src/lib/api
       "imageKey": "heart-knowing",
       "offers": [
         { "id": "heart_ticket_1", "label": "1 ใบ", "quantity": 1, "bonusQuantity": 0, "units": 1, "priceMoo": 49, "badges": [] },
-        { "id": "heart_ticket_3", "label": "2 ใบ แถม 1", "quantity": 2, "bonusQuantity": 1, "units": 3, "priceMoo": 99, "badges": ["bonus", "recommended"] }
+        { "id": "heart_ticket_3", "label": "2 ใบ แถม 1", "quantity": 2, "bonusQuantity": 1, "units": 3, "priceMoo": 99, "badges": ["bonus", "recommended"] },
+        { "id": "heart_ticket_5", "label": "5 ใบ", "quantity": 5, "bonusQuantity": 0, "units": 5, "priceMoo": 149, "badges": [] }
       ]
     }]
   }]
@@ -105,11 +106,12 @@ body. Make a new key for a new tap.
 ```json
 { "enabled": true, "balance": 55,
   "packs": [
-    { "id": "p50", "priceBaht": 50, "base": 50, "bonus": 0, "bonusPercent": 0 },
-    { "id": "p100", "priceBaht": 100, "base": 100, "bonus": 5, "bonusPercent": 5 },
-    { "id": "p300", "priceBaht": 300, "base": 300, "bonus": 30, "bonusPercent": 10 },
-    { "id": "p500", "priceBaht": 500, "base": 500, "bonus": 75, "bonusPercent": 15 },
-    { "id": "p1000", "priceBaht": 1000, "base": 1000, "bonus": 200, "bonusPercent": 20 }
+    { "id": "p50", "priceBaht": 49, "base": 49, "bonus": 0, "bonusPercent": 0 },
+    { "id": "p100", "priceBaht": 99, "base": 99, "bonus": 0, "bonusPercent": 0 },
+    { "id": "p150", "priceBaht": 149, "base": 149, "bonus": 0, "bonusPercent": 0 },
+    { "id": "p300", "priceBaht": 299, "base": 299, "bonus": 31, "bonusPercent": 10 },
+    { "id": "p500", "priceBaht": 499, "base": 499, "bonus": 76, "bonusPercent": 15 },
+    { "id": "p1000", "priceBaht": 999, "base": 999, "bonus": 201, "bonusPercent": 20 }
   ],
   "ledger": [ /* newest 20 มู rows, LedgerEntry */ ],
   "tickets": { "usesLeft": 4, "expiring": [ { "uses": 1, "expiresAt": "2026-10-30T00:00:00.000Z", "source": "promotion" } ] } }
@@ -219,3 +221,5 @@ Pass `entry` through the Shop URL as `?from=door|wallet|nav` when you link to it
   `POST /api/wallet/dev/pay { orderId }`) → tickets appear → the door opens a report and the count drops by one.
 - A tab reload during a pending payment recovers (existing behaviour, still working).
 - `type-check`, `lint`, `test`, `build` pass. Report which files you changed, one line each.
+
+FRESH before → after (2026-10-01 pricing example): F 3→3 (indexed) · R 1→1 (updated pack and offer examples and marked the old task checklist historical; remaining original UI guidance is not a current implementation audit) · E 2→2 (large but sectioned) · S 3→3 (frontend handoff only) · H 2→2 (API examples useful; original completion checklist dated). Total 11/15 nominal; effective C → C because an outdated handoff is capped until fully reconciled.
