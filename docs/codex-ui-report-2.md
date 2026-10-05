@@ -1,6 +1,8 @@
 ---
 title: UI Report 2 — Repeated Guidance Blocks and Voice Drift
-status: open
+type: HANDOFF
+status: closed
+last_reviewed: 2026-10-05
 author: Claude
 date: 2026-09-05
 scope: horo-fe
@@ -8,6 +10,8 @@ owner: Codex
 ---
 
 # UI Report 2 — Repeated Guidance Blocks and Voice Drift
+
+> **Closed 2026-10-05 by the owner.** Kept for history; do not act on it.
 
 > **2026-09-30:** the ดวงคู่ parts of this document are superseded. Legacy markdown and v2 compatibility rendering were removed; only canon v1 (the teaser-first report) is shown, and legacy rows are hidden. See `horo-be/docs/compatibility-response-fix.md`, "Canon v1".
 

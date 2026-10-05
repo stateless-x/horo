@@ -605,14 +605,14 @@ for making mental conversion difficult.
 
 #### Asset roles
 
-- **มู gem:** keep `CurrencyImage` and `mu-gem-clay-{size}.webp` as the only mark beside a numeric มู amount.
-- **Feature-credit ticket asset:** the earlier card direction is superseded. Create one premium, text-free clay ticket
-  through `clay-asset-maker`, inspired by a lottery-ticket silhouette and PixAI's readable expiry-ticket hierarchy but
-  without gambling symbols, copied branding or generated text. Export transparent PNG + WebP size variants and expose
-  them through a dedicated `FeatureCreditImage` component. It represents 90-day feature credits only, never permanent
+- **มู gem:** keep `CurrencyImage` (`IMAGES.currency`, the chiikawa crystal since 2026-10-05) as the only mark beside a numeric มู amount.
+- **Feature-credit ticket asset:** the earlier card direction is superseded. Since 2026-10-05 the ticket is the
+  chiikawa heart ticket (`IMAGES.ticket`, master `horo-fe/assets/art/shop/heart-ticket.png`), inspired by a lottery-ticket silhouette and PixAI's readable expiry-ticket hierarchy but
+  without gambling symbols, copied branding or generated text. It is shown through `HeartKnowingTicket`; the image
+  loader picks the size. It represents 90-day feature credits only, never permanent
   มู or a payment method. It never appears in the PromptPay checkout.
 - **New art:** none required for the first pass. If visual QA finds a real comprehension or empty-state gap, create one
-  transparent, text-free asset through `clay-asset-maker`; follow the Clay Cast Rule in `horo-fe/DESIGN.md`. Decorative
+  transparent, text-free chiikawa-style asset; follow the Storybook Rule in `horo-fe/DESIGN.md`. Decorative
   art stays secondary to amount, action, and payment status.
 
 #### Responsive and accessibility contract
@@ -668,7 +668,7 @@ through `software-architect`.
 
 **Thesis.** The wallet is not a bank account and the sheet is not a currency exchange. They are the bridge between a
 question the reader already cares about and the next useful answer. Use one focal object, one clear amount, and one next
-action per state. Personality comes from the clay assets, confident Thai, and a small moment of arrival—not from more
+action per state. Personality comes from the illustrations, confident Thai, and a small moment of arrival—not from more
 badges, confetti, urgency, or hiding the price.
 
 **Visible name.** Use `มูของฉัน` for the page title and app-menu label. It is warmer and more natural than
@@ -773,12 +773,12 @@ feature. All มู—including pack bonuses—remain permanent; feature-credit 
 - On `มูของฉัน`, one equal-width segmented control toggles `ประวัติ` and `คูปอง`. The selected tab is encoded as
   `?tab=history|coupons` so Back, Forward and shared wallet links preserve it. Default to `ประวัติ`; a newly granted
   coupon may deep-link to `?tab=coupons`, but must not steal the tab on an ordinary visit.
-- Each coupon is a ticket-shaped row/card: clay ticket image, feature name, `ใช้ได้อีก N ครั้ง`, exact expiry
+- Each coupon is a ticket-shaped row/card: the heart ticket image, feature name, `ใช้ได้อีก N ครั้ง`, exact expiry
   `ใช้ได้ถึง 29 ธ.ค. 2569`, and one `ไปใช้คูปอง` action when the feature has a valid destination. Active coupons come
   first; used and expired coupons remain visible below with clear status and no active CTA.
-- The ticket image comes from `clay-asset-maker`: premium tactile clay, transparent, text-free, readable at 48–64 px,
+- The ticket image is the chiikawa heart ticket (`IMAGES.ticket`): transparent, text-free, readable at 48–64 px,
   with a perforated/stub silhouette but no lottery number, gambling mark, currency mark, logo or embedded expiry text.
-  `FeatureCreditImage` owns its WebP/PNG variants. `CurrencyImage` continues to own the มู gem and never resolves to a
+  `HeartKnowingTicket` shows it. `CurrencyImage` continues to own the มู gem and never resolves to a
   ticket file. The older generation-credit card artwork is not used on this surface.
 - Tabs use semantic controls with a visible selected state, keyboard operation and focus. Content switches without a
   page reload; loading, empty and error states belong to each panel. On phone, neither label truncates or scrolls.
@@ -942,7 +942,7 @@ a real visual relationship. Avoid `ฉบับเต็ม` as a bare product l
 #### Visual and interaction direction
 
 - The compatibility talisman remains the emotional hero. The door receives a quieter companion image chosen from the
-  existing relationship-aware clay asset map; do not add a generic oracle icon beside every purchase button.
+  existing relationship-aware art map (`IMAGES.relationship`); do not add a generic oracle icon beside every purchase button.
 - A wallet spend uses the มู gem. A feature-credit redemption uses the coupon-ticket asset from T19. PromptPay uses no
   fictional card icon. The visible asset changes with the actual payment path.
 - The locked door is one premium container, not a stack of nested cards. Relationship pink stays as a restrained
@@ -991,7 +991,7 @@ feels detached from the reader's original curiosity.
 
 1. Intent echo: `อยากเข้าใจเรื่องนี้ต่อ` followed by the selected free question. No lock icon and no repeated badge.
 2. Type-aware promise: one two-line headline from the model below.
-3. Three short outcomes, shown as a quiet list with existing relationship-aware clay cue art: understand the pattern,
+3. Three short outcomes, shown as a quiet list with existing relationship-aware cue art: understand the pattern,
    talk or work together more clearly, and know the next move. These are not accordions and do not hide the CTA.
 4. The relevant wallet-aware price sentence and primary action.
 5. Reassurance: `เปิดครั้งเดียว กลับมาอ่านได้ตลอด`.
@@ -1032,7 +1032,7 @@ sheet, not on the report door.
 - On phone, the intent echo, price and CTA fit before the optional detail disclosure. On iPad and desktop, the door's
   action remains in the existing sticky offer rail, aligned with free content inside the 1080px shell.
 - CTA asset follows the payment route: gem for มู, ticket for coupon, no decorative asset for top-up because its own
-  sheet explains PromptPay. Existing relationship-specific clay art appears once in the outcome list, never repeated
+  sheet explains PromptPay. Existing relationship-specific art appears once in the outcome list, never repeated
   on every CTA.
 
 **Anti-goals.** Do not blur the free reading, hide score detail, put a countdown on the door, show crossed-out prices,
