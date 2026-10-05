@@ -1,14 +1,19 @@
 ---
 type: HANDOFF
-status: active
+status: historical
 scope: horo-fe-ui-refinement
-last_reviewed: 2026-09-04
+last_reviewed: 2026-10-05
 owner: product
 supersedes: []
 superseded_by: null
 ---
 
 # Claude UI Implementation Handoff
+
+> **Historical (2026-10-05).** Shipped: the shared category map (`horo-fe/src/lib/fortune-category-config.ts`) and Today's single category list exist.
+> **2026-10-05:** the clay art this packet names was retired for chiikawa-style art. Images now come only from `horo-fe/src/lib/art` (`IMAGES`); rules: `horo-fe/DESIGN.md` "The Storybook Rule". Asset paths below no longer exist.
+
+> **2026-09-30:** the ดวงคู่ parts of this document are superseded. Legacy markdown and v2 compatibility rendering were removed; only canon v1 (the teaser-first report) is shown, and legacy rows are hidden. See `horo-be/docs/compatibility-response-fix.md`, "Canon v1".
 
 ## Role
 

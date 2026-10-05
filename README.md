@@ -77,8 +77,9 @@ horo-fe is generated. Edit it and your work disappears at the next sync.
 
 ## Deployment
 
-Railway deploys each service when you push to its default branch. horo-be runs
-`drizzle-kit push` as it starts, so a new table or column arrives with the
+The frontend (horo-fe) runs on Vercel. horo-be, Postgres, Redis and horo-admin run on Railway. Each deploys when
+you push to its default branch (`master` for horo-fe and horo-be, `main` for horo-admin); see
+`horo-fe/DEPLOYMENT.md` for the frontend. horo-be runs `drizzle-kit push` as it starts, so a new table or column arrives with the
 deploy and needs no migration file.
 
 Destructive changes are the exception, and they fail quietly. Push runs without

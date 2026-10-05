@@ -1,12 +1,16 @@
 ---
 title: Redis Activation Plan
-status: implemented-and-verified (uncommitted)
+type: PLAN
+status: historical
+last_reviewed: 2026-10-05
 owner: Claude (implementation delegated to Sonnet agent)
 created: 2026-09-05
 scope: horo-be only
 ---
 
 # Redis Activation Plan
+
+> **Historical (2026-10-05).** Implemented and committed: `horo-be/src/lib/redis.ts` and `generation-singleflight.ts` are tracked and in use. Kept for the reasoning only.
 
 ## Problem
 

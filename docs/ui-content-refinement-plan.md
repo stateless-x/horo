@@ -1,14 +1,20 @@
 ---
 type: PLAN
-status: active
+status: historical
 scope: product-retention-content-ui
-last_reviewed: 2026-09-04
+last_reviewed: 2026-10-05
 owner: product
 supersedes: []
 superseded_by: null
 ---
 
 # สายมู Product, Content, and UI Refinement Plan
+
+> **Historical (owner, 2026-10-05).** The current codebase is the authority for product, content and UI; this plan is kept for its reasoning only.
+>
+> **2026-10-05:** the clay art this packet names was retired for chiikawa-style art. Images now come only from `horo-fe/src/lib/art` (`IMAGES`); rules: `horo-fe/DESIGN.md` "The Storybook Rule". Asset paths below no longer exist. Where this plan says "clay", read "category/illustration art from the registry".
+
+> **2026-09-30:** the ดวงคู่ parts of this document are superseded. Legacy markdown and v2 compatibility rendering were removed; only canon v1 (the teaser-first report) is shown, and legacy rows are hidden. See `horo-be/docs/compatibility-response-fix.md`, "Canon v1".
 
 ## Executive decision
 
@@ -194,7 +200,7 @@ The compatibility form accepts an optional partner MBTI (`ไม่ระบุ`
 
 ### Voice and visual rules
 
-- UI instructions use `คุณ`; oracle prose may use `เจ้า`.
+- Use contemporary, respectful Thai everywhere. Generated readings use supplied names for both people and never `เจ้า`, `ข้า`, `กู`, `มึง`, or mystical narration.
 - Purple is the default semantic accent. Pink is reserved for romance; element colors represent actual element data only.
 - Clay imagery communicates meaning. Navigation, close, share, chevrons, and other controls remain conventional icons.
 - No emoji as interface icons.

@@ -1,14 +1,16 @@
 ---
 type: HANDOFF
-status: active
+status: historical
 scope: horo-fe-ui-correction-round-1
-last_reviewed: 2026-09-10
+last_reviewed: 2026-10-05
 owner: product
 supersedes: []
 superseded_by: null
 ---
 
 # Claude UI Correction Round 1
+
+> **Historical (2026-10-05).** Shipped: Today renders one responsive category list with `aria-expanded`/`aria-controls` (`horo-fe/src/app/dashboard/fortune/daily/page.tsx`). Donation rules in §4 were superseded on 2026-09-10 and the donation pop-up was removed on 2026-09-27.
 
 Codex reviewed the actual implementation. Typecheck passes, the Impeccable detector reports zero findings, and the clay/localization foundations are accepted. Fix only the concrete issues below. Codex remains the orchestrator; do not change backend contracts, commit, or push.
 
