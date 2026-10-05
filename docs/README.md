@@ -28,6 +28,7 @@ owner: product
 - [../horo-fe/docs/decisions/static-assets-cdn.md](../horo-fe/docs/decisions/static-assets-cdn.md) — images: the `IMAGES` registry, `bun run build:art`, folder layout, bunny.net CDN and caching. Read before adding or changing any image.
 - [../horo-fe/docs/decisions/compatibility-result-routes.md](../horo-fe/docs/decisions/compatibility-result-routes.md) — why ดวงคู่ results live at `/dashboard/compatibility/[id]` and share links at `/compatibility/[token]`.
 - [doc-hygiene-2026-10-05.md](doc-hygiene-2026-10-05.md) — latest docs triage and what changed; its three open items are resolved.
+- [post-deploy-2026-10-06.md](post-deploy-2026-10-06.md) — after deploying 1.0.0: deploy order, the light-mode reset (automatic), and the compatibility score backfill command.
 - [fresh-score-log.md](fresh-score-log.md) — history of FRESH doc scores; append, don't read for routing.
 
 Other repo-specific docs live in `horo-fe/docs/`, `horo-be/docs/` and `horo-admin/docs/` (each has a `CODEMAP.md`).
