@@ -8,10 +8,24 @@
 
 ## What you get
 
-- **A reading that is yours.** Give a birth date and get your element, your four pillars, and a written reading, not a one-size-fits-all horoscope.
-- **What today holds.** Daily and monthly guidance you can come back to.
-- **Compatibility (ดวงคู่).** See how you and someone else fit together.
-- **Results you can share.** Send a reading to a friend with a link.
+**Your reading**
+- **Your chart.** Give a birth date and get your element, your four pillars, and a full written reading, not a one-size-fits-all horoscope.
+- **Today.** A daily reading with your good moments of the day, your lucky colour, and a short take on each area of life.
+- **This month.** A monthly outlook, with the reasoning behind it laid out.
+
+**With other people**
+- **Compatibility (ดวงคู่).** See how you and someone else fit together. Past results are saved in your history.
+- **Share it.** Send a result as a link, or save a card as an image for a post or a chat.
+
+**To learn and plan**
+- **Thai calendar.** Every month with Buddhist holy days (วันพระ), shaving days (วันโกน), public holidays, and the colour of each day.
+- **Guides in Thai.** Plain-language explainers for Thai astrology, Bazi, and มูเตลู, with reference tables and an honest note on what each can and cannot tell you.
+
+**Using it**
+- Sign in with Google or X. Your birth details live in one profile you can edit any time.
+- Works on phone, tablet and desktop, in light and dark themes.
+
+Starting is free. A few extras are paid.
 
 Everything is written in Thai, in the voice of a friend who knows the subject, with no mystical theatre.
 
