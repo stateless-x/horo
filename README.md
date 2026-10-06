@@ -1,103 +1,50 @@
 # Horo (สายมู.com)
 
-Give it your birth date. It reads that date through two traditions at once,
-Chinese Bazi and Thai astrology, and writes back a reading in Thai: your
-element, your four pillars, what today holds, how you match with someone else.
-Over a thousand people have used it.
+**Horo is a Thai-language web app that turns a birth date into a personal reading.** It reads the date through Thai astrology, Chinese Bazi, and modern psychology, then writes the result in plain, contemporary Thai.
 
-This repository is a navigator. It contains no application code. The three
-services below live in their own repositories and are tracked here as
-submodules, so one clone brings the whole system at versions known to work
-together.
+[Try it at สายมู.com](https://xn--y3cbx6azb.com) · Built by [Purin Buriwong](https://pooh.fyi)
 
-## The three repositories
+> สายมู.com คือเว็บดูดวงภาษาไทยที่อ่านจากวันเดือนปีเกิดของคุณ ผ่านโหราศาสตร์ไทย ดวงจีนปาจื้อ และจิตวิทยาสมัยใหม่ แล้วเรียบเรียงเป็นคำอ่านเฉพาะตัว ทั้งดวงรายวัน ดวงคู่ และดวงชะตาฉบับเต็ม เริ่มดูฟรีได้เลย
 
-| Repo | What it does | Stack |
-|---|---|---|
-| [horo-fe](https://github.com/stateless-x/horo-fe) | The web app people use. Onboarding, daily readings, birth chart, compatibility. | Next.js 15 · React 19 · Tailwind v4 · Framer Motion |
-| [horo-be](https://github.com/stateless-x/horo-be) | The API. Astrology maths, reading generation, auth, analytics. | Elysia · Drizzle · Postgres · Better Auth · DeepSeek |
-| [horo-admin](https://github.com/stateless-x/horo-admin) | Private analytics dashboard. Reads the product database, never writes to it. | Next.js 15 · postgres.js · Recharts |
+## What you get
 
-```
-horo-fe  ──HTTP──▶  horo-be  ──▶  PostgreSQL  ◀──read only──  horo-admin
-                            ──▶  DeepSeek (writes the readings)
-                            ──▶  Redis (rate limits, cache)
-```
+- **A reading that is yours.** Give a birth date and get your element, your four pillars, and a written reading, not a one-size-fits-all horoscope.
+- **What today holds.** Daily and monthly guidance you can come back to.
+- **Compatibility (ดวงคู่).** See how you and someone else fit together.
+- **Results you can share.** Send a reading to a friend with a link.
 
-One rule explains that diagram: horo-be owns every database write and every
-model call. The frontend holds no connection string and no API key. horo-admin
-shares the database but only reads from it, and keeps its own logins in a
-separate `admin` schema so an admin can never be counted as a customer.
+Everything is written in Thai, in the voice of a friend who knows the subject, with no mystical theatre.
 
-## Start here
+## Why it exists
 
-```bash
-git clone --recurse-submodules https://github.com/stateless-x/horo.git
-```
+Astrology is popular in Thailand, but good readings are hard to find. They tend to be generic, wrapped in jargon, or locked behind a consultation. Horo exists so that anyone can get a clear, personal reading in a few minutes, in language they would actually use.
 
-Already cloned without submodules? `git submodule update --init --recursive`.
+## Common questions
 
-Then let `scripts/` do the rest. It checks each submodule is populated, copies
-`.env.example` to `.env.local` where one is missing, installs when
-`node_modules` is absent, and starts each server on its own port.
+### What is Horo?
 
-```bash
-./scripts/dev.sh          # backend :3001 + frontend :3000
-./scripts/dev.sh all      # the above plus admin :3002
-./scripts/dev.sh admin    # one service on its own
-./scripts/restart.sh      # stop, then start again
-./scripts/stop.sh         # stop everything
-```
+Horo is a Thai-language web app by Purin Buriwong. It produces personal readings from a birth date, using Thai astrology, Chinese Bazi, and modern psychology.
 
-The first run copies the `.env.example` files and stops. No secrets are in git,
-so fill in `DATABASE_URL` and the API keys, then run it again.
+### Is it free?
 
-Servers run in the background with logs under `.dev/logs/<service>.log`;
-`./scripts/dev.sh -f` starts them and follows the output. Ordering is handled —
-the frontend calls the backend on load and shows an error state without it.
+Starting is free. A first reading costs nothing, and a few extras are paid.
 
-To run one in the foreground instead:
+### Who built it?
 
-```bash
-cd horo-be    && bun run dev            # 3001
-cd horo-fe    && bun run dev            # 3000
-cd horo-admin && bun run dev -- -p 3002 # 3002, or it collides with horo-fe
-```
+[Purin Buriwong](https://pooh.fyi) designs, builds, and runs Horo.
 
-## Two things that will bite you
+### Is the code open source?
 
-**Submodule pushes come first.** A change spanning the app and the API lands in
-three commits: one in each submodule, then one here moving the pointers. Push
-the submodules before pushing this repository, or you publish a pointer to a
-commit nobody else can fetch.
+No. The application is private and this repository does not contain it. This repository is the public face of the project. It holds this description and nothing that runs the product.
 
-**Shared types have one home.** They live in `horo-be/lib/shared/types` and
-reach the frontend through `bun run sync:types`, run from horo-be. The copy in
-horo-fe is generated. Edit it and your work disappears at the next sync.
+### Can I contribute or report a problem?
 
-## Deployment
+The source is closed, so there is no contribution flow. Questions and feedback are welcome through [pooh.fyi](https://pooh.fyi).
 
-The frontend (horo-fe) runs on Vercel. horo-be, Postgres, Redis and horo-admin run on Railway. Each deploys when
-you push to its default branch (`master` for horo-fe and horo-be, `main` for horo-admin); see
-`horo-fe/DEPLOYMENT.md` for the frontend. horo-be runs `drizzle-kit push` as it starts, so a new table or column arrives with the
-deploy and needs no migration file.
+## About the author
 
-Destructive changes are the exception, and they fail quietly. Push runs without
-`--force`, so a dropped column or a changed type waits for a confirmation that
-never comes in a deploy. Apply those to the database by hand first, then ship a
-schema that already matches.
+Purin Buriwong builds and operates Horo. You can find more about Purin at [pooh.fyi](https://pooh.fyi).
 
-## The `master` branch is dead
+---
 
-This repository still carries a `master` branch holding the original Turbo
-monorepo, the version of this product that existed before it was split into
-separate repositories in February 2026. It shares no history with `main` and
-nothing deploys from it. It is kept only as a record. Ignore it.
-
-## Documentation
-
-`docs/` holds the reasoning behind the product rather than instructions for it:
-the content and retention plan, the record of how compatibility scoring was
-fixed, and the architecture decision for the admin dashboard. Start with
-`docs/README.md`, which indexes them. Service specific notes live in
-`horo-fe/docs/` and `horo-be/docs/`.
+© Purin Buriwong. All rights reserved. The Horo name, artwork, and readings are not licensed for reuse.
