@@ -17,7 +17,7 @@ When this doc and the code disagree, the code wins; fix this doc in the same com
 |---|---|---|
 | horo-be | Claude (this session) | §3–6, §8 |
 | horo-admin | Claude subagent | §5 tables, §6 admin routes, §9 stats, B8 |
-| horo-fe | ChatGPT | **[shop-frontend-handoff.md](shop-frontend-handoff.md)** (self-contained, same contract as §6) |
+| horo-fe | ChatGPT | the retired frontend handoff packet (same contract as §6) |
 
 | § | Section |
 |---|---|
@@ -81,7 +81,7 @@ fulfilment seam that stays unimplemented.
 | D2 | **No balance cap.** Remove `BALANCE_CAP`, `BalanceCapExceeded`, the cap check in `createOrder`/`creditOrder`/`adjust`, and the `credit_failed_cap` review path. `GET /api/wallet` drops `cap`. Legal note: the 2026-09-27 decision log listed a closed-loop e-money confirmation as a launch gate; removing the cap makes that confirmation more important, not less |
 | D3 | **No welcome gift for now; still on the table.** `GET /api/wallet` stops calling `ensureWelcome`. The code stays behind a new feature flag `welcome_gift` (default **off**, set in horo-admin สวิตช์ฟีเจอร์), so turning it on later is a switch, not a rebuild |
 | D4 | **A failed generation costs nothing, automatically, and admins can see every attempt.** Tickets are consumed only when the report saves (a failure never touches the ticket). Every unlock attempt writes an `unlock_attempts` row: outcome, failure class, error reference, model, tokens, duration, and which grant paid. Admins can **restore a ticket** (a compensating row) when a saved report turns out broken. Refunding a bundle back to มู is admin-only, and only for unused tickets |
-| D5 | Claude builds horo-be. A Claude subagent builds horo-admin. ChatGPT builds horo-fe from `shop-frontend-handoff.md` |
+| D5 | Claude builds horo-be. A Claude subagent builds horo-admin. ChatGPT builds horo-fe from the frontend handoff packet (retired once shipped) |
 | D6 | The ticket-pass work is committed as a checkpoint in all three repos (not pushed). horo-be has 7 red tests and horo-fe 12; this plan's steps turn them green |
 | D7 | **The ultra tier is deprecated.** Nothing is seeded for it |
 | D8 | **Promotion grants expire after 30 days** by default; an admin can pick another date. Admin grants may be permanent |
@@ -354,7 +354,7 @@ its other dashboards. horo-be adds no read routes for them.
 
 ## 7. Frontend
 
-ChatGPT builds horo-fe from **[shop-frontend-handoff.md](shop-frontend-handoff.md)**. That file restates §6 for the
+ChatGPT builds horo-fe from the frontend handoff packet (retired once shipped). That file restates §6 for the
 reader routes and adds the screens, copy, states, events and files to replace. Change the contract here first, then
 there.
 
