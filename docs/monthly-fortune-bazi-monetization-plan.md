@@ -43,6 +43,7 @@ Read-only check on 2026-10-23 matched the 2026-10-22 audit (13 tracker rows endi
 1. Owner go for `apply.sql` on production (backup `~/horo-backups/horo-prod-20261023-124421.dump` exists; take a fresh one right before applying).
 2. Owner decision on migration 0013 (independent of this release).
 3. Deploy horo-be first and prove it live, then horo-fe, then horo-admin; keep `monthly_lock` off.
+   Then convert all old free reports up front with `horo-be/scripts/convert-legacy-monthly.ts` (owner decision 2026-10-23: keep the new teaser only; measured on the production copy at about ฿0.08 per row and about 30 minutes for 402 rows, each conversion logged as a teaser attempt). A few days after the flag is on, `cleanup-legacy-chart-cache.sql` removes the old whole-chart cache.
 4. Owner pilot with a real PromptPay top-up: receipt, ticket, unlock, reread, refund of an unused ticket, then switch `monthly_lock` on in horo-admin.
 5. Follow-ups logged, not blocking: raise the detail first-answer rate (code-switching is the main cause); residual "มีคน…" phrasing; the mini-shop dialog hides the balance/shortfall line for the monthly ticket (the pack sheet still shows it); `check-migrations.js` reports historical rows as missing because their timestamps predate the regenerated journal.
 
