@@ -88,14 +88,14 @@ special deeper with the same anchor, bundle purchase and refund, supersede), `te
 ## Changing a price: checklist
 
 1. Edit `SEED_OFFERS` and, for a new price, add the superseded id to `SEED_SUPERSEDES` (never edit a published offer's price). A new product or pack needs its list price in `list-prices.ts`; a new bundle needs its parts in `bundles.ts`.
-2. Keep `MONTHLY_PASS_OFFER_ID` style constants (`lib/shared/types/shop.ts`, copied into `horo-fe/src/lib-packages/shared/types/`) and horo-admin's `MONTHLY_REGULAR_OFFER_IDS` in step.
+2. Keep `MONTHLY_PASS_OFFER_ID` style constants (`lib/shared/types/shop.ts`, copied into `horo-fe/src/lib-packages/shared/types/`) and horo-admin's `MONTHLY_REGULAR_OFFER_IDS` in step. horo-admin keeps its own copy of the anchors, offer ids and packs in `horo-admin/src/lib/shop/price-set.ts` (and its test): mirror every price change there, or the admin pricing panel flags a mismatch.
 3. Run the pricing tests (backend catalog tests, `offer-display.test.ts`) and look at the Shop and one mini shop dialog in dev.
 4. Update this page, `horo-be/docs/shop.md` and `horo-be/docs/wallet.md` if packs changed, and log the decision.
 5. Production: push-first deploy; new offers are rows inserted by the catalog seed, no `db:migrate` (see `horo-be/scripts/ensure-migrations.md`).
 
 ## Done when
 
-A new or changed price passes steps 1 to 7 above, shows the same on the Shop card, the Shop dialog and the mini shop, and this page and the decision log name the new number.
+A new or changed price passes the steps in "How a price is made" and the checklist above, shows the same on the Shop card, the Shop dialog and the mini shop, and this page and the decision log name the new number.
 
 FRESH before → after (2026-10-24, planned → live): F 3→3 (indexed in docs/README.md, wording updated) · R 3→2 (the table and rules now
 state built behaviour and match `list-prices.ts`, `catalog.ts` seed and the horo-be tests, but the horo-fe `startingPrice`
