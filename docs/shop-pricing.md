@@ -64,8 +64,8 @@ percent. The Shop card shows one "เริ่มต้น" price with its strik
 | ดวงเดือน 12 (`monthly_12_1199`) | 1,199 | 6,000 | ลด 80% | 100 |
 | ดวงเดือน 1, special (`event_monthly_99`) | 99 | 500 | ลด 80% | 99 |
 | ดูเพิ่ม 10 ครั้ง (`compat_check_10`) | 99 | 200 | ลด 50% | 9.9 |
-| ชุดคู่เดือนนี้ (`bundle_pair_249`: ดวงเดือน 1 + รู้ใจ 1) | 249 | 700 | ลด 60% | |
-| ชุดครบเดือน (`bundle_full_449`: ดวงเดือน 3 + รู้ใจ 3) | 449 | 2,100 | ลด 75% | |
+| ชุดลองดู (`bundle_pair_249`: ดวงเดือน 1 + รู้ใจ 1) | 249 | 700 | ลด 60% | |
+| ชุดดูต่อเนื่อง (`bundle_full_449`: ดวงเดือน 3 + รู้ใจ 3) | 449 | 2,100 | ลด 75% | |
 
 The monthly offer ids encode their price, so 199 and 399 are new offers that superseded `monthly_1_249` and `monthly_3_447`
 (published terms are locked; `SEED_SUPERSEDES` in `horo-be/src/lib/catalog.ts` archives the old ones in the seed call that
@@ -73,7 +73,7 @@ inserts the new). The old ids stay readable on past purchases, the ledger and an
 
 Bundles are the product `bundle_set` (type `bundle`, `horo-be/src/lib/bundles.ts`). A bundle is one set: its offer has
 `units` 1 and carries `savingMoo` (parts at everyday offers minus its price: 49 and 149), so the Shop says "ประหยัด N มู"
-and never shows a price per ticket. The tie to know: ดวงเดือน 1 and ชุดคู่ both show 60%, so "single below bundle" holds
+and never shows a price per ticket. The tie to know: ดวงเดือน 1 and ชุดลองดู both show 60%, so "single below bundle" holds
 strictly for the same item (1 < 3 < 12, 1 < 3 < 5) and for ตั๋วรู้ใจ 1 against the bundles, and ties for ตั๋วดวงเดือน 1 against
 the pair.
 
