@@ -38,6 +38,10 @@ Checks re-run by the orchestrator after integration: horo-be `tsc` and `bun test
 
 Read-only check on 2026-10-23 matched the 2026-10-22 audit (13 tracker rows ending at 0012; no `monthly_reports`; 402 `chart_narratives`; 26 linked Google+X users). The rehearsal on a restored backup found one more hazard: the tracker's id sequence sits behind its hand-inserted rows 9 to 12, so any insert collides. `horo-be/scripts/release/2026-10-monthly/apply.sql` realigns the sequence, applies 0015 + 0016 and records 0014 to 0016; `verify.sql` and `rollback.sql` were exercised (apply → verify → rollback → re-apply; 402 legacy months backfilled across 2026-04 to 2026-10; a second apply fails on its precondition). `db:migrate` must never run on production: the history does not rebuild the push-built schema. Migration 0013 is deliberately not recorded; applying it would split 26 accounts (24 last seen before July, 2 active in October, 1 live session, 7 with chart narratives, 0 purchases). Runbook: `horo-be/scripts/ensure-migrations.md`.
 
+### Deploy record (2026-10-23 evening, Asia/Bangkok)
+
+Order as it actually happened: root `main` e1efb5b → horo-fe `master` 3827ee3 (Vercel) → horo-be `master` 905a466 (Railway; its startup push created the three tables, so the push-first variant `apply-after-push.sql` ran next: 402 legacy months backfilled, tracker 16, only 0013 unrecorded) → horo-be `master` 51ec4ef (DeepSeek V4 support; live log confirms `model=deepseek-flash thinking=disabled` and a public teaser generated). `DEEPSEEK_MODEL=deepseek-flash` is set on the Railway `api` service. Model decision: the owner chose the current DeepSeek model; `deepseek-chat` is a legacy alias no longer on DeepSeek's price list. On flash the monthly contract measured 12/12 teasers and 12/12 paid details saved across two six-profile runs (mean detail 31.5 s) after the repair-engine changes in 51ec4ef; cost per generation is about half of the chat figures. `monthly_lock` remains off.
+
 ### Open before enabling sales
 
 1. Owner go for `apply.sql` on production (backup `~/horo-backups/horo-prod-20261023-124421.dump` exists; take a fresh one right before applying).
