@@ -1,8 +1,8 @@
 ---
 type: PLAN
-status: active — built on feat/monetization-prep, not merged: T1, T2, T3, T4, T5 (Stripe PromptPay), T7 (เติมมู pay step), T8 lock + spend, T16 (audit actors + history route), and the T21 compatibility conversion UI; verified end to end on the Stripe sandbox 2026-09-29. T18 wallet + เติมมู scope and design direction approved 2026-09-30. Owner decided permanent bonus มู, separate 90-day feature credits (T19), and admin-managed 30-day promotional มู campaigns (T20) on 2026-09-30. Not built: T6 events, T9–T15, T13/T17/T19/T20 admin, accounting, feature-credit and promotion work, the history page
+status: active — built on feat/monetization-prep, not merged: T1, T2, T3, T4, T5 (Stripe PromptPay), T7 (เติมมู pay step), T8 lock + spend, T16 (audit actors + history route), and the T21 compatibility conversion UI; verified end to end on the Stripe sandbox 2026-09-29. T18 wallet + เติมมู scope and design direction approved 2026-09-30. Owner decided permanent bonus มู, separate 90-day feature credits (T19), and admin-managed 30-day promotional มู campaigns (T20) on 2026-09-30. Not built: T6 as planned (17 events + 4 columns; a Shop event vocabulary with `props` shipped instead, see Tracking plan), T9–T15, T13/T17/T19/T20 admin, accounting, feature-credit and promotion work, the history page
 scope: paid products, permanent and promotional มู, feature credits, payments, removal of donation and forced Shopee, wallpaper waitlist
-last_reviewed: 2026-09-30
+last_reviewed: 2026-10-24 (Tracking plan section only; the rest of this doc is as of 2026-09-30)
 owner: product
 decision_log: ~/product-decisions/horo/2026-09-30-monetize.md (current); 2026-09-27-monetize.md (origin)
 ---
@@ -140,6 +140,12 @@ This list replaces the separate event names proposed in the 2026-09-28 and 2026-
 
 ### Event columns (additive, nullable, on `product_events`)
 
+> **Status 2026-10-24: these four columns were never built, and the 17 events below are a plan, not the live
+> vocabulary.** What shipped is the Shop vocabulary in "Shipped Shop and sale events" below, in
+> `horo-be/lib/shared/types/analytics.ts` (`TRACKED_EVENT_NAMES`, `SERVER_EVENT_NAMES`), plus one column,
+> `product_events.props` (jsonb, nullable), for numbers and flags that do not fit `surface` / `category` / `detail`.
+> Where this plan and that file disagree, the file wins.
+
 | Column | Holds |
 |---|---|
 | `ref_id` text | the order id, report id or pass row id; joins an event to the money tables |
@@ -172,6 +178,53 @@ This list replaces the separate event names proposed in the 2026-09-28 and 2026-
 | 17 | `waitlist_joined` | fe | wallpaper waitlist | product · — · — · — | user + product |
 
 Wallet pages reuse `surface_viewed`, with `wallet` and `wallet_history` added to `TRACKED_EVENT_SURFACES`.
+
+### Shipped Shop and sale events (as of 2026-10-24)
+
+All rows land in `product_events` (`surface` / `category` / `detail` as listed; `props` is the jsonb column). Client events
+go through `POST /api/analytics/event` and the signed-in `useTrackEvent`; server events only through `recordServerEvent`.
+The rows for `shop_viewed`, `product_viewed`, `monthly_offer_*` and `sale_modal_*` are unchanged and are not repeated here.
+
+**`props.terms`** (`OfferTerms`) is one offer as the reader saw or paid it, prices in มู: `productType` `ticket` | `bundle`,
+`priceMoo`, `anchorPriceMoo`, `percentOff`, `savingMoo` (bundles only), `units`, `isEvent`, `eventSlug` (event offers only;
+`isEvent` is true exactly when it is set). Its keys sit flat in `props`. A bundle is one set: `units` 1, never a per-ticket price.
+
+| Event | Side | Fires when | `category` · `detail` | `props` | Dedup |
+|---|---|---|---|---|---|
+| `offer_viewed` | fe | an offer row in a product dialog has been at least half visible for 1 s; every product, both dialogs | product id · offer id | `entry` (`shop` = the Shop's own dialog, `mini_shop` = a door) + terms | user + `entry:offerId` + day |
+| `offer_selected` (extended) | fe | an offer row is tapped | product id · offer id (as before) | `entry` + terms; both optional, so a cached old bundle still records | none |
+| `shop_filter_changed` | fe | the Shop's type filter really changes (same value, arrow keys at an edge and an unavailable choice do not count) | new filter · previous filter (`all` / `ticket` / `bundle`) | `count` = products the new choice shows | none |
+| `shop_back_tapped` | fe | the Shop's back button is tapped | target `from` (validated `?from=`) / `history` (one step back) / `fallback` (dashboard) · coarse page kind, `from` only | none | none |
+| `mini_shop_browse_tapped` | fe | "ดูสินค้าเพิ่มเติม" in a mini shop | product id · coarse kind of the page the door is on | none | none |
+| `sale_strip_viewed` | fe | the sale strip at the top of the Shop renders | `surface` `sale` · event slug · — | none | none: one per page view while a sale is up |
+| `catalog_purchase_completed` (extended) | be | a Shop purchase commits | payment path · offer id (as before): `wallet` = paid from the มู balance, `order` = by a one-flow top-up order | terms as bought, plus `parts` = `[{ feature, units }]` | purchase id |
+
+- **Coarse page kind** (`PAGE_KINDS`: `today`, `monthly`, `monthly_history`, `compatibility`, `compatibility_result`,
+  `compatibility_history`, `bazi`, `wallet`, `settings`, `shop`, `dashboard`, `other`) comes from the route pattern in
+  `horo-fe/src/lib/page-kind.ts`. A path, a query or an id never leaves the browser.
+- **Bundle parts.** `parts` lists one `{ feature, units }` per ticket kind the purchase granted: a bundle has two
+  (`bundle_pair_249`: `monthly_unlock` 1 + `compat_unlock` 1; `bundle_full_449`: 3 + 3), any other offer has one. Monthly
+  tickets that came from bundles = the sum of `units` where `feature = 'monthly_unlock'` over purchases with
+  `productType = 'bundle'`. For revenue and ticket totals keep using the money tables (`catalog_purchases.product_type`
+  joined to `feature_credit_grants`); `props` is for funnels, as the principle above says.
+- **Top-up packs.** The ladder ids (`p100`, `p199`, `p299`, `p450`, `p999`) already flow through `topup_started` and
+  `topup_completed` as `category` = pack id; nothing was added (tested for each id).
+- **Signed-out sale-modal counts (`sale_modal_daily`).** `product_events` needs a user and there is no visitor id, so a
+  signed-out visitor is counted in an anonymous day counter instead, shaped like `sponsor_daily`: table
+  `sale_modal_daily(view_date, event_slug, action, count)`, primary key (day, slug, action), `POST /api/analytics/sale-modal`
+  `{ eventSlug, action }` (no session; 204; 400 on a slug outside `SALE_EVENT_SLUG_PATTERN` or an action outside
+  `view` / `cta` / `dismiss`; 429 at 1,000 pings per IP per day). Nothing about the visitor is stored: no id, no IP, no user
+  agent. The modal opens once per browser per event per day, so `view` is roughly unique browsers. `cta` is the CTA tap
+  (it has no offer id here), `dismiss` a close without the CTA. A signed-in reader is counted only as the `sale_modal_*`
+  product events and a signed-out visitor only here, so the two are added together for a total and never overlap.
+
+**Sponsor popup rule (owner, 2026-10-24: "remove ads modal if there is an offer up, otherwise ads modal").**
+`SponsorPopup` (`horo-fe/src/components/ads/sponsor-popup.tsx`) does nothing until `useSalesCurrent` settles, then:
+a sale event with an offer this reader can still buy (`hasBuyableOffer(modalOffers(event))`, the sale modal's own test) means
+no popup and no use of the once-a-day claim; no sale, or a failed query (counts as no sale), means the popup as before. If the
+sale ends later the same day the popup can still open. The bottom sponsor slot is untouched. No suppression event: the sponsor
+counters (`sponsor_daily`) only hold views and clicks per sponsor, so a suppression has nowhere clean to go; the gap shows as
+`sale_modal_viewed` days with no `today_popup` views.
 
 ### Metrics and the decision each one drives
 
