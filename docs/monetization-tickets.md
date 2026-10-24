@@ -198,6 +198,9 @@ The rows for `shop_viewed`, `product_viewed`, `monthly_offer_*` and `sale_modal_
 | `mini_shop_browse_tapped` | fe | "ดูสินค้าเพิ่มเติม" in a mini shop | product id · coarse kind of the page the door is on | none | none |
 | `sale_strip_viewed` | fe | the sale strip at the top of the Shop renders | `surface` `sale` · event slug · — | none | none: one per page view while a sale is up |
 | `catalog_purchase_completed` (extended) | be | a Shop purchase commits | payment path · offer id (as before): `wallet` = paid from the มู balance, `order` = by a one-flow top-up order | terms as bought, plus `parts` = `[{ feature, units }]` | purchase id |
+| `daily_gift_viewed` | fe | the daily gift (streak claim) sheet opens on its own through the overlay queue; manual opens are not counted | — | none | user + day |
+| `daily_gift_dismissed` | fe | that auto sheet closes without a claim (claims stay recorded server-side by the streak) | — | none | none |
+| `promo_skipped` | fe | a queued promo did not open today | overlay (`daily_gift` / `sale_modal`) · reason (`cap` / `busy` / `page`) | none | user + overlay + day; the first reason wins |
 
 - **Coarse page kind** (`PAGE_KINDS`: `today`, `monthly`, `monthly_history`, `compatibility`, `compatibility_result`,
   `compatibility_history`, `bazi`, `wallet`, `settings`, `shop`, `dashboard`, `other`) comes from the route pattern in
