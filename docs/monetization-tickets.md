@@ -1121,6 +1121,8 @@ Both options use the same cheap per-reader pick step (one small call over the st
 
 **Out of scope.** Real-time or daily events, ticket sales, weather, anything commercial, map or opening-hours claims (the data has no hours and the model may not state any).
 
+**Seed pool (owner, 2026-10-24).** `docs/data/sai_mu_master_10yr_2026_2036.csv` (239 dated events for 2026 to 2036: Buddhist, Chinese deity days, Hindu, Christian, local shrines, each with do, avoid, lucky colours). Audit: a good content reference, not a date authority. Of 13 festivals shared with the verified list 8 dates agree and 5 differ (e.g. อาสาฬหบูชา 2027: csv 17 Jul, Bank of Thailand notice 18 Jul), and its `Conflict_Zodiac` column matches the real day-branch clash in only 15 of 239 rows, so it is ignored (the clash is computed from the day pillar against the reader's year animal). Rows with a matching verified date feed the pick step; the rest enter the research job as `proposed` candidates and are shown only after a source confirms the date.
+
 **Open questions.** Which search provider (a model vendor's search tool, or a search API plus our own model); who reviews each month (owner or a trusted reviewer); whether to publish the approved list on the public /calendar page too (it already shows holidays and วันพระ).
 
 
