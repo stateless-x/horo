@@ -46,6 +46,7 @@ disagree, the code wins; update this doc in the same commit.
 
 Release order: **R0** T1, T2, T6 (ship now, no dependencies) → **R1** T3, T4, T16, T5, T7, T18, T8, T21, T13, T14 (first money: ดวงคู่) →
 **R2** T9, T11, T12, T19, T15, T20 → **R3** T10.
+| T22 | Monthly มู events: a monthly research job fills a reviewed event table, the per-reader pick reads it (beta) | be + admin | M | T6 |
 
 ## Product ladder
 
@@ -1096,6 +1097,32 @@ fix themselves or another person. No middle-dot separators in any reader-facing 
 
 **Scope boundary:** the built resolver owns relationship type, intent and wallet state. Any change to price, promotion
 eligibility, coupon expiry or full-report content returns to product scope rather than being invented in UI code.
+
+### T22: Monthly มู events from a monthly research job (beta, owner 2026-10-24)
+
+**Why.** The "มูให้ถูกเดือน" section can tell a paid reader which real events (ลอยกระทง, ทอดกฐิน, งานวัด, ไหว้พระ, เทศกาลจีน) suit their chart. Event dates must be right, and a model that invents a date or a temple fair is worse than no section. Today the source is a hand-verified static list (`horo-be/lib/shared/data/thai-events.ts`, 41 rows, each with a source URL, valid to end of 2027).
+
+**Decision (owner asked; recommendation).** Do NOT let the model web-search per reader. Search once a month for everybody, review it, store it, and make the per-reader step read the stored table.
+
+| Option | Cost shape | Risk |
+|---|---|---|
+| Web search inside every reader's call | grows with readers: about 3 to 5 searches plus the pages read, per reader per month `[A]`; search tools bill per search on top of tokens | each reader can get different or wrong dates; slow (20 to 60 s); can hit a blocked page and fail the unlock screen |
+| **Monthly job, once for everyone** | flat: about 20 to 40 searches and one model pass per month, the same for 10 or 10,000 readers `[A]`, in the order of tens of baht | one wrong row reaches everybody, so a review gate is required |
+
+Both options use the same cheap per-reader pick step (one small call over the stored list, already built in beta). The job only replaces where the list comes from.
+
+**Scope.**
+1. Table `thai_events` (additive): id, date, endDate, name, kind, place, mu, sourceUrls (jsonb), status (`proposed | approved | rejected`), confidence, createdAt, reviewedBy, reviewedAt. Seed it from `thai-events.ts`.
+2. Monthly job (Railway cron, runs on the 20th for the next month; a manual trigger route behind `x-admin-secret` like `/internal/monthly/regenerate`): a model with a search tool researches the next month's merit, festival, temple-fair and Chinese-calendar events in Thailand, returns rows with at least one source URL each, inserts them as `proposed`. Rules: a row needs a confirmed date from a named source (two independent sources for anything that is not a public holiday), unconfirmed ones are dropped, never guessed; no commercial events; the model may not copy a date from its own memory without a source.
+3. Review: a horo-admin page lists `proposed` rows with their sources, one click approve or reject; only `approved` rows feed readers. Until a month is approved the section shows only the static list (so a missed review never blanks the section).
+4. `loadMonthEvents(yearMonth)` in `monthly-events.ts` reads approved rows, falls back to the static list.
+5. Tracking: events shown, `monthly_section_viewed` detail `events`, taps on an event (open the place, add to calendar later); admin card next to the others.
+6. Beta tag: the block carries "เบต้า" until two cycles of reviewed events are clean and the pick quality is checked on real readers.
+
+**Out of scope.** Real-time or daily events, ticket sales, weather, anything commercial, map or opening-hours claims (the data has no hours and the model may not state any).
+
+**Open questions.** Which search provider (a model vendor's search tool, or a search API plus our own model); who reviews each month (owner or a trusted reviewer); whether to publish the approved list on the public /calendar page too (it already shows holidays and วันพระ).
+
 
 ## Tracking
 
