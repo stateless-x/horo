@@ -1,4 +1,4 @@
-# ChatGPT image prompts: beliefs picker cards and survey letter (2026-10-26)
+# ChatGPT image prompts: beliefs picker cards and survey envelope (2026-10-26)
 
 Pictures for the "คุณนับถืออะไรบ้าง" sheet (horo-fe `src/features/beliefs/`). Every card already works without its picture: it shows a soft lilac square with a small glyph. A picture appears as soon as its file is in the right folder. No code change is needed.
 
@@ -161,9 +161,9 @@ Subject: a small folded T-shirt stack in three colors (purple, pink, gold) tied 
 Subject: a SIM card and a small gold four-leaf clover charm next to it, with a few tiny sparkles. No digits anywhere.
 ```
 
-## SURVEY LETTER (the card on the locked monthly page)
+## SURVEY ENVELOPE (the sticky envelope on the daily, monthly and ดวงคู่ list pages)
 
-`letter-closed.png` is DONE (owner art: cream envelope, lilac wax seal with a gold star, dark-brown outline, tilted about -10deg). Only the optional open version is left. If it exists, the card cross-fades from closed to open while it opens; without it the card works as it is.
+`letter-closed.png` is DONE (owner art: cream envelope, lilac wax seal with a gold star, dark-brown outline, tilted about -10deg). It is the whole entry point now: shown as a 64 px (72 px on desktop) sticky envelope with a tiny "9 มู" badge, so keep the outline readable at that size. The open version below is RETIRED (2026-10-26): no code reads `letter-open.webp` any more, the tap pop is drawn in CSS. Keep the prompt only if the owner wants the art for something else.
 
 ### `letter-open.png` (optional, 1111 x 868 or larger, same 1.28 : 1 shape)
 ```text
@@ -193,7 +193,7 @@ Same tools as the monthly art (the sticker-sheet-slicer skill cuts out the #F2EF
 
 Do NOT run `bun run build:art` for these: it deletes and rebuilds `public/assets/art/`. The card pictures live in `public/assets/beliefs/` on purpose so they survive it.
 
-The survey letter is different: the owner's `letter-closed.webp` (640 x 500) sits in `horo-fe/public/assets/survey/`, with its master in `horo-fe/assets/art/survey/letter-closed.png`. For the optional open one: cut the background the same way, then `magick <cut>.png -resize 640x500 -gravity center -background none -extent 640x500 PNG32:/tmp/letter-open.png && cwebp -q 90 -alpha_q 100 /tmp/letter-open.png -o horo-fe/public/assets/survey/letter-open.webp`, and keep the master as `horo-fe/assets/art/survey/letter-open.png`. Caution: the next `bun run build:art` will replace the plain `letter-*.webp` files with hashed ones; when that happens, switch `SURVEY_LETTER` in `horo-fe/src/lib/art/index.ts` to `art('survey/letter-closed')` and `art('survey/letter-open')`.
+The survey letter is different: the owner's `letter-closed.webp` (640 x 500) sits in `horo-fe/public/assets/survey/`, with its master in `horo-fe/assets/art/survey/letter-closed.png`. For the retired open one (nothing loads it now): cut the background the same way, then `magick <cut>.png -resize 640x500 -gravity center -background none -extent 640x500 PNG32:/tmp/letter-open.png && cwebp -q 90 -alpha_q 100 /tmp/letter-open.png -o horo-fe/public/assets/survey/letter-open.webp`, and keep the master as `horo-fe/assets/art/survey/letter-open.png`. Caution: the next `bun run build:art` would replace the plain `letter-*.webp` files with hashed ones; if that happens, switch `SURVEY_LETTER` in `horo-fe/src/lib/art/index.ts` to `art('survey/letter-closed')`.
 
 ## Where each image is used
 
@@ -201,6 +201,6 @@ The survey letter is different: the owner's `letter-closed.webp` (640 x 500) sit
 |---|---|---|
 | step 2 `<id>.webp` (22 files, ids above) | `horo-fe/public/assets/beliefs/` | picture cards in the five tabs of step 2, 256 x 256, transparent |
 | step 3 `<id>.webp` (8 files) | `horo-fe/public/assets/beliefs/` | picture cards of ของมูที่สนใจ, 256 x 256, transparent |
-| `letter-closed.webp` (done), `letter-open.webp` (optional) | `horo-fe/public/assets/survey/` | the envelope on the locked monthly page's survey card, 640 x 500, transparent |
+| `letter-closed.webp` (done); `letter-open.webp` is retired | `horo-fe/public/assets/survey/` | the sticky survey envelope, 640 x 500, transparent |
 
 Step 1 (religions) stays as text chips on purpose: religious symbols for every faith (and none for Islam) are easy to get wrong, and five short words read fine.
