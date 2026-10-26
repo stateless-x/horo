@@ -16,3 +16,7 @@ Owner-supplied catalogue of 239 dated มู and festival events, 2026 to 2036 (
 How it is used: seed pool for ticket T22 in `docs/monetization-tickets.md` (a monthly research job proposes rows, a person approves them, readers only see approved rows). Rows whose date equals a verified row feed the do/avoid/lucky-colour notes in `horo-be/lib/shared/data/mu-event-notes.ts`.
 
 The verified list (every row with a source URL) is `horo-be/lib/shared/data/thai-events.ts`; extend it before 2028.
+
+## beliefs-research-2026-10-26.md
+
+Desk research (Thai news, AU Poll Gen Z survey, LINE ดูดวง trend data, DBD) behind the items added to the "คุณนับถืออะไรบ้าง" picker on 2026-10-26: sources, findings with [unverified] marks, the shortlist, what was rejected and why. Two figures (AU Poll 60.3% lucky colours / 46.3% lucky numbers; LINE ดูดวง พระราหู 5.5x and ทำบุญสะเดาะเคราะห์ +121%) were re-fetched and confirmed by the orchestrating agent.
