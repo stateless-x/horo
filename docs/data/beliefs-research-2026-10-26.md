@@ -134,7 +134,7 @@ The shortlist was applied with these changes:
 - พระราหู went to the protector group (tab ผู้คุ้มครอง, admin heading พญานาคและผู้ปกปักษ์) so the new items spread over four groups (Thai practice treats it as warding off bad luck at Buddhist temples); still open question 1.
 - ไท้ส่วยเอี้ย was included: it is the only new item that matches a listed event today (the 2027 วันตรุษจีน practice note names it), and the monthly page already has a ปีชง feature.
 - Step 3 took all three proposals (`scent_beauty`, `lucky_color_wear`, `lucky_number`), so step 3 now has 8 items.
-- `ไอ้ไข่` was added as a second event-text needle for `ta_khai`; the label stays ตาไข่ (open question 3).
+- `ไอ้ไข่` was added as a second event-text needle for `ta_khai`; the label is ไอ้ไข่ since 2026-10-27 (owner decision; the id stays `ta_khai`).
 - No date from this note was added to the event list: only verified events are listed, so หลวงพ่อทันใจ, พระพรหม, พระตรีมูรติ and พระราหู match no event today (they still count in the admin aggregate).
 
 Spot check by the orchestrating agent (re-fetched 2026-10-26): AU Poll lucky colours 60.3% and lucky numbers 46.3% [1], LINE ดูดวง พระราหู 5.5x the 2024 monthly average, หลวงพ่อทันใจ "ครองอันดับหนึ่ง" for แก้บน, and ทำบุญสะเดาะเคราะห์ +121% month on month [4] are stated on the pages as cited.

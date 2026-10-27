@@ -106,7 +106,7 @@ Subject: a stylized green-and-gold serpent naga coiled around a small lotus, hea
 ```text
 Subject: a stylized giant's ceremonial club (กระบอง) standing upright with a small gold crown resting beside it on a cushion. No figure.
 ```
-### `ta_khai.png` (ตาไข่ / ไอ้ไข่)
+### `ta_khai.png` (ไอ้ไข่; the file keeps its id ta_khai. Done 2026-10-27 from the owner's reference: gold-leaf child statue with sunglasses and garlands)
 ```text
 Subject: a small wooden fighting rooster figurine next to a tiny red bottle of red soda with a straw, on a small wooden base. No child figure.
 ```
