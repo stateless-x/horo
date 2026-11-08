@@ -5,7 +5,3 @@
 
 # Local git worktrees of the submodules (feature work in progress); never part of this repo
 /horo-*-wallpaper/
-
-# Video project build output and dependencies
-/video/node_modules/
-/video/out/
