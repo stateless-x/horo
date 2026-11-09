@@ -17,6 +17,7 @@ owner: product
 - [../horo-be/docs/shop.md](../horo-be/docs/shop.md) — built Shop spec (2026-09-30): catalog rows + fulfilment handlers, the มู → ticket exchange, ตั๋วรู้ใจ grants/uses/adjustments, the ticket-only unlock and `unlock_attempts`, admin refunds/restores/retries, sales events. Read before touching the Shop, tickets or the unlock.
 - [../horo-be/docs/compatibility-scoring.md](../horo-be/docs/compatibility-scoring.md) — implemented compatibility v2 formula, guarantees, evidence, and deployment gate.
 - [../horo-be/docs/compatibility-response-fix.md](../horo-be/docs/compatibility-response-fix.md) — the one ดวงคู่ report (canon v1): legacy rows hidden, MBTI never shown, teaser-first locked mode, unlock flow, live budget. Read before touching compatibility generation, responses or the door.
+- [../horo-be/docs/exam-reading.md](../horo-be/docs/exam-reading.md) — ดวงช่วงสอบ: exam teaser, ตั๋วดวงสอบ (69 มู, ลด 70%) and ชุดหนึ่งสอบ หนึ่งใจ (99), the countdown and kit rules, which LLM file owns what, the never-say-pass-or-fail checks, the `exam` flag. Read before touching the exam reading, its prompts or its prices.
 - [../horo-be/docs/feature-flags.md](../horo-be/docs/feature-flags.md) — product switches set in horo-admin (`compat_lock`, `compat_unlock_free`): rules, routes, local use, rollout. Read before adding a flag or gating a feature.
 
 - [../horo-fe/DEPLOYMENT.md](../horo-fe/DEPLOYMENT.md) — where each piece runs (frontend on Vercel; API, Postgres, Redis, admin on Railway), env vars, OAuth callbacks. Read before deploying or changing domains.

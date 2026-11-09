@@ -77,6 +77,13 @@ Built in horo-be on 2026-10-25 (not committed, not deployed). The anchors are da
 | Event: pair, promo ดวงเดือน 1 (this month) + รู้ใจ 1 | `event_pair_129` | 129 | 445 | 71% | |
 | Drop days 15 to 21: ดวงเดือน 1, promo for this month | `drop_monthly_139` | 139 | 330 | 57% | 139 |
 | Drop day 22 to month end: ดวงเดือน, set of 2 promo (this month and next) | `drop_monthly_set_149` | 149 | 660 | 77% | 75 |
+| ตั๋วดวงสอบ 1 (exception: 70% everyday, see below) | `exam_1_69` | 69 | 230 | 70% | 69 |
+| ชุดหนึ่งสอบ หนึ่งใจ (ดวงสอบ 1 + รู้ใจ 1) | `bundle_exam_heart_99` | 99 | 345 | 71% | saves 39 |
+
+**Exception, owner 2026-11-09: ตั๋วดวงสอบ shows ลด 70% every day** (anchor 230 on 69), against the 40 to 45% everyday rule
+in step 3, framed as ลงทุนกับการเรียน ลงทุนกับโชคชะตา. The bundle still sits above it (71%, the sum of anchors 230 + 115),
+so "single < bundle" holds. It is a struck anchor that is never charged; the honesty rules below apply to it like any
+other, and it is the first one to drop if a reader reads it as false. Ladder: 69 and 99 are both covered by the ฿99 pack.
 
 Ids encode their price, so a changed price is a new offer: `heart_1_99`, `heart_3_199`, `heart_5_299`, `monthly_1_199`, `monthly_3_399`, `monthly_12_1199`, `bundle_pair_249`, `bundle_full_449` and `event_heart_3_99` are archived by `SEED_SUPERSEDES` (`horo-be/src/lib/catalog.ts`) in the seed call that inserts their replacement, with the older chain (`monthly_1_249`, `monthly_3_447`, `heart_ticket_N`, ...). Old ids stay readable on past purchases, the ledger and analytics. `event_monthly_99` and `compat_check_10` keep their ids (the price did not change; only the anchor did).
 
