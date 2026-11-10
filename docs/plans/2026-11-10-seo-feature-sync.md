@@ -1,6 +1,6 @@
 ---
 type: PLAN
-status: Phase 1 and Decision 1 (option A) shipped 2026-11-10 (horo-fe b12c5d2); Phases 2 and 3 proposed
+status: Phase 1 and Decision 1 (option A) shipped 2026-11-10 (horo-fe b12c5d2); Phases 2 and 3 built 2026-11-10, see §Outcome
 scope: bring every public SEO surface of สายมู.com up to date with the features live today, and stop the reading list from drifting again
 last_reviewed: 2026-11-10
 owner: frontend (horo-fe)
@@ -156,3 +156,23 @@ doesn't have is worse than an old one.
 - Hopeful, never certain.
 - No coaching words (อ่านหนังสือ, เตรียมตัว).
 - Name the ticket, never a price: prices are admin-edited rows.
+
+## Outcome (2026-11-10)
+
+**Phase 2: built as `/study-fortune`.**
+- **Why it ships:** the cannibalisation test passed. `/mutelu` explains the term and its culture, so one more section there could not win the head term "ดูดวงการเรียน".
+- **What the page holds:**
+  - what a study reading looks at;
+  - who Thai readers pray to before exams, with four sources: Thai Wikipedia on พระพิฆเนศ, Thairath on the Erawan Brahma, Post Today on พระประจำวันเกิด, and Wikipedia on Wenchang;
+  - what colour to wear, linking to `/thai-astrology` instead of publishing the paid kit;
+  - "ดูดวงบอกได้ไหมว่าจะสอบติด", answered with the boundary;
+  - how สายมู reads it, using a table built from the product's own `EXAM_KIND_LABELS_TH`.
+- **Slug:** `/study-fortune`, following the house's English slugs; the searched phrase is in the title, H1 and keywords.
+- **Links:** `/thai-astrology` and `/mutelu` now link to it.
+
+**Phase 3: all four hubs and the 16 type pages reviewed against the product.**
+- **One stale claim fixed:** four lines said every reading uses your personality type. Since 2026-11-09, a reading uses it only when you gave one.
+- **Pages corrected:** the `/thai-astrology` body and its English brief, `/mutelu`, and the `/mbti` and `/mbti/<type>` calls to action.
+- **Checked and still true:** everything else, including the free-reading claims, the boundaries and the sources.
+- **Dates:** `LAST_VERIFIED` is now 2026-11-10. The `/learn` reading description now names ดวงการเรียน.
+
