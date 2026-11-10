@@ -1,6 +1,6 @@
 ---
 type: PLAN
-status: Phase 1 and Decision 1 (option A) built locally 2026-11-10, uncommitted; Phases 2 and 3 proposed
+status: Phase 1 and Decision 1 (option A) shipped 2026-11-10 (horo-fe b12c5d2); Phases 2 and 3 proposed
 scope: bring every public SEO surface of สายมู.com up to date with the features live today, and stop the reading list from drifting again
 last_reviewed: 2026-11-10
 owner: frontend (horo-fe)
