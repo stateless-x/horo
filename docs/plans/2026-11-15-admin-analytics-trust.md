@@ -67,9 +67,27 @@ Not verified:
 | ID | Decision | If yes | Files |
 | --- | --- | --- | --- |
 | D1 | One definition of "active" everywhere: reader-caused events plus `surface_views`, no server-recorded sales events | DAU, WAU, MAU and cohort lines shift once; each card states its definition | `shared.ts`, `retention.ts`, `segments.ts`, new `retention.test.ts` |
-| D2 | Leave the team's own product accounts out of the numbers | Pages show "ไม่นับบัญชีทีมงาน N บัญชี"; matched by email against `admin."user"` | `shared.ts`, `owner.ts`, `overview.ts`, `audience.ts`, `shop/stats.ts` |
+| D2 | Leave the team's own product accounts out of the numbers | **Approved and built 2026-11-15** on branch `admin-team-accounts` (not pushed). See "Team accounts" below | `shared.ts`, `team-model.ts`, `TeamNote.tsx`, plus the modules listed there |
 | D3 | Sidebar order: promote การใช้งาน and กิจกรรมในร้าน, move ผู้ใช้ to รายงานเพิ่มเติม | `nav.ts` + `nav.test.ts` only | `src/lib/nav.ts` |
 | D4 | "สมัครใน 30 วันล่าสุด" beside all-time on `/audience` | A second set of breakdowns for recent sign-ups | `audience.ts`, `audience/page.tsx` |
+
+## Team accounts (D2, branch `admin-team-accounts`, 4 commits `c3b755b..9071f31`)
+
+Rule: a product account is a team account when `lower(email)` or `lower("providerEmail")` equals the email of an `admin."user"` row (`teamUserIds` in `src/lib/stats/shared.ts`; horo-be's narration self-reset uses the same match). No table, no env var.
+
+What is filtered, by family, so the same named number never differs between pages:
+
+| Family | Filtered? | Where |
+| --- | --- | --- |
+| Sign-ups, user base, profiles, milestones, first result, 7 to 13 day return, DAU/WAU/MAU | yes | `overview.ts`, `owner.ts`, `retention.ts` (`getActiveUsers` only), `audience.ts`, `acquisition.ts` |
+| Stripe revenue, payers, cash per payer | yes, and each baht total prints the team's share (`teamMoneyText`), so shown + team = Stripe | `owner.ts`, `shop/stats.ts` (`getTopups`), `shop/pricing.ts` (`getPayerStats`), `streak.ts` (`getEconomy`) |
+| Tickets, มู, purchases per offer, funnels, cohorts, repeat, heatmap, surfaces, recent users | no (about 51 queries) | everything else, including all of `monthly-funnel.ts` |
+
+How a reader tells: filtered blocks carry "ไม่นับบัญชีทีมงาน"; every page with a filtered number shows `TeamNote` under its heading with the count matched, or a plain sentence when none matched. Use `notTeamUser(sql, sql\`col\`)` (NOT EXISTS, so a NULL user id is kept) and `isTeamUser` for the disclosure.
+
+Verified: type-check clean, 483 pass, 8 skip, build compiled. On a throwaway local database with admin tables and one admin email matching the dev user (different letter case), the overview, `/shop` and `/streak` each showed ฿398 from 2 payers with the team's ฿593 from 1 person beside it, equal to a direct SQL count. Not verified: no page seen in a browser; how many accounts match in production is unknown until the note is read there.
+
+Cannot catch: an X account that shared no email, a team member who uses another address in the app, a team member with no admin login. Phase 2 is a hand-managed list (`admin.team_accounts`, UNIONed inside `teamUserIds`, edited from an admin page). It needs a hand-applied migration on production, so it waits for the owner.
 
 Not blocked, queued after those:
 - Overview window that ends yesterday, so 30 complete days are compared with 30 complete days (`owner.ts`, `math.ts`). Today's copy says the window includes the unfinished day.
