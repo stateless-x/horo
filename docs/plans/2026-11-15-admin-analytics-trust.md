@@ -1,6 +1,6 @@
 # Plan: horo-admin numbers you can trust, and a faster admin
 
-Status (2026-11-15): waves 1 and 2 and the team-account filter (D2) are deployed (`horo-admin` `main` at `9071f31`). One "active" definition (D1) and the sidebar order (D3) were merged to `main` and pushed the same day (`ff1db78`, `0a09eb9`). D4 is dropped for now.
+Status (2026-11-15): everything below is deployed (`horo-admin` `main` at `17e2b0a`, `horo-be` `master` at `adca11b` plus a docs commit). Waves 1 and 2 and the team-account filter (D2) went first (`9071f31`). One "active" definition (D1) and the sidebar order (D3) were merged to `main` and pushed the same day (`ff1db78`, `0a09eb9`). D4 is dropped for now.
 Roles: Fable planned and accepted; Opus 5.5 (high) audited all 18 pages and wrote the implementer briefs; Sonnet 5.5 (medium) built each increment.
 When code and this doc disagree, code wins.
 
@@ -110,6 +110,16 @@ Not changed on purpose: the hour heatmap counts events, not people; `/engagement
 
 Verified: type-check clean, 498 pass, 8 skip, build compiled. On a throwaway local database seeded with four people (two with only a server-recorded event, one with only a reading, one with only a surface view), the modules matched a hand-written SQL count: daily users 0, 1, 1 on the three days; the cohort showed 2 of 4 returned in week 1 with week 2 unfinished; email return 2 of 4 (the old rule would have said 3); the server-only people show 0 active days. Not verified: no page seen in a browser; how far the production lines move is unknown until deploy.
 
+## Latest purchases for support (commit `17e2b0a`, deployed 2026-11-15)
+
+Owner ask, 2026-11-15: see who bought most recently, to help them when something goes wrong. `/shop/activity` with nothing searched now lists the 30 newest top-up orders (every status) and catalog purchases from everyone: time, who, item, amount, status, each linking to that person's timeline (`src/lib/shop/recent-purchases.ts`, `recent-purchases-model.ts`, shared `src/components/SupportTable.tsx`). Team accounts are shown and marked ทีมงาน: it is a support list, not a metric. Open fulfilment failures are not in it; `/shop` "ต้องดูแล" already lists those.
+
+Verified: type-check clean, 509 pass, 8 skip, build compiled; on a throwaway local database the 30 rows came back newest first, matched a direct SQL ordering, and the admin's own account carried the team mark. Not verified: no page seen in a browser.
+
+## Duplicate profiles in production (measured 2026-11-15)
+
+Read-only count with the owner's OK: 2,018 profile rows, 2,018 users, 0 duplicates. Nothing to merge. The horo-be fix (per-user lock on both save paths plus a unique index) shipped as `adca11b` the same day; a read-only check after the deploy showed `birth_profiles_user_id_unique_idx` in place and the plain index gone. Runbook and counts are in `horo-be/scripts/release/2026-11-birth-profile-unique/README.md`. A person's Google and X accounts are separate users on purpose and are not duplicates.
+
 Not blocked, queued:
 - Overview window that ends yesterday, so 30 complete days are compared with 30 complete days (`owner.ts`, `math.ts`). Today's copy says the window includes the unfinished day.
 - A lean `getSurfaceOpens` so the overview stops running all of `/engagement`'s queries to read three fields.
@@ -117,7 +127,9 @@ Not blocked, queued:
 
 ## Elsewhere
 
-- horo-be: `/update-profile` selects then inserts with no lock (`src/systems/fortune/routes.ts`, the second `insert(birthProfiles)`), so duplicate profiles can still appear. A unique index on `birth_profiles.user_id` is the real fix, after the existing duplicates are merged.
+- horo-admin's build downloads Anuphan and Noto Sans Thai from Google Fonts (`src/app/layout.tsx`, `next/font/google`). On 2026-11-15 one build of `17e2b0a` failed there: Google returned a font link without a file extension and Next 15.5.29's loader crashed (`loader.js:122`). A rebuild of the same commit passed. Self-hosting the two fonts with `next/font/local` would remove the dependency; not done.
+
+- horo-be: `/update-profile` used to select then insert with no lock. Fixed in `adca11b` (see "Duplicate profiles in production").
 - Stale docs in `horo-admin`, not fixed here: `docs/CODEMAP.md` says the streak gift columns are in `PENDING_DEPLOY_COLUMNS` (the code lists only `wallet_ledger.funding`); `docs/architecture.md` lists three tested SQL modules (there are more).
 
 ## Rejected
