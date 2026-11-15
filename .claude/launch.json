@@ -107,6 +107,16 @@
       ],
       "port": 3010,
       "cwd": "horo-fe"
+    },
+    {
+      "name": "horo-admin-preview-3012",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "DATABASE_URL=\"postgresql://postgres:$(docker exec horo-admin-preview-pg printenv POSTGRES_PASSWORD)@localhost:55440/horo_preview\" BETTER_AUTH_SECRET=local-preview-only-not-a-secret BETTER_AUTH_URL=http://localhost:3012 HORO_API_URL= ADMIN_API_SECRET= exec bun run dev -- -p 3012"
+      ],
+      "port": 3012,
+      "cwd": "horo-admin"
     }
   ]
 }

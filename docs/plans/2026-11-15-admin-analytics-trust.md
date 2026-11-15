@@ -116,6 +116,17 @@ Owner ask, 2026-11-15: see who bought most recently, to help them when something
 
 Verified: type-check clean, 509 pass, 8 skip, build compiled; on a throwaway local database the 30 rows came back newest first, matched a direct SQL ordering, and the admin's own account carried the team mark. Not verified: no page seen in a browser.
 
+## Visual refresh (commits `fb1735d` and `d16d12d`, pushed 2026-11-15)
+
+Owner, 2026-11-15: the admin is "boring, monotonous, too few colour", hierarchy is weak, the nav is unrefined; an icon library is allowed. A refinement, not a rebrand: same purple, fonts, copy, data and routes.
+
+- Sidebar: dark aubergine, all 17 pages visible in three groups (the two nested folds are gone), one lucide icon per page, account at the bottom.
+- Colour with a job: an area badge on every page heading (people purple, behaviour teal, money orange, messaging blue, system slate), status chips, a filled `lead` tile and a teal `contrast` tile.
+- Hierarchy: one `lead` tile per page, a rule after each section heading, cards without shadow, range pickers as segmented controls so purple means the active page, the lead tile or an action.
+- Rules are in `horo-admin/DESIGN.md` (Navigation, Hierarchy, Icons).
+
+Verified by looking, for the first time: a local preview with a throwaway SSL Postgres, about 700 made-up users and a test login (launch config `horo-admin-preview-3012` in `.claude/launch.json`). Checked the overview, usage, returning, shop, shop activity, audience, streak, email and flags pages at 1440px and the overview and menu at 375px; type-check clean, 516 pass, 8 skip; Docker image built on bun 1.1.38. No Thai phrase changed (diff checked). Also opened after the fixes: acquisition, narration, segments and the ticket page. Not verified: charts after the second round of fixes (the preview pane was hidden and charts do not draw in a hidden page; chart files were not touched), four pages not opened (sponsors, catalog, sales, payment keys), and real production data.
+
 ## Duplicate profiles in production (measured 2026-11-15)
 
 Read-only count with the owner's OK: 2,018 profile rows, 2,018 users, 0 duplicates. Nothing to merge. The horo-be fix (per-user lock on both save paths plus a unique index) shipped as `adca11b` the same day; a read-only check after the deploy showed `birth_profiles_user_id_unique_idx` in place and the plain index gone. Runbook and counts are in `horo-be/scripts/release/2026-11-birth-profile-unique/README.md`. A person's Google and X accounts are separate users on purpose and are not duplicates.
