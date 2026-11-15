@@ -127,7 +127,7 @@ Not blocked, queued:
 
 ## Elsewhere
 
-- horo-admin's build downloads Anuphan and Noto Sans Thai from Google Fonts (`src/app/layout.tsx`, `next/font/google`). On 2026-11-15 one build of `17e2b0a` failed there: Google returned a font link without a file extension and Next 15.5.29's loader crashed (`loader.js:122`). A rebuild of the same commit passed. Self-hosting the two fonts with `next/font/local` would remove the dependency; not done.
+- horo-admin's build downloads Anuphan and Noto Sans Thai from Google Fonts (`src/app/layout.tsx`, `next/font/google`). On 2026-11-15 one build of `17e2b0a` failed there: Google returned a font link without a file extension and Next 15.5.29's loader crashed (`loader.js:122`). A rebuild of the same commit passed. Fixed in `18fd2be` (pushed 2026-11-15): both fonts now come from `@fontsource-variable/*` packages. Verified by building the Docker image locally with Google Fonts unreachable (bun 1.1.38 accepted the lockfile, Next compiled) and loading `/login` from that image: headings resolved to Anuphan Variable, body to Noto Sans Thai Variable, all font files from the app's own origin.
 
 - horo-be: `/update-profile` used to select then insert with no lock. Fixed in `adca11b` (see "Duplicate profiles in production").
 - Stale docs in `horo-admin`, not fixed here: `docs/CODEMAP.md` says the streak gift columns are in `PENDING_DEPLOY_COLUMNS` (the code lists only `wallet_ledger.funding`); `docs/architecture.md` lists three tested SQL modules (there are more).
