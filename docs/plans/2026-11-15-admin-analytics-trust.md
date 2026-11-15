@@ -1,6 +1,6 @@
 # Plan: horo-admin numbers you can trust, and a faster admin
 
-Status: wave 1 and wave 2 built, merged to `horo-admin` `main` and pushed on 2026-11-15 (`a8ba955..623a30d`; branch `admin-analytics-trust` kept locally). Wave 3 waits on four owner decisions, listed below.
+Status (2026-11-15): waves 1 and 2 and the team-account filter (D2) are deployed (`horo-admin` `main` at `9071f31`). One "active" definition (D1) and the sidebar order (D3) were merged to `main` and pushed the same day (`ff1db78`, `0a09eb9`). D4 is dropped for now.
 Roles: Fable planned and accepted; Opus 5.5 (high) audited all 18 pages and wrote the implementer briefs; Sonnet 5.5 (medium) built each increment.
 When code and this doc disagree, code wins.
 
@@ -25,8 +25,8 @@ Decision: label and refresh on demand, no polling.
 - `/acquisition` showed rates on two or three sign-ups, and a "กรอกวันเกิดแล้ว" column that equals sign-ups by construction (the channel is recorded when a birth date is first saved).
 - `/engagement` summed unique people across buttons and called it "คน".
 - No `error.tsx` or `loading.tsx`: one failed query took the whole page down.
-- Six different definitions of "active" across pages (not fixed yet, see D1).
-- Nothing excludes the team's own product accounts, with tens of payers (not fixed yet, see D2).
+- Six different definitions of "active" across pages (fixed by D1, see "One active definition").
+- Nothing excluded the team's own product accounts, with tens of payers (fixed by D2, see "Team accounts").
 
 ## Built (7 code commits plus one `DESIGN.md` commit, `623a30d`)
 
@@ -62,16 +62,16 @@ Not verified:
 - Nothing ran against production. How many duplicate profile rows exist there is unmeasured: `SELECT COUNT(*) - COUNT(DISTINCT user_id) FROM birth_profiles`.
 - The stamp updating after โหลดใหม่ rests on reading Next 15.5's router code, not on a run.
 
-## Owner decisions that gate wave 3
+## Owner decisions
 
 | ID | Decision | If yes | Files |
 | --- | --- | --- | --- |
-| D1 | One definition of "active" everywhere: reader-caused events plus `surface_views`, no server-recorded sales events | DAU, WAU, MAU and cohort lines shift once; each card states its definition | `shared.ts`, `retention.ts`, `segments.ts`, new `retention.test.ts` |
-| D2 | Leave the team's own product accounts out of the numbers | **Approved and built 2026-11-15** on branch `admin-team-accounts` (not pushed). See "Team accounts" below | `shared.ts`, `team-model.ts`, `TeamNote.tsx`, plus the modules listed there |
-| D3 | Sidebar order: promote การใช้งาน and กิจกรรมในร้าน, move ผู้ใช้ to รายงานเพิ่มเติม | `nav.ts` + `nav.test.ts` only | `src/lib/nav.ts` |
-| D4 | "สมัครใน 30 วันล่าสุด" beside all-time on `/audience` | A second set of breakdowns for recent sign-ups | `audience.ts`, `audience/page.tsx` |
+| D1 | One definition of "active" everywhere | **Approved, built and pushed 2026-11-15** (`0a09eb9`). See "One active definition" below | `shared.ts`, `active-model.ts`, plus the modules listed there |
+| D2 | Leave the team's own product accounts out of the numbers | **Approved, built and deployed 2026-11-15** (`9071f31`). See "Team accounts" below | `shared.ts`, `team-model.ts`, `TeamNote.tsx`, plus the modules listed there |
+| D3 | Sidebar order: promote การใช้งาน and กิจกรรมในร้าน, move ผู้ใช้ to รายงานเพิ่มเติม | **Approved, built and pushed 2026-11-15** (`ff1db78`). Main list: ภาพรวม, การใช้งาน, การกลับมา, ร้านค้า, แจกตั๋วและมู, กิจกรรมในร้าน, อีเมล | `src/lib/nav.ts` |
+| D4 | "สมัครใน 30 วันล่าสุด" beside all-time on `/audience` | **Dropped 2026-11-15**: most cells would sit under 30 people, and `/acquisition` already shows who arrives by channel. Reopen when a paid campaign runs | `audience.ts`, `audience/page.tsx` |
 
-## Team accounts (D2, branch `admin-team-accounts`, 4 commits `c3b755b..9071f31`)
+## Team accounts (D2, deployed, 4 commits `c3b755b..9071f31`)
 
 Rule: a product account is a team account when `lower(email)` or `lower("providerEmail")` equals the email of an `admin."user"` row (`teamUserIds` in `src/lib/stats/shared.ts`; horo-be's narration self-reset uses the same match). No table, no env var.
 
@@ -89,7 +89,28 @@ Verified: type-check clean, 483 pass, 8 skip, build compiled. On a throwaway loc
 
 Cannot catch: an X account that shared no email, a team member who uses another address in the app, a team member with no admin login. Phase 2 is a hand-managed list (`admin.team_accounts`, UNIONed inside `teamUserIds`, edited from an admin page). It needs a hand-applied migration on production, so it waits for the owner.
 
-Not blocked, queued after those:
+## One active definition (D1, commit `0a09eb9`)
+
+Rule: a person is active on a Bangkok day when they did something themselves that day: a `product_events` row that is not in `SERVER_RECORDED_EVENTS`, a `surface_views` row, or a `daily_readings` row. Payment confirmations, refunds and ticket use never count.
+
+Why daily readings are in: horo-be creates one only when the reader opens the app (`src/systems/fortune/routes.ts`), and it is the only activity record from before page-view tracking began on 2026-09-07. Without it every older cohort would show nobody returning.
+
+Two fragments in `src/lib/stats/shared.ts` are the only source: `anyActivitySource(sql, start, withEvents)` (days) and `anyActivityInstants(sql, withEvents)` (moments, for "after the email was sent"). Pages show the rule through `ACTIVE_DAY_NOTE` (`active-model.ts`).
+
+| Number | Before | Now |
+| --- | --- | --- |
+| DAU, WAU, MAU (`getActiveUsers`) | every event, server-recorded included, plus surface views | the rule |
+| Cohort return (`getCohorts`) | every event plus readings, no surface views | the rule |
+| Segment reach and "คนที่ใช้งานจริง" (`segments.ts`) | every event, no surface views, no readings | the rule |
+| Email return within 7 days (`campaign-outcomes.ts`) | every event plus surface views | the rule, by timestamp |
+| Overview range count, recent users' active days | reader events plus surface views | the rule (gains readings) |
+| 7 to 13 day return (`owner.ts`), streak "did anything else" | already the rule, built privately | same result, shared fragment |
+
+Not changed on purpose: the hour heatmap counts events, not people; `/engagement` and the monthly funnel count specific events.
+
+Verified: type-check clean, 498 pass, 8 skip, build compiled. On a throwaway local database seeded with four people (two with only a server-recorded event, one with only a reading, one with only a surface view), the modules matched a hand-written SQL count: daily users 0, 1, 1 on the three days; the cohort showed 2 of 4 returned in week 1 with week 2 unfinished; email return 2 of 4 (the old rule would have said 3); the server-only people show 0 active days. Not verified: no page seen in a browser; how far the production lines move is unknown until deploy.
+
+Not blocked, queued:
 - Overview window that ends yesterday, so 30 complete days are compared with 30 complete days (`owner.ts`, `math.ts`). Today's copy says the window includes the unfinished day.
 - A lean `getSurfaceOpens` so the overview stops running all of `/engagement`'s queries to read three fields.
 - `/email` compares a naive `sent_at` with bare `NOW()` (`campaign-outcomes.ts`); the result depends on the database session timezone.
@@ -108,4 +129,6 @@ Not blocked, queued after those:
 
 ## After the deploy
 
-Open `/audience`, `/`, `/retention`, `/acquisition` and `/shop` once each for the visual pass: the heading should show `ข้อมูล ณ HH:MM น.` with โหลดใหม่, and "กรอกวันเกิดแล้ว" on `/audience` should equal the overview's.
+Open `/audience`, `/`, `/retention`, `/acquisition` and `/shop` once each for the visual pass: the heading should show `ข้อมูล ณ HH:MM น.` with โหลดใหม่, and "กรอกวันเกิดแล้ว" on `/audience` should equal the overview's. The overview's team note says how many accounts were left out; zero means the hand-managed list is next.
+
+For D1 and D3: the sidebar's main list starts ภาพรวม, การใช้งาน, การกลับมา; the active-user chart may start earlier than before (readings reach back past 2026-09-07) and its recent days may drop slightly (server-recorded events no longer count).
