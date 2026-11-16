@@ -127,6 +127,21 @@ Owner, 2026-11-15: the admin is "boring, monotonous, too few colour", hierarchy 
 
 Verified by looking, for the first time: a local preview with a throwaway SSL Postgres, about 700 made-up users and a test login (launch config `horo-admin-preview-3012` in `.claude/launch.json`). Checked the overview, usage, returning, shop, shop activity, audience, streak, email and flags pages at 1440px and the overview and menu at 375px; type-check clean, 516 pass, 8 skip; Docker image built on bun 1.1.38. No Thai phrase changed (diff checked). Also opened after the fixes: acquisition, narration, segments and the ticket page. Not verified: charts after the second round of fixes (the preview pane was hidden and charts do not draw in a hidden page; chart files were not touched), four pages not opened (sponsors, catalog, sales, payment keys), and real production data.
 
+## People: recent-actions board and a page per person (commit `bb152e3`, pushed 2026-11-16)
+
+Owner ask, 2026-11-16: know each user individually (what they did) and have a board of recent user actions.
+
+- `/people` (second item in the sidebar, "ผู้ใช้รายคน"): search by email or id; "ใช้งานล่าสุด" lists the 40 people who acted most recently (last action, when, actions today, active days in 7); "เหตุการณ์ล่าสุด" is the feed of the newest 100 actions from everyone in the last 3 days, filterable by kind (ดูดวง, ดวงคู่, ดวงเดือน, ฟังดวง, ร้านค้าและเงิน, อื่น ๆ).
+- `/people?user=<id>`: who (email, provider, sign-up time and channel), profile (gender, birth year, age band, MBTI), totals (active days, last active, daily readings, compatibility checks, baht paid, มู balance) and up to 300 items of what they did, grouped by day, with a link to the shop timeline for refunds.
+- Every event horo-be records has a Thai phrase in `src/lib/people/events-model.ts`; a test reads horo-be's event list so a new event fails until it has one (it skips in a standalone clone). An unknown event shows its raw name.
+- Privacy rule, enforced by a test on the SQL: actions only. No reading content, no partner name or birth date, birth year only.
+- Live on load like every other page (stamp and reload button), not streaming. Team accounts are shown and marked.
+- Found on the way: the admin's server-recorded event list lacked `promo_ticket_expired`, so a promo ticket expiring counted as the person being active. Added; a test now keeps the list equal to horo-be's.
+
+Verified: type-check clean, 569 pass, 8 skip, Docker image built; both views opened in the local preview on a real Postgres (board, kind filter, a non-payer and a payer page). The board's main scan took about 5 ms on 18,000 events; `product_events` has no index on `created_at`, so if production grows past a few hundred thousand rows an index there (horo-be schema, additive) is the fix. Not verified: real production data, the search box, phone width.
+
+The local preview is now a script: `horo-admin/scripts/preview/up.sh <dir>` (commit `611e2ad`).
+
 ## Duplicate profiles in production (measured 2026-11-15)
 
 Read-only count with the owner's OK: 2,018 profile rows, 2,018 users, 0 duplicates. Nothing to merge. The horo-be fix (per-user lock on both save paths plus a unique index) shipped as `adca11b` the same day; a read-only check after the deploy showed `birth_profiles_user_id_unique_idx` in place and the plain index gone. Runbook and counts are in `horo-be/scripts/release/2026-11-birth-profile-unique/README.md`. A person's Google and X accounts are separate users on purpose and are not duplicates.
