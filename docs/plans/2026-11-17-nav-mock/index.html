@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nav mock สายมู</title>
+<script>
+// Some static servers (npx serve) drop "/index.html" and the trailing slash, which breaks the relative art and font paths.
+if (!/(\/|\.html)$/.test(location.pathname)) document.write('<base href="' + location.pathname + '/">');
+</script>
+<!--
+  Direction mock for docs/plans/2026-11-17-nav-upsell-plan.md. NOT approved design and NOT app code.
+  Tokens are copied from horo-fe/src/app/globals.css, fonts from @fontsource, art from horo-fe/public/assets/art
+  (copies in ./art and ./fonts so the page opens from disk). Icons are lucide paths. All Thai copy is proposed.
+-->
+<style>
+@font-face{font-family:"Anuphan";font-weight:400;src:url(fonts/anuphan-thai-400-normal.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Anuphan";font-weight:600;src:url(fonts/anuphan-thai-600-normal.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Anuphan";font-weight:700;src:url(fonts/anuphan-thai-700-normal.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Anuphan";font-weight:400;src:url(fonts/anuphan-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:"Anuphan";font-weight:600;src:url(fonts/anuphan-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:"Anuphan";font-weight:700;src:url(fonts/anuphan-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:"Noto Sans Thai";font-weight:400;src:url(fonts/noto-sans-thai-thai-400-normal.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Noto Sans Thai";font-weight:500;src:url(fonts/noto-sans-thai-thai-500-normal.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Noto Sans Thai";font-weight:600;src:url(fonts/noto-sans-thai-thai-600-normal.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Noto Sans Thai";font-weight:400;src:url(fonts/noto-sans-thai-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:"Noto Sans Thai";font-weight:500;src:url(fonts/noto-sans-thai-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:"Noto Sans Thai";font-weight:600;src:url(fonts/noto-sans-thai-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:"Sarabun";font-weight:300;src:url(fonts/sarabun-thai-300-normal.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Sarabun";font-weight:300;font-style:italic;src:url(fonts/sarabun-thai-300-italic.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:"Sarabun";font-weight:300;src:url(fonts/sarabun-latin-300-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+
+:root,[data-theme="light"]{
+  color-scheme:light;
+  --ground:#faf9fd;--surface:#ffffff;--surface2:#f3f0fa;--overlay:#efecf7;--ink:#1c1226;--ink-muted:#645d78;
+  --accent:#6b21a8;--accent-bright:#7c3aed;--accent-soft:#6d28d9;--accent-faint:#3b2a55;--accent-ink:#f5f5f5;
+  --edge:rgba(28,18,38,.1);--edge-soft:rgba(28,18,38,.045);--success:#047857;--warn:#b45309;
+  --streak:#f59e0b;--streak-text:#9a5800;--lift:0 10px 30px rgba(107,33,168,.08);
+}
+[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0a0a0f;--surface:#0f0a1a;--surface2:#1a0a2e;--overlay:#18181b;--ink:#f5f5f5;--ink-muted:#a1a1aa;
+  --accent:#6b21a8;--accent-bright:#a855f7;--accent-soft:#c084fc;--accent-faint:#e9d5ff;--accent-ink:#f5f5f5;
+  --edge:rgba(255,255,255,.1);--edge-soft:rgba(255,255,255,.05);--success:#34d399;--warn:#fbbf24;
+  --streak:#fbbf24;--streak-text:#fbbf24;--lift:0 10px 30px rgba(168,85,247,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#ece8f5;color:#1c1226;font-family:"Noto Sans Thai",system-ui,sans-serif;font-size:16px;line-height:1.6;min-height:100dvh}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+img{display:block;max-width:100%}
+h1,h2,h3,p{margin:0}
+.ic{display:inline-block;flex:none;vertical-align:middle}
+
+/* ---------- page around the phone ---------- */
+.stage{display:grid;grid-template-columns:minmax(0,22rem) auto;gap:32px;justify-content:center;align-items:start;padding:24px 16px 48px}
+.panel{font-size:14px;line-height:1.5;color:#1c1226;position:sticky;top:24px;max-height:calc(100dvh - 48px);overflow:auto;padding-right:4px}
+.panel h1{font-family:"Anuphan",sans-serif;font-size:20px;font-weight:700;line-height:1.3}
+.panel h2{font-family:"Anuphan",sans-serif;font-size:13px;font-weight:600;letter-spacing:.02em;color:#645d78;margin-top:20px;margin-bottom:6px;text-transform:uppercase}
+.panel p{color:#4a4360}
+.panel .tag{display:inline-block;background:#fde68a;color:#5a3a00;border-radius:999px;padding:1px 10px;font-size:12px;font-weight:600;margin-bottom:8px}
+.panel label{display:flex;gap:8px;align-items:flex-start;padding:5px 0;cursor:pointer}
+.panel input{margin-top:3px;accent-color:#6b21a8;width:16px;height:16px;flex:none}
+.panel .readout{background:#fff;border:1px solid rgba(28,18,38,.1);border-radius:12px;padding:10px 12px;margin-top:8px}
+.panel .readout b{font-weight:600}
+.panel ul{margin:0;padding-left:18px;color:#4a4360}
+.panel li{margin:4px 0}
+.panel code{font-size:12px;background:rgba(28,18,38,.06);padding:1px 5px;border-radius:5px}
+.jump{display:flex;flex-wrap:wrap;gap:6px}
+.jump button{border:1px solid rgba(28,18,38,.15);background:#fff;border-radius:999px;padding:4px 12px;font-size:13px;min-height:32px}
+.jump button:hover{background:#f3f0fa}
+
+/* ---------- the phone ---------- */
+.phone{position:relative;width:375px;height:812px;border-radius:36px;overflow:hidden;background:var(--ground);color:var(--ink);box-shadow:0 0 0 10px #1c1226,0 30px 60px rgba(28,18,38,.25);display:flex;flex-direction:column;font-family:"Noto Sans Thai",sans-serif}
+.topbar{height:56px;flex:none;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid var(--edge);background:var(--ground);z-index:5}
+.topbar img{height:40px;width:auto}
+.topbar>button:first-child{min-height:44px;display:flex;align-items:center}
+.spacer{flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 2px;border-radius:999px;position:relative}
+.chip>span{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px 0 6px;border-radius:999px;border:1px solid var(--edge);background:var(--surface2);font-size:14px;font-weight:500;font-variant-numeric:tabular-nums}
+.chip img{width:24px;height:24px}
+.dot{position:absolute;top:6px;right:0;width:10px;height:10px;border-radius:50%;background:var(--streak);box-shadow:0 0 0 2px var(--ground)}
+.screen{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:16px 16px 28px;scroll-behavior:auto}
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(5,1fr);height:68px;padding:4px 4px 8px;border-top:1px solid var(--edge);background:var(--ground);z-index:5}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;border-radius:12px;font-family:"Anuphan",sans-serif;font-size:11.5px;font-weight:600;color:var(--ink-muted);position:relative;white-space:nowrap;min-width:0}
+.tab .pill{display:grid;place-items:center;width:44px;height:28px;border-radius:999px}
+.tab[aria-current="page"]{color:var(--accent-bright)}
+.tab[aria-current="page"] .pill{background:color-mix(in srgb,var(--accent) 15%,transparent)}
+.tab.hero .pill{background:linear-gradient(135deg,#6b21a8,#a855f7);color:#f5f5f5;box-shadow:0 4px 12px rgba(107,33,168,.35)}
+.tab.hero[aria-current="page"] .pill{outline:2px solid var(--accent-bright);outline-offset:2px}
+.tab.hero{color:var(--ink)}
+.tab .cry{width:22px;height:22px}
+.tab .dot{top:4px;right:calc(50% - 22px)}
+button:focus-visible,.row:focus-visible{outline:2px solid var(--accent-bright);outline-offset:2px}
+
+.h1{font-family:"Anuphan",sans-serif;font-size:28px;font-weight:600;line-height:1.2;text-wrap:balance}
+.h2{font-family:"Anuphan",sans-serif;font-size:20px;font-weight:600;line-height:1.3}
+.h3{font-family:"Anuphan",sans-serif;font-size:16px;font-weight:600;line-height:1.35}
+.muted{color:var(--ink-muted)}
+.small{font-size:14px;line-height:1.55}
+.tiny{font-size:12px;line-height:1.5}
+.oracle{font-family:"Sarabun",sans-serif;font-weight:300;font-size:18px;line-height:1.8}
+.card{border:1px solid var(--edge);background:var(--surface);border-radius:16px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt24{margin-top:24px}.mt32{margin-top:32px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:12px;font-family:"Anuphan",sans-serif;font-weight:600;font-size:16px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 6px 16px rgba(107,33,168,.2)}
+.btn.primary:hover{background:var(--accent-bright)}
+.btn.soft{background:var(--surface2);border:1px solid var(--edge);color:var(--ink)}
+.btn.soft:hover{background:var(--edge)}
+.btn.outline{border:1.5px solid color-mix(in srgb,var(--accent-bright) 60%,transparent);color:var(--accent-bright)}
+.btn.small{min-height:44px;font-size:14px;padding:0 14px;border-radius:10px}
+.btn.full{width:100%}
+.link{display:inline-flex;align-items:center;gap:4px;min-height:44px;font-family:"Anuphan",sans-serif;font-weight:600;font-size:14px;color:var(--accent-bright)}
+.pilltag{display:inline-flex;align-items:center;border-radius:999px;border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent-bright);font-family:"Anuphan",sans-serif;font-weight:600;font-size:12.5px;padding:2px 10px}
+.standout{display:inline-flex;border-radius:999px;background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent-bright);font-size:12px;font-weight:600;padding:1px 8px;font-family:"Anuphan",sans-serif}
+
+/* today */
+.hero{position:relative;overflow:hidden;padding:20px 20px 18px;box-shadow:var(--lift)}
+.hero .mascot{width:104px;margin:0 auto 4px}
+.bar{height:6px;border-radius:99px;background:var(--edge-soft);overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--accent-bright)}
+.lucky{display:grid;grid-template-columns:repeat(4,1fr);overflow:hidden}
+.lucky div{padding:10px 8px;min-width:0}
+.lucky div+div{border-left:1px solid var(--edge)}
+.lucky dt{font-size:11.5px;color:var(--ink-muted);display:flex;align-items:center;gap:4px}
+.lucky dd{margin:2px 0 0;font-family:"Anuphan",sans-serif;font-weight:600;font-size:14px;line-height:1.3;display:flex;align-items:center;gap:4px;overflow-wrap:anywhere}
+.lucky img{width:20px;height:20px}
+.areas .row{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;width:100%;padding:12px 14px;min-height:72px}
+.areas .row+.panelx,.areas .item+.item{border-top:1px solid var(--edge)}
+.areas img{width:48px;height:48px}
+.areas .pct{font-family:"Anuphan",sans-serif;font-weight:600;font-size:18px;color:var(--accent-bright);font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:6px}
+.areas .panelx{padding:14px 16px 16px}
+.clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.offer{position:relative;border:2px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:20px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 12%,var(--surface)),var(--surface) 55%,color-mix(in srgb,var(--accent-bright) 9%,var(--surface)));padding:16px;box-shadow:var(--lift);cursor:pointer}
+.offer .top{display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:center}
+.offer img{width:72px;height:72px;object-fit:contain}
+.offer .hide{position:absolute;top:4px;right:4px;width:44px;height:44px;display:grid;place-items:center;color:var(--ink-muted);border-radius:12px;z-index:2}
+.quietrow{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;min-height:64px}
+.quietrow img{width:48px;height:48px;object-fit:contain;flex:none}
+.quietrow .grow{flex:1;min-width:0}
+.disclosure{display:flex;align-items:center;justify-content:space-between;width:100%;padding:12px 14px;min-height:56px}
+.tips{padding:0 14px 14px}
+.tips li{display:grid;grid-template-columns:20px 1fr;gap:8px;padding:8px 0;font-size:14px;line-height:1.6;list-style:none}
+.tips ul{margin:6px 0 0;padding:0}
+.kruline{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:4px 2px}
+.footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--edge);display:flex;flex-wrap:wrap;gap:4px 18px;justify-content:center;font-size:12.5px;color:var(--ink-muted)}
+.sharecard{width:200px;aspect-ratio:4/5;border-radius:14px;margin:0 auto;background:linear-gradient(160deg,#fbd5e5,#f6c1d6 60%,#e9d5ff);position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:12px;color:#2e1844;text-align:center;box-shadow:0 10px 24px rgba(107,33,168,.18)}
+.sharecard.night{background:linear-gradient(170deg,#1a0a2e,#2b1250 60%,#4c1d95);color:#f5f5f5}
+.sharecard img{width:118px;position:absolute;top:14px;left:50%;transform:translateX(-50%)}
+.sharecard .stamp{position:absolute;top:14px;right:10px;transform:rotate(10deg);border:2px solid #6b21a8;color:#6b21a8;border-radius:10px;padding:1px 7px;font-family:"Anuphan",sans-serif;font-weight:700;font-size:14px}
+.sharecard b{font-family:"Anuphan",sans-serif;font-size:15px;line-height:1.25}
+.sharecard span{font-size:10.5px;opacity:.8}
+
+/* มู */
+.balance{padding:18px 18px 16px;background:var(--surface2);border-color:color-mix(in srgb,var(--accent) 15%,transparent)}
+.balance .num{font-family:"Anuphan",sans-serif;font-weight:600;font-size:36px;line-height:1.1;font-variant-numeric:tabular-nums}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;padding:4px;border-radius:14px;background:var(--surface2);border:1px solid var(--edge)}
+.seg button{min-height:44px;border-radius:10px;font-family:"Anuphan",sans-serif;font-weight:600;font-size:15px;color:var(--ink-muted);display:flex;align-items:center;justify-content:center;gap:6px;position:relative}
+.seg button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(28,18,38,.12)}
+.seg .dot{position:static;box-shadow:none;width:8px;height:8px}
+.subseg{display:flex;gap:20px;border-bottom:1px solid var(--edge)}
+.subseg button{min-height:44px;font-family:"Anuphan",sans-serif;font-weight:600;font-size:15px;color:var(--ink-muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.subseg button[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
+.list>*+*{border-top:1px solid var(--edge)}
+.lrow{display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:60px;width:100%}
+.lrow .grow{flex:1;min-width:0}
+.lrow img{width:44px;height:44px;object-fit:contain;flex:none}
+.amt{font-family:"Anuphan",sans-serif;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.amt.plus{color:var(--success)}
+.gold{color:var(--streak-text)}
+.progress{height:6px;border-radius:99px;background:var(--edge-soft);overflow:hidden;margin-top:8px}
+.progress i{display:block;height:100%;background:var(--streak);border-radius:99px}
+
+/* envelope */
+.envelope{position:absolute;left:6px;bottom:84px;width:60px;z-index:6}
+.envelope img{width:60px;transform:rotate(-4deg)}
+.envelope .red{position:absolute;top:2px;right:4px;width:11px;height:11px;border-radius:50%;background:#e11d48;box-shadow:0 0 0 2px var(--ground)}
+.envelope .ex{position:absolute;top:-14px;right:-14px;width:28px;height:28px;border-radius:50%;background:var(--surface);border:1px solid var(--edge);display:grid;place-items:center;color:var(--ink-muted)}
+
+/* sheets */
+.layer{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;justify-content:flex-end;background:color-mix(in srgb,var(--ground) 70%,transparent);backdrop-filter:blur(3px)}
+.layer.above-tabs{bottom:68px}
+.layer.night{background:rgb(15 10 26 / .9);backdrop-filter:none;justify-content:center;color:#f5f5f5}
+.sheet{background:var(--surface2);border:1px solid var(--edge);border-bottom:0;border-radius:20px 20px 0 0;padding:14px 18px 22px;max-height:88%;overflow-y:auto}
+.sheet .head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.iconbtn{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;color:var(--ink-muted)}
+.iconbtn:hover{background:var(--edge-soft)}
+.more .lrow{min-height:64px}
+.more .ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--accent-bright);flex:none}
+.switch{width:44px;height:26px;border-radius:99px;background:var(--edge);position:relative;flex:none}
+.switch i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .15s}
+.switch.on{background:var(--accent-bright)}
+.switch.on i{transform:translateX(18px)}
+.targets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.targets button{text-align:center;min-height:56px;border-radius:12px;border:1px solid var(--edge);background:var(--surface);font-size:12.5px;font-weight:500}
+.stagebox{display:flex;flex-direction:column;align-items:center;gap:10px;padding:0 24px;text-align:center;touch-action:none;user-select:none;-webkit-user-select:none}
+.cyl{width:150px;height:220px;cursor:grab}
+.cyl.shaking{animation:shake .12s linear infinite}
+.cyl.out .stick-out{transform:translateY(-46px)}
+.stick-out{transition:transform .35s cubic-bezier(.2,1.4,.4,1)}
+@keyframes shake{0%{transform:translate(0,0) rotate(-5deg)}25%{transform:translate(5px,-4px) rotate(4deg)}50%{transform:translate(-4px,3px) rotate(-3deg)}75%{transform:translate(3px,4px) rotate(6deg)}100%{transform:translate(0,0) rotate(-5deg)}}
+.slip{background:#fffaf0;color:#2e1844;border:1px solid #e3d3b3;border-radius:14px;padding:18px 16px;text-align:center}
+.slip .no{font-family:"Anuphan",sans-serif;font-weight:600;font-size:14px;color:#5a4570}
+.slip .name{font-family:"Anuphan",sans-serif;font-weight:700;font-size:24px;line-height:1.25;margin-top:2px}
+.slip .cap{font-family:"Sarabun",sans-serif;font-style:italic;font-weight:300;font-size:16px;color:#5a4570;margin-top:8px}
+.slip .lines{font-family:"Sarabun",sans-serif;font-weight:300;font-size:17px;line-height:1.75;margin-top:12px;text-align:left}
+.slip .lines p+p{margin-top:6px}
+.toast{position:absolute;left:16px;right:16px;bottom:84px;z-index:40;background:var(--overlay);color:var(--ink);border:1px solid var(--edge);border-radius:12px;padding:10px 14px;font-size:14px;text-align:center;box-shadow:var(--lift)}
+.proposed{outline:1.5px dashed transparent}
+.notes-on .proposed{outline-color:#f59e0b;outline-offset:3px;border-radius:10px}
+
+@media (max-width:820px){
+  .stage{grid-template-columns:1fr;gap:12px;padding:0}
+  .panel{position:static;max-height:none;padding:12px 16px 0;order:2}
+  .phone{width:100vw;height:100dvh;border-radius:0;box-shadow:none;order:1}
+}
+@media (prefers-reduced-motion:reduce){.cyl.shaking{animation:none}.stick-out,.switch i{transition:none}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <aside class="panel" aria-label="Mock controls">
+    <span class="tag">Direction mock, not approved</span>
+    <h1>สายมู: nav and upsell mock</h1>
+    <p class="mt8">Tap around the phone. Thai copy is proposed and needs a thai-ux-writer pass. Reading pages are simplified; only the parts this proposal changes are drawn.</p>
+
+    <h2>Jump to</h2>
+    <div class="jump">
+      <button data-act="go" data-tab="today">วันนี้</button>
+      <button data-act="go" data-tab="monthly">ดวงเดือน</button>
+      <button data-act="go" data-tab="compat">ดวงคู่</button>
+      <button data-act="moo" data-seg="earn">มู: รับมู</button>
+      <button data-act="moo" data-seg="spend">มู: ใช้มู</button>
+      <button data-act="moo-hist" data-seg="siamsi">มู: ประวัติเซียมซี</button>
+      <button data-act="open-more">เพิ่มเติม</button>
+      <button data-act="siamsi-open">เซียมซี</button>
+      <button data-act="siamsi-shake">เซียมซี: shake stage</button>
+    </div>
+
+    <h2>Reader state (drives the offer card)</h2>
+    <label><input type="checkbox" data-state="compatWaiting"> A ดวงคู่ waits locked (ต้น)</label>
+    <label><input type="checkbox" data-state="ticket"> Holds a ตั๋วรู้ใจ</label>
+    <label><input type="checkbox" data-state="examSoon"> A locked exam reading, 3 days away</label>
+    <label><input type="checkbox" data-state="monthOpened"> This month's ดวงเดือน is opened</label>
+    <label><input type="checkbox" data-state="loveTop"> Love is today's top area, no ดวงคู่ checked yet</label>
+    <label><input type="checkbox" data-state="claimable"> Check-in not claimed yet (gold dot)</label>
+    <label><input type="checkbox" data-state="letter"> A feedback letter is waiting</label>
+    <div class="readout" id="readout"></div>
+
+    <h2>Variants still to decide</h2>
+    <label><input type="checkbox" data-state="shareInline"> Share: keep the image on the page (today's rule) instead of a button under the title</label>
+    <label><input type="checkbox" data-state="kruCard"> ค่าครู: keep the card instead of one quiet line</label>
+    <label><input type="checkbox" data-state="dark"> โหมดกลางคืน</label>
+    <label><input type="checkbox" data-state="notes"> Outline what is new or moved</label>
+
+    <h2>What this screen changes</h2>
+    <ul id="notes"></ul>
+  </aside>
+
+  <div class="phone" id="phone" data-theme="light">
+    <header class="topbar">
+      <button data-act="go" data-tab="today" aria-label="สายมู ไปหน้าดวงวันนี้"><img src="art/wordmark.webp" alt="สายมู"></button>
+      <span class="spacer"></span>
+      <button class="chip" id="chip" data-act="moo" data-seg="earn"></button>
+    </header>
+    <main class="screen" id="screen" tabindex="-1"></main>
+    <div id="env"></div>
+    <nav class="tabbar" id="tabbar" aria-label="เมนูหลัก"></nav>
+    <div id="layer"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+  </div>
+</div>
+
+<script>
+const ICONS = {"sun":"<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2\"/><path d=\"M12 20v2\"/><path d=\"m4.93 4.93 1.41 1.41\"/><path d=\"m17.66 17.66 1.41 1.41\"/><path d=\"M2 12h2\"/><path d=\"M20 12h2\"/><path d=\"m6.34 17.66-1.41 1.41\"/><path d=\"m19.07 4.93-1.41 1.41\"/>","orbit":"<path d=\"M20.341 6.484A10 10 0 0 1 10.266 21.85\"/><path d=\"M3.659 17.516A10 10 0 0 1 13.74 2.152\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/><circle cx=\"19\" cy=\"5\" r=\"2\"/><circle cx=\"5\" cy=\"19\" r=\"2\"/>","heart":"<path d=\"M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5\"/>","menu":"<path d=\"M4 5h16\"/><path d=\"M4 12h16\"/><path d=\"M4 19h16\"/>","share-2":"<circle cx=\"18\" cy=\"5\" r=\"3\"/><circle cx=\"6\" cy=\"12\" r=\"3\"/><circle cx=\"18\" cy=\"19\" r=\"3\"/><line x1=\"8.59\" x2=\"15.42\" y1=\"13.51\" y2=\"17.49\"/><line x1=\"15.41\" x2=\"8.59\" y1=\"6.51\" y2=\"10.49\"/>","chevron-right":"<path d=\"m9 18 6-6-6-6\"/>","chevron-down":"<path d=\"m6 9 6 6 6-6\"/>","gift":"<path d=\"M12 7v14\"/><path d=\"M20 11v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8\"/><path d=\"M7.5 7a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5 1 1 0 0 1 0 5\"/><rect x=\"3\" y=\"7\" width=\"18\" height=\"4\" rx=\"1\"/>","history":"<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/><path d=\"M12 7v5l4 2\"/>","settings":"<path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>","moon":"<path d=\"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401\"/>","log-out":"<path d=\"m16 17 5-5-5-5\"/><path d=\"M21 12H9\"/><path d=\"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4\"/>","shopping-bag":"<path d=\"M16 10a4 4 0 0 1-8 0\"/><path d=\"M3.103 6.034h17.794\"/><path d=\"M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z\"/>","compass":"<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z\"/>","graduation-cap":"<path d=\"M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z\"/><path d=\"M22 10v6\"/><path d=\"M6 12.5V16a6 3 0 0 0 12 0v-3.5\"/>","x":"<path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/>","arrow-right":"<path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/>","arrow-left":"<path d=\"m12 19-7-7 7-7\"/><path d=\"M19 12H5\"/>","check":"<path d=\"M20 6 9 17l-5-5\"/>","download":"<path d=\"M12 15V3\"/><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><path d=\"m7 10 5 5 5-5\"/>","hash":"<line x1=\"4\" x2=\"20\" y1=\"9\" y2=\"9\"/><line x1=\"4\" x2=\"20\" y1=\"15\" y2=\"15\"/><line x1=\"10\" x2=\"8\" y1=\"3\" y2=\"21\"/><line x1=\"16\" x2=\"14\" y1=\"3\" y2=\"21\"/>","palette":"<path d=\"M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z\"/><circle cx=\"13.5\" cy=\"6.5\" r=\".5\" fill=\"currentColor\"/><circle cx=\"17.5\" cy=\"10.5\" r=\".5\" fill=\"currentColor\"/><circle cx=\"6.5\" cy=\"12.5\" r=\".5\" fill=\"currentColor\"/><circle cx=\"8.5\" cy=\"7.5\" r=\".5\" fill=\"currentColor\"/>","clock":"<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 6v6l4 2\"/>","sparkles":"<path d=\"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z\"/><path d=\"M20 2v4\"/><path d=\"M22 4h-4\"/><circle cx=\"4\" cy=\"20\" r=\"2\"/>","hand-heart":"<path d=\"M11 14h2a2 2 0 0 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16\"/><path d=\"m14.45 13.39 5.05-4.694C20.196 8 21 6.85 21 5.75a2.75 2.75 0 0 0-4.797-1.837.276.276 0 0 1-.406 0A2.75 2.75 0 0 0 11 5.75c0 1.2.802 2.248 1.5 2.946L16 11.95\"/><path d=\"m2 15 6 6\"/><path d=\"m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a1 1 0 0 0-2.75-2.91\"/>","ticket":"<path d=\"M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z\"/><path d=\"M13 5v2\"/><path d=\"M13 17v2\"/><path d=\"M13 11v2\"/>","mail":"<path d=\"m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7\"/><rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2\"/>","plus":"<path d=\"M5 12h14\"/><path d=\"M12 5v14\"/>","lock":"<rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/>","link":"<path d=\"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71\"/><path d=\"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71\"/>","circle-check":"<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m9 12 2 2 4-4\"/>","circle-x":"<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m15 9-6 6\"/><path d=\"m9 9 6 6\"/>","ellipsis":"<circle cx=\"12\" cy=\"12\" r=\"1\"/><circle cx=\"19\" cy=\"12\" r=\"1\"/><circle cx=\"5\" cy=\"12\" r=\"1\"/>","book-open":"<path d=\"M12 7v14\"/><path d=\"M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z\"/>"};
+const ic = (name, size = 20) => `<svg class="ic" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
+const $ = (id) => document.getElementById(id);
+
+/* ---------- sample data (the local dev user's shape; all copy proposed) ---------- */
+const SLIPS = [
+  { no: 1, name: 'ใบเรือลำเล็ก', cap: 'น้ำนิ่งพอจะออกตัว ไม่ต้องรอวันที่ฟ้าสวย', lines: ['ไม้พายเย็น ๆ ในมือ เรือลำเล็กค่อย ๆ ไถออกจากท่า', 'คำที่พิมพ์ค้างไว้ กดส่งได้แล้วนะ ถ้าใจคิดแบบนั้นจริง', 'เรื่องเล็ก ๆ ที่ปล่อยออกไปวันนี้ อาจมีใครบางคนรอรับช่วงต่ออยู่'] },
+  { no: 2, name: 'ใบแบตครึ่งเดียว', cap: 'ไฟสีเหลืองเตือนเบา ๆ แต่ยังพากลับถึงห้อง', lines: ['แบตขึ้นขีดสีเหลือง ยังพอเปิดแชตได้ ยังพอเรียกรถกลับบ้าน', 'วันนี้ก็ฟีลนั้นเลย ไปต่อได้เรื่อย ๆ แต่ไม่เหลือเผื่อใคร', 'ข้อความที่พิมพ์ตอนเหนื่อย มักฟังแข็งกว่าใจคิด รอตื่นแล้วค่อยอ่านอีกทีนะ'] },
+  { no: 3, name: 'ใบที่นั่งว่างบนรถไฟฟ้า', cap: 'ทั้งขบวนเบียดแน่น แต่ที่ว่างอยู่ตรงหน้าพอดี', lines: ['ประตูรถไฟฟ้าเปิดออก คนแน่นทั้งขบวน แต่กลับมีที่ว่างตรงหน้าพอดี', 'ของหนักที่ถือไว้ วางลงได้แล้วนะ เรื่องที่กังวลจะเบากว่าที่คิด', 'บทสนทนาที่เคยสะดุด กลับมาลื่นไหลเหมือนเดิม'] },
+  { no: 4, name: 'ใบเซเว่นตีสอง', cap: 'ซอยมืดสนิททั้งสาย ยังมีไฟหนึ่งดวงเปิดรอ', lines: ['ตีสองในซอยเงียบ เสียงกระดิ่งหน้าร้านดังพร้อมไอเย็นปะทะหน้า', 'ในคืนที่ดูมืดแปดด้าน ยังมีมุมอุ่น ๆ ให้แวะพักหายใจ', 'ข้อมูลที่ขาดหายไปอีกนิด จะช่วยให้เลือกง่ายขึ้นเยอะเลย'] },
+];
+const AREAS = {
+  career: { label: 'การงาน', img: 'briefcase', score: 91, tip: 'ไอเดียมาไว จดไว้ก่อนแล้วค่อยเลือกทีหลัง', reading: 'วันนี้ดวงงานเปิด ความคิดใหม่มาเร็วกว่าปกติ เรื่องที่ค้างอยู่มีทางขยับถ้าคุณหยิบมาทำช่วงสาย ระวังคนที่รับปากเร็วแต่ไม่ถามรายละเอียด' },
+  finance: { label: 'การเงิน', img: 'coin-pouch', score: 84, tip: 'เงินเข้าออกปกติ ของที่อยากได้รออีกวันได้', reading: 'เรื่องเงินวันนี้นิ่ง ไม่มีอะไรต้องรีบตัดสินใจ ถ้ามีใครชวนลงขัน ขอดูตัวเลขให้ครบก่อนตอบ' },
+  love: { label: 'ความรัก', img: 'hearts', score: 80, tip: 'คุยกันตรง ๆ ได้ แต่เลือกจังหวะหน่อย', reading: 'ดวงความรักวันนี้พอไปได้ คนที่คุยอยู่ตอบช้าไม่ได้แปลว่าใจเปลี่ยน ถ้ามีเรื่องค้างใจ ช่วงเย็นคุยง่ายกว่าช่วงเช้า' },
+  health: { label: 'สุขภาพ', img: 'lotus', score: 72, tip: 'พักสายตาบ้าง วันนี้ใช้หัวเยอะ', reading: 'ร่างกายตามใจไม่ค่อยทันวันนี้ นอนให้พอคืนนี้จะช่วยได้มาก' },
+};
+const READING = 'วันนี้เป็นวันที่แรงของธาตุไม้ส่งให้ไฟในตัวคุณลุกขึ้นมา ความคิดเลยแล่นเร็วกว่าทุกวัน เรื่องงานสร้างสรรค์และการเริ่มของใหม่ไปได้ดี เรื่องที่ต้องใช้ความละเอียดให้ตรวจซ้ำอีกรอบก่อนส่ง ช่วงบ่ายมีคนเข้ามาขอความเห็น ฟังให้จบก่อนค่อยตอบ แล้ววันนี้จะจบแบบสบายใจ';
+const DOS = ['จดไอเดียที่ผุดขึ้นมาไว้ก่อน ยังไม่ต้องเลือก', 'ทักคนที่อยากคุยด้วยช่วงเย็น'];
+const DONTS = ['รับปากเรื่องเงินโดยยังไม่เห็นตัวเลข', 'ส่งงานโดยไม่ตรวจซ้ำ'];
+const PEOPLE = [
+  { id: 'ton', name: 'ต้น', kind: 'คนคุย', score: 78 },
+  { id: 'beam', name: 'บีม', kind: 'เพื่อน', score: 85 },
+  { id: 'wipa', name: 'คุณวิภา', kind: 'ที่ทำงาน', score: 64 },
+];
+
+const S = {
+  tab: 'today', compatWaiting: true, ticket: false, examSoon: false, monthOpened: false, loveTop: false, claimable: true, letter: true,
+  shareInline: false, kruCard: false, dark: false, notes: false,
+  balance: 52, mooSeg: 'earn', histSeg: 'moo', expanded: null, readMore: false, tipsOpen: false, offerHidden: false, envHidden: false,
+  person: null, sheet: null, siamsiStep: 'ask', slip: null,
+  draws: [{ date: '17 พ.ย. 2569', slip: SLIPS[3] }, { date: '16 พ.ย. 2569', slip: SLIPS[1] }],
+  ledger: [
+    { t: 'เซียมซี', d: '17 พ.ย. 2569', a: -9 }, { t: 'ตอบจดหมาย', d: '17 พ.ย. 2569', a: 9 }, { t: 'โบนัสเช็คอิน', d: '17 พ.ย. 2569', a: 1 },
+    { t: 'เซียมซี', d: '16 พ.ย. 2569', a: -9 }, { t: 'โบนัสเช็คอิน', d: '16 พ.ย. 2569', a: 1 }, { t: 'เติมมู', d: '12 พ.ย. 2569', a: 99 }, { t: 'แลกตั๋วรู้ใจ 1 ใบ', d: '12 พ.ย. 2569', a: -69 },
+  ],
+};
+
+/* ---------- the offer rule (proposed order; first match wins) ---------- */
+function offer() {
+  if (S.ticket && S.compatWaiting) return { reason: 'ticket_ready', tag: 'ดวงคู่', img: 'heart-ticket', title: 'คุณมีตั๋วรู้ใจ 1 ใบ', body: 'ใช้เปิดดวงคู่กับต้นฉบับเต็มได้เลย ไม่ต้องใช้มูเพิ่ม', cta: 'ใช้ตั๋วเปิดอ่าน', act: 'person', arg: 'ton', named: true };
+  if (S.compatWaiting) return { reason: 'compat_waiting', tag: 'ดวงคู่', img: 'linked-pair', title: 'ดวงคู่กับต้นยังรอเปิดอยู่', body: 'อ่านต่อว่าคุณกับต้นเข้ากันตรงไหน และตรงไหนต้องค่อย ๆ ปรับ', cta: 'เปิดอ่านดวงคู่', act: 'person', arg: 'ton', named: true };
+  if (S.examSoon) return { reason: 'exam_soon', tag: 'ดวงการเรียน', img: 'exam-ticket', title: 'อีก 3 วันคุณจะสอบ', body: 'วันสอบใส่สีอะไร พกอะไร ขอพรกับใคร เปิดดวงวันสอบฉบับเต็ม', cta: 'ดูดวงวันสอบ', act: 'toast', arg: 'หน้าดวงการเรียนไม่ได้อยู่ใน mock นี้' };
+  if (!S.monthOpened && S.loveTop) return { reason: 'love_top', tag: 'ดวงคู่', img: 'linked-pair', title: 'วันนี้ความรักของคุณเด่นสุด', body: 'ลองดูความเข้าขากับคนที่คิดถึงอยู่ ใส่วันเกิดของเขาก็ดูได้เลย', cta: 'ดูความเข้าขา', act: 'go', arg: 'compat' };
+  if (!S.monthOpened) return { reason: 'month_locked', tag: 'ดวงประจำเดือน', img: 'oracle-month', title: 'ดวงเดือนพฤศจิกายนของคุณยังไม่ได้เปิด', body: 'วันไหนดวงเปิด เรื่องไหนต้องตั้งรับ อ่านครบทั้งเดือน', cta: 'ดูดวงเดือนนี้', act: 'go', arg: 'monthly' };
+  return { reason: 'month_open', quiet: true, img: 'oracle-month', title: 'อ่านดวงเดือนนี้ต่อ', body: 'ปฏิทินดวงและคนรอบตัวของเดือนนี้รออยู่', act: 'go', arg: 'monthly' };
+}
+
+/* ---------- pieces ---------- */
+const shareBtn = (label = 'แชร์') => `<button class="btn soft small proposed" data-act="share">${ic('share-2', 18)}${label}</button>`;
+const footer = (withSupport) => `<div class="footer">${withSupport ? `<button class="link" style="min-height:32px" data-act="kru">สนับสนุนแม่หมอ</button>` : ''}<span>ข้อตกลง</span><span>ความเป็นส่วนตัว</span><span>ติดต่อเรา</span></div>`;
+
+function offerCard() {
+  const o = offer();
+  if (S.offerHidden) return '';
+  if (o.quiet) return `<button class="card quietrow mt24 proposed" data-act="${o.act}" data-arg="${o.arg}"><img src="art/${o.img}.webp" alt=""><span class="grow"><span class="h3" style="display:block">${o.title}</span><span class="small muted">${o.body}</span></span>${ic('chevron-right')}</button>`;
+  return `<section class="offer mt24 proposed" data-act="${o.act}" data-arg="${o.arg}" aria-labelledby="offer-title">
+    ${o.named ? `<button class="hide" data-act="hide-offer" aria-label="ซ่อนไว้ก่อนวันนี้">${ic('x', 18)}</button>` : ''}
+    <div class="top"><img src="art/${o.img}.webp" alt=""><div><span class="pilltag">${o.tag}</span><h2 class="h2 mt8" id="offer-title">${o.title}</h2></div></div>
+    <p class="small muted mt8">${o.body}</p>
+    <button class="btn primary full mt12" data-act="${o.act}" data-arg="${o.arg}">${o.cta}${ic('arrow-right', 18)}</button>
+  </section>`;
+}
+
+function screenToday() {
+  const order = Object.keys(AREAS).sort((a, b) => (S.loveTop ? (a === 'love' ? -1 : b === 'love' ? 1 : 0) : 0) || AREAS[b].score - AREAS[a].score);
+  const last = S.draws[0];
+  return `
+  <section class="card hero">
+    <img class="mascot" src="art/oracle-star.webp" alt="มาสคอตนักพยากรณ์ของสายมู">
+    <p class="small muted">วันอังคารที่ 17 พฤศจิกายน 2569</p>
+    <p class="h3 mt8" style="font-weight:400">ดวงของ ภู วันนี้</p>
+    <h1 class="h1 mt8">วันไอเดียแล่น จนต้องรีบจด</h1>
+    <div class="mt12" role="progressbar" aria-label="พลังวันนี้" aria-valuemin="0" aria-valuemax="100" aria-valuenow="84">
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="small muted">พลังวันนี้จาก 4 ด้าน</span><span class="h2" style="color:var(--accent-bright)">84%</span></div>
+      <div class="bar"><i style="width:84%"></i></div>
+    </div>
+    <p class="oracle mt12" style="color:var(--accent-faint)">วันนี้ดวงเปิดเรื่องงานสร้างสรรค์ คิดอะไรออกให้รีบจดไว้ก่อนมันจะเลือน</p>
+    ${S.shareInline ? '' : `<div class="mt12">${shareBtn('แชร์ดวงวันนี้')}</div>`}
+  </section>
+
+  <dl class="card lucky mt12 proposed" aria-label="จังหวะดีของวันนี้" style="margin-bottom:0">
+    <div><dt>${ic('hash', 13)}เลข</dt><dd>3, 8</dd></div>
+    <div><dt>${ic('palette', 13)}สี</dt><dd><img src="art/gem-orange.webp" alt="">ส้ม</dd></div>
+    <div><dt>${ic('compass', 13)}ทิศ</dt><dd>ตะวันออก</dd></div>
+    <div><dt>${ic('clock', 13)}เวลา</dt><dd>9 ถึง 11 โมง</dd></div>
+  </dl>
+
+  <section class="mt24" aria-labelledby="t-read">
+    <h2 class="h2" id="t-read">คำทำนายวันนี้</h2>
+    <p class="oracle mt8">${S.readMore ? READING : READING.slice(0, 118) + '...'}</p>
+    <button class="link" data-act="toggle" data-key="readMore">${S.readMore ? 'ย่อคำทำนาย' : 'อ่านต่อ'}${ic('chevron-down', 16)}</button>
+  </section>
+
+  <section class="mt16" aria-labelledby="t-areas">
+    <h2 class="h2" id="t-areas">วันนี้แต่ละด้านเป็นยังไงบ้าง</h2>
+    <p class="small muted">แตะหนึ่งด้านเพื่ออ่านรายละเอียด</p>
+    <div class="card areas mt12" style="overflow:hidden">
+      ${order.map((k, i) => { const a = AREAS[k]; const open = S.expanded === k; return `<div class="item">
+        <button class="row" data-act="area" data-arg="${k}" aria-expanded="${open}">
+          <img src="art/${a.img}.webp" alt="">
+          <span style="min-width:0"><span class="h3" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${a.label}${i === 0 ? '<span class="standout">เด่นสุด</span>' : ''}</span><span class="small muted clamp2">${a.tip}</span></span>
+          <span class="pct">${S.loveTop && k === 'love' ? 93 : a.score}%${ic('chevron-down', 18)}</span>
+        </button>
+        ${open ? `<div class="panelx"><p class="oracle">${a.reading}</p></div>` : ''}
+      </div>`; }).join('')}
+    </div>
+  </section>
+
+  ${offerCard()}
+
+  <button class="card quietrow mt12 proposed" data-act="siamsi-open">
+    <img src="art/oracle-scroll.webp" alt="">
+    <span class="grow"><span class="h3" style="display:block">เซียมซีวันนี้</span>
+      <span class="small muted" style="display:flex;align-items:center;gap:6px">เขย่าเลย <img src="art/mu-crystal.webp" alt="" style="width:16px;height:16px"> <b style="color:var(--ink)">9 มู</b></span>
+      ${last ? `<span class="tiny muted">ใบล่าสุด ${last.slip.name}</span>` : ''}</span>
+    ${ic('chevron-right')}
+  </button>
+
+  <section class="card mt12 proposed" aria-labelledby="t-tips">
+    <button class="disclosure" data-act="toggle" data-key="tipsOpen" aria-expanded="${S.tipsOpen}">
+      <span><span class="h3" id="t-tips" style="display:block">วันนี้เริ่มจากข้อที่ไหว</span><span class="small muted">ข้อที่ลองทำ 2 ข้อ และเรื่องที่ควรระวัง 2 ข้อ</span></span>
+      <span style="transform:rotate(${S.tipsOpen ? 180 : 0}deg)">${ic('chevron-down')}</span>
+    </button>
+    ${S.tipsOpen ? `<div class="tips"><p class="h3" style="font-size:14px">ลองเริ่มจากตรงนี้</p><ul>${DOS.map((t) => `<li><span style="color:var(--success)">${ic('circle-check', 16)}</span>${t}</li>`).join('')}</ul>
+      <p class="h3 mt8" style="font-size:14px">เรื่องที่ควรระวัง</p><ul>${DONTS.map((t) => `<li><span style="color:var(--warn)">${ic('circle-x', 16)}</span>${t}</li>`).join('')}</ul></div>` : ''}
+  </section>
+
+  ${S.shareInline ? `<section class="mt24" style="text-align:center"><h2 class="h2">การ์ดดวงวันนี้ของคุณ</h2><p class="small muted">ทำเป็นรูปให้แล้ว เก็บไว้ดูหรือส่งให้เพื่อนได้เลย</p><div class="mt12">${shareCardArt()}</div>
+    <div class="mt12" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button class="btn primary" data-act="toast" data-arg="บันทึกรูปแล้ว">${ic('download', 18)}บันทึกรูป</button><button class="btn soft" data-act="share">${ic('share-2', 18)}แชร์</button></div></section>` : ''}
+
+  ${S.kruCard ? `<section class="card mt24" style="padding:16px" data-act="kru"><div style="display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center"><img src="art/books.webp" alt="" style="width:56px"><div><h2 class="h3">ค่าครูหมอดู</h2><p class="small muted">ถ้าคำทำนายวันนี้ช่วยให้วันของคุณง่ายขึ้นสักนิด ใส่ค่าครูตามใจได้นะ เราเปลี่ยนให้เป็นแต้มมูเท่ากับที่ให้ทุกบาท</p></div></div><button class="btn outline full mt12" data-act="kru">ให้ค่าครู</button></section>`
+    : `<div class="kruline mt24 proposed"><p class="small muted">ถ้าคำทำนายวันนี้ช่วยให้วันของคุณง่ายขึ้นสักนิด</p><button class="link" data-act="kru" style="white-space:nowrap">ให้ค่าครู${ic('chevron-right', 16)}</button></div>`}
+  ${footer(false)}`;
+}
+
+const SHARE = {
+  today: { title: 'แชร์ดวงวันนี้', stamp: '84%', img: 'oracle-star', date: 'อังคาร 17 พ.ย. 2569', head: 'วันไอเดียแล่น<br>จนต้องรีบจด' },
+  monthly: { title: 'แชร์ดวงเดือนนี้', stamp: '', img: 'oracle-month', date: 'พฤศจิกายน 2569', head: 'เดือนที่งานเด่น<br>กว่าด้านอื่น', night: true },
+  compat: { title: 'แชร์ดวงคู่นี้', stamp: '85%', img: 'linked-pair', date: 'เช็คเมื่อ 12 พ.ย. 2569', head: 'ภู กับ บีม' },
+};
+function shareCardArt(ctx = 'today') {
+  const c = ctx === 'siamsi' && S.slip ? { title: 'แชร์เซียมซี', stamp: '', img: 'oracle-scroll', date: `ใบที่ ${S.slip.no}`, head: S.slip.name, night: true } : SHARE[ctx] || SHARE.today;
+  return `<div class="sharecard ${c.night ? 'night' : ''}" role="img" aria-label="การ์ดสำหรับแชร์">${c.stamp ? `<span class="stamp">${c.stamp}</span>` : ''}<img src="art/${c.img}.webp" alt=""><span>${c.date}</span><b>${c.head}</b><span class="mt8">สายมู.com</span></div>`;
+}
+const shareTitle = (ctx) => (ctx === 'siamsi' ? 'แชร์เซียมซี' : (SHARE[ctx] || SHARE.today).title);
+
+function screenMonthly() {
+  const six = ['การงาน', 'การเงิน', 'ความรัก', 'สุขภาพ', 'ครอบครัว', 'การเรียนรู้'];
+  return `
+  <span class="pilltag">ดวงประจำเดือน</span>
+  <h1 class="h1 mt8">ดวงเดือนพฤศจิกายน 2569</h1>
+  <p class="small muted mt8">${S.monthOpened ? 'คำอ่านฉบับเต็มของคุณ' : 'ตัวอย่างฟรีของเดือนนี้'}</p>
+  <div class="mt12">${shareBtn('แชร์ดวงเดือนนี้')}</div>
+  <section class="card mt16" style="padding:16px"><h2 class="h3">ภาพรวมเดือนนี้</h2><p class="oracle mt8">เดือนนี้ดวงงานเด่นกว่าด้านอื่น ช่วงกลางเดือนมีเกณฑ์ได้เริ่มเรื่องใหม่ เรื่องเงินให้ประคองไว้ก่อน</p></section>
+  <div class="card list mt12">${six.map((n, i) => `<div class="lrow"><span class="grow"><span class="h3">${n}</span></span>${S.monthOpened || i < 2 ? `<span class="small muted">อ่าน</span>${ic('chevron-right', 18)}` : `<span class="small muted" style="display:flex;gap:6px;align-items:center">${ic('lock', 16)}ฉบับเต็ม</span>`}</div>`).join('')}</div>
+  ${S.monthOpened ? '' : `<section class="offer mt16" data-act="toast" data-arg="ประตูซื้อของดวงเดือนเหมือนในแอปวันนี้ ไม่ได้เปลี่ยน"><div class="top"><img src="art/monthly-ticket.webp" alt=""><div><h2 class="h2">เปิดคำอ่านฉบับเต็มของเดือนนี้</h2></div></div><p class="small muted mt8">ดวง 6 ด้าน ปฏิทินดวง คนรอบตัวและของมู</p><button class="btn primary full mt12">ดูตั๋วดวงเดือน</button></section>`}
+  <p class="tiny muted mt16">หน้านี้วาดแบบย่อ เนื้อหาจริงของหน้าดวงเดือนไม่เปลี่ยน สิ่งที่เปลี่ยนคือปุ่มแชร์ใต้ชื่อหน้า</p>
+  ${footer(true)}`;
+}
+
+function screenCompat() {
+  if (S.person) {
+    const p = PEOPLE.find((x) => x.id === S.person);
+    const locked = p.id === 'ton' && S.compatWaiting;
+    return `
+    <button class="link" data-act="person" data-arg="">${ic('arrow-left', 16)}ดวงคู่ทั้งหมด</button>
+    <span class="pilltag">${p.kind}</span>
+    <h1 class="h1 mt8">ภู กับ ${p.name}</h1>
+    <p class="small muted mt8">เข้ากัน ${p.score}%</p>
+    <div class="mt12">${shareBtn('แชร์ดวงคู่นี้')}</div>
+    <section class="card mt16" style="padding:16px"><h2 class="h3">ภาพรวมของคู่นี้</h2><p class="oracle mt8">คุณสองคนคุยกันเข้าใจเร็ว เรื่องที่ต้องค่อย ๆ ปรับคือจังหวะการตัดสินใจที่ไม่เท่ากัน</p></section>
+    ${locked ? `<section class="offer mt16" data-act="toast" data-arg="ประตูเปิดดวงคู่เหมือนในแอปวันนี้ ไม่ได้เปลี่ยน"><div class="top"><img src="art/heart-ticket.webp" alt=""><div><h2 class="h2">อ่านดวงคู่ฉบับเต็มกับ${p.name}</h2></div></div><p class="small muted mt8">${S.ticket ? 'คุณมีตั๋วรู้ใจ 1 ใบ ใช้เปิดได้เลย' : 'ใช้ตั๋วรู้ใจ 1 ใบ'}</p><button class="btn primary full mt12">${S.ticket ? 'ใช้ตั๋วเปิดอ่าน' : 'ดูตั๋วรู้ใจ'}</button></section>` : `<div class="card list mt12">${['เข้ากันตรงไหน', 'ตรงไหนต้องค่อย ๆ ปรับ', 'คุยกันยังไงให้เข้าใจ'].map((n) => `<div class="lrow"><span class="grow h3">${n}</span>${ic('chevron-right', 18)}</div>`).join('')}</div>`}
+    <p class="tiny muted mt16">หน้านี้วาดแบบย่อ เนื้อหาจริงของรายงานดวงคู่ไม่เปลี่ยน</p>${footer(true)}`;
+  }
+  return `
+  <h1 class="h1">ดวงคู่</h1>
+  <p class="small muted mt8">ดูความเข้าขากับคนโปรดของคุณ จะเป็นเพื่อน ครอบครัว คนที่ทำงานด้วย หรือคนคุยก็ได้</p>
+  <button class="btn primary full mt16" data-act="toast" data-arg="ฟอร์มเช็คดวงคู่เหมือนในแอปวันนี้ ไม่ได้เปลี่ยน">${ic('plus', 18)}เช็คดวงคู่คนใหม่</button>
+  <h2 class="h3 mt24">คนที่เคยเช็คไว้</h2>
+  <div class="card list mt8">${PEOPLE.map((p) => { const locked = p.id === 'ton' && S.compatWaiting; return `<button class="lrow" data-act="person" data-arg="${p.id}"><img src="art/linked-pair.webp" alt=""><span class="grow"><span class="h3" style="display:block">${p.name}</span><span class="small muted">${p.kind} เข้ากัน ${p.score}%</span></span>${locked ? `<span class="small" style="color:var(--accent-bright);display:flex;gap:4px;align-items:center">${ic('lock', 15)}รอเปิด</span>` : ic('chevron-right', 18)}</button>`; }).join('')}</div>
+  ${footer(true)}`;
+}
+
+function screenMoo() {
+  const seg = (k, label, dot) => `<button role="tab" aria-selected="${S.mooSeg === k}" data-act="moo" data-seg="${k}">${label}${dot ? '<span class="dot" aria-label="มีมูรอรับ"></span>' : ''}</button>`;
+  let body = '';
+  if (S.mooSeg === 'earn') {
+    body = `
+    <div class="card list">
+      <div class="lrow"><img src="art/${S.claimable ? 'flame-ember' : 'flame-small'}.webp" alt=""><span class="grow"><span class="h3" style="display:block">${S.claimable ? 'วันนี้มีมูรอคุณอยู่ 1 มู' : 'วันนี้ได้ 1 มู แล้ว'}</span><span class="small muted">${S.claimable ? 'กดรับได้เลยนะ' : 'พรุ่งนี้มาเจอกันใหม่นะ ขอให้ปังๆ'}</span>
+        <span class="tiny gold" style="display:block;margin-top:4px">อีก 3 ครั้ง มีของขวัญรออยู่นะ</span><span class="progress"><i style="width:${S.claimable ? 43 : 57}%"></i></span></span>
+        ${S.claimable ? `<button class="btn primary small" data-act="claim">รับ</button>` : `<span style="color:var(--success)">${ic('check', 22)}</span>`}</div>
+      <button class="lrow" data-act="toast" data-arg="ป๊อปอัปเช็คอินเหมือนในแอปวันนี้ ไม่ได้เปลี่ยน"><span class="grow link" style="min-height:0">ดูเช็คอินของฉัน</span>${ic('chevron-right', 18)}</button>
+    </div>
+    <div class="card list mt12">
+      <div class="lrow"><img src="art/letter-closed.webp" alt=""><span class="grow"><span class="h3" style="display:block">${S.letter ? 'มีจดหมายถึงคุณ' : 'ตอบจดหมายครบแล้ว'}</span><span class="small muted">${S.letter ? 'ตอบคำถามสั้น ๆ รับ 9 มู' : 'ขอบคุณที่เล่าให้ฟังนะ มีชุดใหม่จะบอกตรงนี้'}</span></span>
+        ${S.letter ? `<button class="btn soft small" data-act="letter">เปิดอ่าน</button>` : ''}</div>
+    </div>
+    <div class="card list mt12">
+      <button class="lrow" data-act="toast" data-arg="หน้าเติมมูเหมือนในแอปวันนี้ ไม่ได้เปลี่ยน"><img src="art/mu-crystal.webp" alt=""><span class="grow"><span class="h3" style="display:block">เติมมู</span><span class="small muted">เริ่มที่ 99 บาท จ่ายด้วย PromptPay</span></span>${ic('chevron-right', 18)}</button>
+    </div>`;
+  } else if (S.mooSeg === 'spend') {
+    body = `
+    <div class="card list">
+      <button class="lrow" data-act="siamsi-open"><img src="art/oracle-scroll.webp" alt=""><span class="grow"><span class="h3" style="display:block">เซียมซี</span><span class="small muted">นึกถึงเรื่องเดียว แล้วเขย่า 1 ใบ</span></span><span class="amt">9 มู</span>${ic('chevron-right', 18)}</button>
+      <button class="lrow" data-act="toast" data-arg="ร้านค้าเหมือนในแอปวันนี้ ไม่ได้เปลี่ยน"><img src="art/heart-ticket.webp" alt=""><span class="grow"><span class="h3" style="display:block">ตั๋วรู้ใจ</span><span class="small muted">เปิดดวงคู่ฉบับเต็มกับคนที่คุณสนใจ</span></span><span class="amt">เริ่ม 69 มู</span>${ic('chevron-right', 18)}</button>
+      <button class="lrow" data-act="toast" data-arg="ร้านค้าเหมือนในแอปวันนี้ ไม่ได้เปลี่ยน"><img src="art/monthly-ticket.webp" alt=""><span class="grow"><span class="h3" style="display:block">ตั๋วดวงเดือน</span><span class="small muted">อ่านดวงครบทั้งเดือน ใช้เดือนไหนก็ได้</span></span>${ic('chevron-right', 18)}</button>
+    </div>
+    <button class="link mt8" data-act="toast" data-arg="ร้านค้าเหมือนในแอปวันนี้ ไม่ได้เปลี่ยน">ดูร้านค้าทั้งหมด${ic('arrow-right', 16)}</button>
+    <h2 class="h3 mt16">ตั๋วของคุณ</h2>
+    <div class="card list mt8"><div class="lrow"><img src="art/heart-ticket.webp" alt=""><span class="grow"><span class="h3">ตั๋วรู้ใจ</span></span><span class="amt">${S.ticket ? 1 : 0} ใบ</span></div></div>`;
+  } else {
+    const sub = (k, label) => `<button role="tab" aria-selected="${S.histSeg === k}" data-act="moo-hist" data-seg="${k}">${label}</button>`;
+    let list = '';
+    if (S.histSeg === 'moo') list = `<div class="card list mt12">${S.ledger.map((r) => `<div class="lrow"><span class="grow"><span class="h3" style="display:block">${r.t}</span><span class="tiny muted">${r.d}</span></span><span class="amt ${r.a > 0 ? 'plus' : ''}">${r.a > 0 ? '+' : ''}${r.a} มู</span></div>`).join('')}</div>`;
+    else if (S.histSeg === 'tickets') list = `<div class="card list mt12"><div class="lrow"><span class="grow"><span class="tiny muted">ตั๋วรู้ใจ</span><span class="h3" style="display:block">ใช้เปิดดวงคู่กับบีม</span><span class="tiny muted">12 พ.ย. 2569</span></span><span class="amt">ใช้ 1 ใบ</span></div><div class="lrow"><span class="grow"><span class="tiny muted">ตั๋วรู้ใจ</span><span class="h3" style="display:block">แลกด้วยมู</span><span class="tiny muted">12 พ.ย. 2569</span></span><span class="amt plus">+1 ใบ</span></div></div>`;
+    else list = S.draws.length ? `<div class="card list mt12 proposed">${S.draws.map((d, i) => `<button class="lrow" data-act="siamsi-view" data-arg="${i}"><span class="grow"><span class="tiny muted">${d.date}</span><span class="h3" style="display:block"><span class="muted" style="margin-right:6px">ใบที่ ${d.slip.no}</span>${d.slip.name}</span></span>${ic('chevron-right', 18)}</button>`).join('')}</div><button class="btn soft full mt12" data-act="siamsi-open">${ic('plus', 18)}เขย่าใบใหม่ 9 มู</button>`
+      : `<div style="text-align:center;padding:24px 0"><img src="art/scroll-quill.webp" alt="" style="width:96px;margin:0 auto"><p class="h3 mt8">ยังไม่มีใบที่เสี่ยงไว้</p><p class="small muted">เสี่ยงใบแรกแล้วจะมาอยู่ตรงนี้</p></div>`;
+    body = `<div class="subseg" role="tablist" aria-label="ประวัติ">${sub('moo', 'แต้มมู')}${sub('tickets', 'ตั๋วทั้งหมด')}${sub('siamsi', 'เซียมซี')}</div>${list}`;
+  }
+  return `
+  <section class="card balance">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div><h1 class="small muted" style="font-family:Anuphan;font-weight:600">แต้มมูคงเหลือ</h1><p class="num mt8">${S.balance} <span style="font-size:22px">มู</span></p></div><img src="art/mu-crystal.webp" alt="" style="width:72px"></div>
+  </section>
+  <div class="seg mt12 proposed" role="tablist" aria-label="มู">${seg('earn', 'รับมู', S.claimable)}${seg('spend', 'ใช้มู')}${seg('hist', 'ประวัติ')}</div>
+  <div class="mt12">${body}</div>
+  ${footer(false)}`;
+}
+
+/* ---------- sheets ---------- */
+function sheetHtml() {
+  const head = (title, back) => `<div class="head">${back ? `<button class="iconbtn" data-act="${back}" aria-label="ย้อนกลับ">${ic('arrow-left')}</button>` : '<span style="width:44px"></span>'}<h2 class="h2" id="sheet-title">${title}</h2><button class="iconbtn" data-act="close" aria-label="ปิด">${ic('x')}</button></div>`;
+  if (S.sheet === 'more') {
+    const row = (icon, title, sub, act, arg) => `<button class="lrow" data-act="${act}" data-arg="${arg || ''}"><span class="ico">${ic(icon)}</span><span class="grow"><span class="h3" style="display:block">${title}</span><span class="small muted">${sub}</span></span>${ic('chevron-right', 18)}</button>`;
+    return `<div class="sheet more" role="dialog" aria-modal="true" aria-labelledby="sheet-title">${head('เพิ่มเติม')}
+      <div class="card list">
+        ${row('compass', 'พื้นดวง', 'ดวงตลอดชีวิตจากวันเกิดของคุณ', 'toast', 'หน้าพื้นดวงไม่ได้อยู่ใน mock นี้')}
+        ${row('graduation-cap', 'ดวงการเรียน', 'ดวงวันสอบ ของเสริมดวง และคำขอพร', 'toast', 'หน้าดวงการเรียนไม่ได้อยู่ใน mock นี้')}
+        ${row('shopping-bag', 'ร้านค้า', 'ตั๋วเปิดคำอ่านฉบับเต็ม', 'toast', 'ร้านค้าเหมือนในแอปวันนี้ ไม่ได้เปลี่ยน')}
+      </div>
+      <div class="card list mt12">
+        ${row('hand-heart', 'สนับสนุนแม่หมอ', 'ให้ค่าครูเท่าไหร่ก็ได้ ได้คืนเป็นมูเท่ากัน', 'kru')}
+        ${row('settings', 'ตั้งค่า', 'ชื่อ วันเกิด และบัญชีของคุณ', 'toast', 'หน้าตั้งค่าไม่ได้อยู่ใน mock นี้')}
+      </div>
+      <div class="card list mt12">
+        <button class="lrow" data-act="theme" role="switch" aria-checked="${S.dark}"><span class="ico">${ic('moon')}</span><span class="grow"><span class="h3" style="display:block">โหมดกลางคืน</span><span class="small muted">${S.dark ? 'เปิดอยู่' : 'ปิดอยู่'}</span></span><span class="switch ${S.dark ? 'on' : ''}"><i></i></span></button>
+        <button class="lrow" data-act="toast" data-arg="ออกจากระบบไม่ได้อยู่ใน mock นี้"><span class="ico">${ic('log-out')}</span><span class="grow h3">ออกจากระบบ</span></button>
+      </div></div>`;
+  }
+  if (S.sheet === 'share') {
+    return `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">${head(shareTitle(S.shareCtx))}
+      ${shareCardArt(S.shareCtx)}
+      <div class="mt16" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button class="btn primary" data-act="toast" data-arg="บันทึกรูปแล้ว">${ic('download', 18)}บันทึกรูป</button><button class="btn soft" data-act="toast" data-arg="เปิดหน้าแชร์ของเครื่อง">${ic('share-2', 18)}แชร์</button></div>
+      <div class="targets">${['X', 'LINE', 'Facebook', 'คัดลอกลิงก์'].map((t) => `<button data-act="toast" data-arg="แชร์ไป ${t}">${t}</button>`).join('')}</div>
+      <p class="tiny muted mt12" style="text-align:center">รูปขึ้นให้ก่อนเสมอ กดค้างที่รูปเพื่อบันทึกก็ได้</p></div>`;
+  }
+  if (S.sheet === 'kru') {
+    return `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">${head('ค่าครู')}
+      <p class="small muted">ให้เท่าไหร่ก็ได้ เราเปลี่ยนเป็นแต้มมูให้เท่ากันทุกบาท ไม่มีโบนัส</p>
+      <div class="mt12" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${[20, 59, 99].map((n) => `<button class="btn soft" data-act="toast" data-arg="แผ่นค่าครูเหมือนในแอปวันนี้ ไม่ได้เปลี่ยน">฿${n}</button>`).join('')}</div>
+      <button class="btn primary full mt12" data-act="toast" data-arg="แผ่นค่าครูเหมือนในแอปวันนี้ ไม่ได้เปลี่ยน">ให้ค่าครูด้วย PromptPay</button></div>`;
+  }
+  if (S.sheet === 'siamsi') {
+    if (S.siamsiStep === 'shake') {
+      return `<div class="stagebox" id="stagebox" role="dialog" aria-modal="true" aria-label="เขย่าเซียมซี" tabindex="0">
+        <h2 class="h2" style="color:#f5f5f5">จดจ่อกับเรื่องนั้นไว้</h2>
+        <svg class="cyl" id="cyl" viewBox="0 0 150 220" aria-hidden="true">
+          <g class="stick-out"><rect x="70" y="18" width="9" height="120" rx="3" fill="#f6d28b" stroke="#a8742a"/><rect x="70" y="18" width="9" height="16" rx="3" fill="#d9534f"/></g>
+          ${[38, 50, 60, 84, 96, 108].map((x, i) => `<rect x="${x}" y="${34 + (i % 3) * 7}" width="8" height="110" rx="3" fill="#f3c97a" stroke="#a8742a" transform="rotate(${(i - 2.5) * 4} ${x + 4} 140)"/>`).join('')}
+          <path d="M28 82 h94 l-8 122 a39 10 0 0 1 -78 0 z" fill="#b5803a" stroke="#6e4a1c" stroke-width="2"/>
+          <ellipse cx="75" cy="82" rx="47" ry="11" fill="#8a5c26" stroke="#6e4a1c" stroke-width="2"/>
+          <path d="M34 120 h82 M36 160 h78" stroke="#6e4a1c" stroke-width="2" opacity=".5"/>
+        </svg>
+        <p id="hint" class="small" style="color:#d4d0e0;min-height:44px;display:flex;align-items:center">กดค้างไว้เพื่อเขย่า</p>
+        <button class="link" style="color:#d4d0e0" data-act="siamsi-ask">ย้อนกลับ</button>
+      </div>`;
+    }
+    if (S.siamsiStep === 'confirm') {
+      return `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">${head('ยืนยันการใช้มู', 'siamsi-ask')}
+        <div class="card list"><div class="lrow"><span class="grow">เสี่ยงเซียมซี 1 ใบของวันนี้</span><span class="amt">9 มู</span></div><div class="lrow"><span class="grow muted">ยอดหลังใช้</span><span class="amt">${S.balance - 9} มู</span></div></div>
+        <button class="btn primary full mt12" data-act="siamsi-shake">ใช้ 9 มู แล้วไปเขย่า</button><button class="btn soft full mt8" data-act="siamsi-ask">ยกเลิก</button></div>`;
+    }
+    if (S.siamsiStep === 'slip' && S.slip) {
+      const s = S.slip;
+      return `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">${head('เซียมซี', 'siamsi-history')}
+        <div class="slip"><p class="no">ใบที่ ${s.no}</p><p class="name">${s.name}</p><p class="cap">${s.cap}</p><div class="lines">${s.lines.map((l) => `<p>${l}</p>`).join('')}</div></div>
+        <div class="mt12" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">${shareBtn('แชร์').replace('btn soft small', 'btn soft')}<button class="btn primary" data-act="close">เก็บไว้</button></div>
+        <button class="link" style="width:100%;justify-content:center" data-act="siamsi-ask">เขย่าอีกครั้ง 9 มู</button>
+        <p class="tiny muted" style="text-align:center">ใบนี้เก็บไว้ในประวัติให้แล้ว</p></div>`;
+    }
+    if (S.siamsiStep === 'history') {
+      return `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">${head('ประวัติเซียมซี', 'siamsi-ask')}
+        <div class="card list">${S.draws.map((d, i) => `<button class="lrow" data-act="siamsi-view" data-arg="${i}"><span class="grow"><span class="tiny muted">${d.date}</span><span class="h3" style="display:block"><span class="muted" style="margin-right:6px">ใบที่ ${d.slip.no}</span>${d.slip.name}</span></span>${ic('chevron-right', 18)}</button>`).join('')}</div></div>`;
+    }
+    return `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">${head('เซียมซี')}
+      <div style="text-align:center"><img src="art/oracle-heart-pray.webp" alt="" style="width:120px;margin:0 auto"><h3 class="h2 mt8">ตั้งจิตนึกถึงเรื่องที่อยากถาม</h3><p class="small muted">นึกถึงเรื่องเดียวให้ชัด แล้วค่อยเขย่านะ</p></div>
+      <button class="btn primary full mt16" data-act="siamsi-confirm">เขย่าเซียมซี <img src="art/mu-crystal.webp" alt="" style="width:18px;height:18px"> 9 มู</button>
+      <button class="link" style="width:100%;justify-content:center" data-act="siamsi-history">${ic('history', 16)}ประวัติเซียมซี</button></div>`;
+  }
+  return '';
+}
+
+/* ---------- notes for the reviewer ---------- */
+const NOTES = {
+  today: ['Order: reading, lucky strip, full reading, four areas, ONE offer card, เซียมซี row, tips folded. Today the app has ten blocks.', 'The offer card replaces the fixed ดวงเดือน band and the ดวงคู่ row; its text follows the reader state (switches on the left).', 'The lucky kit stays visible as one compact row instead of being folded away: lucky colour and number are what many readers come for.', 'เซียมซี moves up from the bottom of the page (5.3 screens down today) to just under the offer.', 'โบนัส leaves this page: the gold dot on the มู chip says a check-in is waiting, and the once-a-day gift popup is unchanged.', 'Share and ค่าครู are shown in their proposed form; flip the variants to compare with today.', 'The envelope keeps its rules and sits above the tab bar.'],
+  monthly: ['Only change: the แชร์ button sits under the page title, the same place as on ดวงวันนี้.', 'The door, the cards and the report are untouched.', 'ดวงเดือน stays the one emphasised tab (DESIGN.md: one hero link).'],
+  compat: ['Only change: the แชร์ button under the report title.', 'A waiting report is marked รอเปิด in the list, the same item the offer card names on ดวงวันนี้.'],
+  moo: ['One page for มู: รับมู (check-in, letter, top-up), ใช้มู (เซียมซี, tickets, Shop), ประวัติ (แต้มมู, ตั๋ว, เซียมซี).', 'It replaces the โบนัส dropdown, the balance chip target and the wallet page; nothing is removed, only gathered.', 'ค่าครู is NOT here: the support line never sits next to money (owner rule, 2026-09-27).', 'ประวัติเซียมซี rows show date, ใบที่ and name only. No tier tag.'],
+  more: ['เพิ่มเติม is a sheet from the fifth tab: พื้นดวง, ดวงการเรียน, ร้านค้า, สนับสนุนแม่หมอ, ตั้งค่า, โหมดกลางคืน, ออกจากระบบ, each with one line saying what it is.', 'Which readings sit here and which earn a tab should follow the page-open counts.'],
+  siamsi: ['Unchanged flow: ask, confirm 9 มู, hold to shake, ใบ.', 'Shake stage: no box around the cylinder; the screen behind dims to the deep night.', 'The ใบ shows its number, name, caption and lines. No tier tag: the reader ponders it.'],
+  share: ['The image still comes first inside the sheet, with บันทึกรูป as the first action.', 'Proposed change is only where the reader starts: a button under the title instead of a block near the page end.'],
+};
+
+/* ---------- render ---------- */
+function render(keepScroll) {
+  const phone = $('phone');
+  phone.dataset.theme = S.dark ? 'dark' : 'light';
+  document.body.classList.toggle('notes-on', S.notes);
+  $('chip').innerHTML = `<span><img src="art/mu-crystal.webp" alt="">${S.balance}</span>${S.claimable ? '<i class="dot"></i>' : ''}`;
+  $('chip').setAttribute('aria-label', `ยอด ${S.balance} มู ${S.claimable ? 'วันนี้มีมูรอรับ' : ''} เปิดหน้ามู`);
+  const tabs = [['today', 'วันนี้', ic('sun')], ['monthly', 'ดวงเดือน', ic('orbit')], ['compat', 'ดวงคู่', ic('heart')], ['moo', 'มู', '<img class="cry" src="art/mu-crystal.webp" alt="">'], ['more', 'เพิ่มเติม', ic('menu')]];
+  $('tabbar').innerHTML = tabs.map(([k, label, icon]) => { const cur = k === 'more' ? S.sheet === 'more' : S.tab === k && S.sheet !== 'more'; return `<button class="tab ${k === 'monthly' ? 'hero' : ''}" data-act="${k === 'more' ? 'open-more' : 'go'}" data-tab="${k}" ${cur ? 'aria-current="page"' : ''}><span class="pill">${icon}</span>${label}${k === 'moo' && S.claimable ? '<i class="dot"></i>' : ''}</button>`; }).join('');
+  const screen = $('screen');
+  const top = screen.scrollTop;
+  screen.innerHTML = { today: screenToday, monthly: screenMonthly, compat: screenCompat, moo: screenMoo }[S.tab]();
+  screen.scrollTop = keepScroll ? top : 0;
+  const envOn = S.letter && !S.envHidden && S.tab !== 'moo' && !S.sheet;
+  $('env').innerHTML = envOn ? `<div class="envelope"><button data-act="letter" aria-label="มีจดหมายใหม่ถึงคุณ"><img src="art/letter-closed.webp" alt=""><i class="red"></i></button><button class="ex" data-act="hide-env" aria-label="ปิดไว้ก่อน">${ic('x', 14)}</button></div>` : '';
+  const shaking = S.sheet === 'siamsi' && S.siamsiStep === 'shake';
+  $('layer').innerHTML = S.sheet ? `<div class="layer ${shaking ? 'night' : ''} ${S.sheet === 'more' ? 'above-tabs' : ''}" data-act="backdrop">${sheetHtml()}</div>` : '';
+  if (shaking) bindShake();
+  document.querySelectorAll('[data-state]').forEach((el) => { el.checked = !!S[el.dataset.state]; });
+  const o = offer();
+  const h = S.tab === 'today' ? screen.scrollHeight : null;
+  $('readout').innerHTML = `<b>Offer card now:</b> <code>${o.reason}</code>${S.offerHidden ? ' (hidden for the day)' : ''}<br>${o.title}${h ? `<br><b>ดวงวันนี้ in this mock:</b> about ${h.toLocaleString()} px (${(h / 812).toFixed(1)} screens). The app today: 4,459 px (5.5 screens), 5,381 px with its footer.` : ''}`;
+  const key = S.sheet === 'more' ? 'more' : S.sheet === 'siamsi' ? 'siamsi' : S.sheet === 'share' ? 'share' : S.tab;
+  $('notes').innerHTML = (NOTES[key] || []).map((n) => `<li>${n}</li>`).join('');
+}
+
+let toastTimer;
+function toast(msg) { $('toast').innerHTML = `<div class="toast">${msg}</div>`; clearTimeout(toastTimer); toastTimer = setTimeout(() => { $('toast').innerHTML = ''; }, 2200); }
+
+function bindShake() {
+  const box = $('stagebox'), cyl = $('cyl'), hint = $('hint');
+  let start = 0, done = false;
+  const down = (e) => { if (done || (e.target.closest && e.target.closest('button'))) return; start = performance.now(); cyl.classList.add('shaking'); hint.textContent = 'เขย่าอยู่ ปล่อยเมื่อพร้อม'; };
+  const up = () => {
+    if (done || !start) return;
+    const held = performance.now() - start; start = 0; cyl.classList.remove('shaking');
+    if (held < 700) { hint.textContent = 'กดค้างไว้เพื่อเขย่า'; return; }
+    done = true; cyl.classList.add('out'); hint.textContent = '';
+    const slip = SLIPS[Math.floor(Math.random() * SLIPS.length)];
+    setTimeout(() => { S.balance -= 9; S.ledger.unshift({ t: 'เซียมซี', d: '17 พ.ย. 2569', a: -9 }); S.draws.unshift({ date: '17 พ.ย. 2569', slip }); S.slip = slip; S.siamsiStep = 'slip'; render(true); }, 650);
+  };
+  box.addEventListener('pointerdown', down); box.addEventListener('pointerup', up); box.addEventListener('pointercancel', up); box.addEventListener('pointerleave', up);
+  box.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); down(e); } });
+  box.addEventListener('keyup', (e) => { if (e.key === ' ' || e.key === 'Enter') up(); });
+  box.focus();
+}
+
+const ACT = {
+  go: (el) => { S.tab = el.dataset.tab || el.dataset.arg; S.sheet = null; S.person = null; render(); },
+  moo: (el) => { S.tab = 'moo'; S.mooSeg = el.dataset.seg || 'earn'; S.sheet = null; render(); },
+  'moo-hist': (el) => { S.tab = 'moo'; S.mooSeg = 'hist'; S.histSeg = el.dataset.seg; S.sheet = null; render(); },
+  'open-more': () => { S.sheet = S.sheet === 'more' ? null : 'more'; render(true); },
+  close: () => { S.sheet = null; render(true); },
+  backdrop: (el, e) => { if (e.target === el && !(S.sheet === 'siamsi' && S.siamsiStep === 'shake')) { S.sheet = null; render(true); } },
+  toggle: (el) => { S[el.dataset.key] = !S[el.dataset.key]; render(true); },
+  area: (el) => { S.expanded = S.expanded === el.dataset.arg ? null : el.dataset.arg; render(true); },
+  person: (el) => { S.tab = 'compat'; S.person = el.dataset.arg || null; S.sheet = null; render(); },
+  'hide-offer': () => { S.offerHidden = true; render(true); toast('ซ่อนไว้ก่อนวันนี้ พรุ่งนี้จะกลับมา'); },
+  'hide-env': () => { S.envHidden = true; render(true); },
+  share: () => { S.shareCtx = S.sheet === 'siamsi' ? 'siamsi' : S.tab; S.sheet = 'share'; render(true); },
+  kru: () => { S.sheet = 'kru'; render(true); },
+  theme: () => { S.dark = !S.dark; render(true); },
+  claim: () => { S.claimable = false; S.balance += 1; S.ledger.unshift({ t: 'โบนัสเช็คอิน', d: '18 พ.ย. 2569', a: 1 }); render(true); toast('วันนี้ได้ 1 มู แล้ว'); },
+  letter: () => { S.letter = false; S.balance += 9; S.ledger.unshift({ t: 'ตอบจดหมาย', d: '18 พ.ย. 2569', a: 9 }); render(true); toast('ขอบคุณที่เล่าให้ฟังนะ รับ 9 มูแล้ว (จดหมายจริงไม่ได้อยู่ใน mock)'); },
+  toast: (el) => toast(el.dataset.arg),
+  'siamsi-open': () => { S.sheet = 'siamsi'; S.siamsiStep = 'ask'; render(true); },
+  'siamsi-ask': () => { S.siamsiStep = 'ask'; render(true); },
+  'siamsi-confirm': () => { if (S.balance < 9) return toast('มูไม่พอ ในแอปจริงจะเปิดหน้าเติมมูให้'); S.siamsiStep = 'confirm'; render(true); },
+  'siamsi-shake': () => { if (S.balance < 9) return toast('มูไม่พอ ในแอปจริงจะเปิดหน้าเติมมูให้'); S.sheet = 'siamsi'; S.siamsiStep = 'shake'; render(true); },
+  'siamsi-history': () => { S.siamsiStep = 'history'; render(true); },
+  'siamsi-view': (el) => { S.slip = S.draws[+el.dataset.arg].slip; S.sheet = 'siamsi'; S.siamsiStep = 'slip'; render(true); },
+};
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-act]');
+  if (!el) return;
+  const fn = ACT[el.dataset.act];
+  if (fn) fn(el, e);
+});
+document.addEventListener('change', (e) => {
+  const key = e.target.dataset && e.target.dataset.state;
+  if (!key) return;
+  S[key] = e.target.checked;
+  if (key !== 'dark' && key !== 'notes') S.offerHidden = false;
+  if (key === 'letter') S.envHidden = false;
+  render(true);
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && S.sheet) { S.sheet = null; render(true); } });
+render();
+</script>
+</body>
+</html>
